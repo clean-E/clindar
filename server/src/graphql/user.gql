@@ -1,0 +1,8 @@
+type User {
+  email: String!
+  nickname: String!
+}
+
+type Query {
+  getUserInfo: User
+}
