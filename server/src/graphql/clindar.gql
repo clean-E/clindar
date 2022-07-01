@@ -3,6 +3,56 @@ type User {
   nickname: String!
 }
 
+type Schedule {
+  category: String!
+  place1: String!
+  place2: String!
+  year: String!
+  month: String!
+  date: String!
+  startTime: String!
+  host: String!
+  guest: [Guest]!
+  memo: String
+}
+
+type Guest {
+  nickname: String!
+  record: [Record]!
+}
+
+type Record {
+  level: String!
+  count: Int!
+}
+
+type Group {
+  gname: String!
+  leader: String!
+  createdAt: String!
+  description: String!
+  memberList: [String]!
+  mainCategory: String!
+  secret: Boolean!
+}
+
 type Query {
-  getUserInfo: User
+  getAllSchedule: [Schedule]!
+  getScheduleDetail: Schedule
+  getAllGroup: [Group]!
+  getMyPage: User
+}
+
+type Mutation {
+  login: String!
+  createSchedule: Schedule!
+  deleteSchedule: String!
+  editSchedule: Schedule!
+  inviteSchedule: Schedule!
+  joinSchedule: Schedule!
+  editRecord: Schedule!
+  createGroup: Group!
+  joinGroup: Group!
+  leaveGroup: Group!
+  deleteGroup: String!
 }
