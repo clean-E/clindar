@@ -3,23 +3,58 @@ type User {
   nickname: String!
 }
 
+input GroupNameInput {
+  gname: String!
+}
+
+type GroupName {
+  gname: String!
+}
+
+type Where {
+  place1: String!
+  place2: String!
+}
+
+type When {
+  year: String!
+  month: String!
+  date: String!
+  startTime: String!
+}
+
+type Who {
+  host: String!
+  guest: [Guest]!
+}
+
+type GroupName {
+  gname: String!
+}
+
+input WhereInput {
+  place1: String!
+  place2: String!
+}
+
+input WhenInput {
+  year: String!
+  month: String!
+  date: String!
+  startTime: String!
+}
+
+input WhoInput {
+  host: String!
+  guest: [GuestInput]!
+}
+
 type Schedule {
   _id: String!
   category: String!
-  where: {
-    place1: String!
-    place2: String!
-  }
-  when: {
-    year: String!
-    month: String!
-    date: String!
-    startTime: String!
-  }
-  who: {
-    host: String!
-    guest: [Guest]!
-  }
+  where: Where!
+  when: When!
+  who: Who!
   memo: String
   secret: Boolean!
   group: [GroupName]!
@@ -27,23 +62,12 @@ type Schedule {
 
 input CreateScheduleInput {
   category: String!
-  where: {
-    place1: String!
-    place2: String!
-  }
-  when: {
-    year: String!
-    month: String!
-    date: String!
-    startTime: String!
-  }
-  who: {
-    host: String!
-    guest: [Guest]!
-  }
+  where: WhereInput!
+  when: WhenInput!
+  who: WhoInput!
   memo: String
   secret: Boolean!
-  group: [GroupName]!
+  group: [GroupNameInput]!
 }
 
 input DeleteScheduleInput {
@@ -53,23 +77,12 @@ input DeleteScheduleInput {
 input EditScheduleInput {
   _id: String!
   category: String!
-  where: {
-    place1: String!
-    place2: String!
-  }
-  when: {
-    year: String!
-    month: String!
-    date: String!
-    startTime: String!
-  }
-  who: {
-    host: String!
-    guest: [Guest]!
-  }
+  where: WhereInput!
+  when: WhenInput!
+  who: WhoInput!
   memo: String
   secret: Boolean!
-  group: [GroupName]!
+  group: [GroupNameInput]!
 }
 
 input InviteScheduleInput {
@@ -85,7 +98,7 @@ input JoinScheduleInput {
 input EditRecordInput {
   _id: String!
   nickname: String!
-  record: [Record]!
+  record: [RecordInput]!
 }
 
 input CreateGroupInput {
@@ -115,16 +128,22 @@ type Guest {
   record: [Record]!
 }
 
-type GroupName {
-  gname: String!
-}
-
 type Record {
   level: String!
   count: Int!
 }
 
-type GroupDetail {
+input GuestInput {
+  nickname: String!
+  record: [RecordInput]!
+}
+
+input RecordInput {
+  level: String!
+  count: Int!
+}
+
+type Group {
   gname: String!
   leader: String!
   createdAt: String!
@@ -135,27 +154,28 @@ type GroupDetail {
 }
 
 type UserInfo {
-  user: User
+  email: String!
+  nickname: String!
   myGroupList: [GroupName]
 }
 
 type Query {
   getAllSchedule: [Schedule]!
   getScheduleDetail: Schedule
-  getAllGroup: [GroupDetail]!
+  getAllGroup: [Group]!
   getMyPage: UserInfo
 }
 
 type Mutation {
   login: User!
-  
+
   createSchedule(schedule: CreateScheduleInput): Schedule!
   deleteSchedule(schedule: DeleteScheduleInput): String!
   editSchedule(schedule: EditScheduleInput): Schedule!
   inviteSchedule(schedule: InviteScheduleInput): Schedule!
   joinSchedule(schedule: JoinScheduleInput): Schedule!
   editRecord(schedule: EditRecordInput): Schedule!
-  
+
   createGroup(group: CreateGroupInput): Group!
   joinGroup(group: JoinGroupInput): Group!
   leaveGroup(group: LeaveGroupInput): Group!

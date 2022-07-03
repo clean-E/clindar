@@ -1,0 +1,187 @@
+import { ObjectType, Field } from '@nestjs/graphql';
+import mongoose from 'mongoose';
+
+export const ScheduleSchema = new mongoose.Schema({
+  category: { type: String },
+  where: {
+    place1: { type: String },
+    place2: { type: String },
+  },
+  when: {
+    year: { type: String },
+    month: { type: String },
+    date: { type: String },
+    startTime: { type: String },
+  },
+  who: {
+    host: { type: String },
+    guest: [
+      {
+        nickname: { type: String },
+        record: [
+          {
+            level: { type: String },
+            count: { type: Number },
+          },
+        ],
+      },
+    ],
+  },
+  memo: { type: String },
+  secret: { type: Boolean },
+  group: [{ gname: { type: String } }],
+});
+
+@ObjectType()
+export class Schedule {
+  @Field()
+  category: string;
+  @Field()
+  where: {
+    place1: string;
+    place2: string;
+  };
+  @Field()
+  when: {
+    year: string;
+    month: string;
+    date: string;
+    startTime: string;
+  };
+  @Field()
+  who: {
+    host: string;
+    guest: [
+      {
+        nickname: string;
+        record: [
+          {
+            level: string;
+            count: number;
+          },
+        ];
+      },
+    ];
+  };
+  @Field()
+  memo: string;
+  @Field()
+  secret: boolean;
+  @Field()
+  group: [{ gname: string }];
+}
+
+@ObjectType()
+export class CreateScheduleInput {
+  @Field()
+  category: string;
+  @Field()
+  where: {
+    place1: string;
+    place2: string;
+  };
+  @Field()
+  when: {
+    year: string;
+    month: string;
+    date: string;
+    startTime: string;
+  };
+  @Field()
+  who: {
+    host: string;
+    guest: [
+      {
+        nickname: string;
+        record: [
+          {
+            level: string;
+            count: number;
+          },
+        ];
+      },
+    ];
+  };
+  @Field()
+  memo: string;
+  @Field()
+  secret: boolean;
+  @Field()
+  group: [{ gname: string }];
+}
+
+@ObjectType()
+export class DeleteScheduleInput {
+  @Field()
+  _id: string;
+}
+
+@ObjectType()
+export class EditScheduleInput {
+  @Field()
+  category: string;
+  @Field()
+  where: {
+    place1: string;
+    place2: string;
+  };
+  @Field()
+  when: {
+    year: string;
+    month: string;
+    date: string;
+    startTime: string;
+  };
+  @Field()
+  who: {
+    host: string;
+    guest: [
+      {
+        nickname: string;
+        record: [
+          {
+            level: string;
+            count: number;
+          },
+        ];
+      },
+    ];
+  };
+  @Field()
+  memo: string;
+  @Field()
+  secret: boolean;
+  @Field()
+  group: [{ gname: string }];
+}
+
+@ObjectType()
+export class InviteScheduleInput {
+  @Field()
+  _id: string;
+  @Field()
+  nickname: string;
+}
+
+@ObjectType()
+export class JoinScheduleInput {
+  @Field()
+  _id: string;
+  @Field()
+  nickname: string;
+}
+
+@ObjectType()
+export class EditRecordInput {
+  @Field()
+  _id: string;
+  @Field()
+  nickname: string;
+  @Field()
+  record: [
+    {
+      level: string;
+      count: number;
+    },
+  ];
+}
