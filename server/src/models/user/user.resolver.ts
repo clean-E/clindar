@@ -1,19 +1,24 @@
-import { Mutation, Query } from '@nestjs/graphql';
+import { Args, Mutation, Query } from '@nestjs/graphql';
 import { Resolver } from '@nestjs/graphql';
 import { UserService } from './user.service';
-import { User, UserInfo } from '../../schemas/user.schema';
+import {
+  LoginInput,
+  User,
+  UserInfo,
+  UserEmail,
+} from '../../schemas/user.schema';
 
 @Resolver('User')
 export class UserResolver {
   constructor(private userService: UserService) {}
 
   @Query(() => UserInfo)
-  async getMyPage() {
-    return await this.userService.getMyPage();
+  async getMyPage(@Args('user') user: UserEmail) {
+    return await this.userService.getMyPage(user);
   }
 
   @Mutation(() => User)
-  async login() {
-    return await this.userService.login();
+  async login(@Args('user') user: LoginInput) {
+    return await this.userService.login(user);
   }
 }

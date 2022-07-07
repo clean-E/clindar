@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { User } from 'src/schemas/user.schema';
+import { LoginInput, User, UserEmail, UserInfo } from 'src/schemas/user.schema';
 
 @Injectable()
 export class UserService {
@@ -9,28 +9,34 @@ export class UserService {
     private userModel: Model<User>,
   ) {}
 
-  async getMyPage(): Promise<User> {
-    const result = await this.userModel.find();
-    console.log(result);
+  async getMyPage(user: UserEmail): Promise<UserInfo> {
+    const { email } = user;
 
-    return await this.userModel
-      .findOne({
-        email: 'leguyong@naver.com',
-      })
-      .exec();
+    try {
+      return await this.userModel.findOne({ email });
+    } catch (err) {
+      throw err;
+    }
   }
 
-  async login(): Promise<User> {
-    const email = 'leguyong@naver.com';
-    const nickname = 'jy';
+  async login(user: LoginInput): Promise<User> {
+    const { email, nickname } = user;
 
-    const user = {
-      email,
-      nickname,
-    };
+    try {
+      const userInfo = await this.userModel.exists({ email, nickname });
 
-    await this.userModel.create(user);
+      if (userInfo === null) {
+        await this.userModel.create({
+          email,
+          nickname,
+          myGroupList: [],
+          myScheduleList: [],
+        });
+      }
 
-    return await this.userModel.findOne(user);
+      return await this.userModel.findOne({ email });
+    } catch (err) {
+      throw err;
+    }
   }
 }

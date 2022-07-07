@@ -3,6 +3,10 @@ type User {
   nickname: String!
 }
 
+input UserEmail {
+  email: String!
+}
+
 input GroupNameInput {
   gname: String!
 }
@@ -61,6 +65,7 @@ type Schedule {
 }
 
 input CreateScheduleInput {
+  email: String!
   category: String!
   where: WhereInput!
   when: WhenInput!
@@ -71,10 +76,12 @@ input CreateScheduleInput {
 }
 
 input DeleteScheduleInput {
+  email: String!
   _id: String!
 }
 
 input EditScheduleInput {
+  email: String!
   _id: String!
   category: String!
   where: WhereInput!
@@ -86,22 +93,26 @@ input EditScheduleInput {
 }
 
 input InviteScheduleInput {
+  email: String!
   _id: String!
   nickname: String!
 }
 
 input JoinScheduleInput {
+  email: String!
   _id: String!
   nickname: String!
 }
 
 input EditRecordInput {
+  email: String!
   _id: String!
   nickname: String!
   record: [RecordInput]!
 }
 
 input CreateGroupInput {
+  email: String!
   gname: String!
   leader: String!
   createdAt: String!
@@ -112,14 +123,17 @@ input CreateGroupInput {
 }
 
 input JoinGroupInput {
+  email: String!
   _id: String!
 }
 
 input LeaveGroupInput {
+  email: String!
   _id: String!
 }
 
 input DeleteGroupInput {
+  email: String!
   _id: String!
 }
 
@@ -144,6 +158,7 @@ input RecordInput {
 }
 
 type Group {
+  _id: String!
   gname: String!
   leader: String!
   createdAt: String!
@@ -159,15 +174,35 @@ type UserInfo {
   myGroupList: [GroupName]
 }
 
+input LoginInput {
+  email: String!
+  nickname: String!
+}
+
+input ScheduleId {
+  _id: String!
+}
+
+input GroupId {
+  _id: String!
+}
+
+input GroupPassword {
+  _id: String!
+  password: String!
+}
+
 type Query {
-  getAllSchedule: [Schedule]!
-  getScheduleDetail: Schedule
+  getAllSchedule(schedule: UserEmail): [Schedule]!
+  getScheduleDetail(schedule: ScheduleId): Schedule
   getAllGroup: [Group]!
-  getMyPage: UserInfo
+  getGroupDetail(group: GroupId): Group
+  openSecretGroup(group: GroupPassword): Group
+  getMyPage(user: UserEmail): UserInfo
 }
 
 type Mutation {
-  login: User!
+  login(user: LoginInput): User!
 
   createSchedule(schedule: CreateScheduleInput): Schedule!
   deleteSchedule(schedule: DeleteScheduleInput): String!

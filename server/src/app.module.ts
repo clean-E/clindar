@@ -8,6 +8,10 @@ import { UserModule } from './models/user/user.module';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       typePaths: ['./**/*.gql'],
+      cors: {
+        origin: '*',
+        credentials: true,
+      },
     }),
     UserModule,
   ],

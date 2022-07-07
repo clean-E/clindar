@@ -22,14 +22,10 @@ export class User extends Document {
   nickname: string;
 
   @Field()
-  myGroupList: [
-    {
-      gname: { type: string; require: false };
-    },
-  ];
+  myGroupList: [string];
 
   @Field()
-  myScheduleList: [{ cId: { type: string; require: false } }];
+  myScheduleList: [string];
 }
 
 @ObjectType()
@@ -46,4 +42,19 @@ export class UserInfo {
       gname: string;
     },
   ];
+}
+
+@ObjectType()
+export class LoginInput {
+  @Field()
+  email: string;
+
+  @Field()
+  nickname: string;
+}
+
+@ObjectType()
+export class UserEmail {
+  @Field()
+  email: string;
 }
