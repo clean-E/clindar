@@ -58,7 +58,7 @@ export class Schedule {
           {
             level: string;
             count: number;
-          },
+          }?,
         ];
       },
     ];
@@ -73,6 +73,8 @@ export class Schedule {
 
 @ObjectType()
 export class CreateScheduleInput {
+  @Field()
+  email: string;
   @Field()
   category: string;
   @Field()
@@ -93,12 +95,7 @@ export class CreateScheduleInput {
     guest: [
       {
         nickname: string;
-        record: [
-          {
-            level: string;
-            count: number;
-          },
-        ];
+        record: [];
       },
     ];
   };
@@ -114,10 +111,16 @@ export class CreateScheduleInput {
 export class DeleteScheduleInput {
   @Field()
   _id: string;
+  @Field()
+  email: string;
 }
 
 @ObjectType()
 export class EditScheduleInput {
+  @Field()
+  email: string;
+  @Field()
+  _id: string;
   @Field()
   category: string;
   @Field()
@@ -160,6 +163,8 @@ export class InviteScheduleInput {
   @Field()
   _id: string;
   @Field()
+  email: string;
+  @Field()
   nickname: string;
 }
 
@@ -167,6 +172,8 @@ export class InviteScheduleInput {
 export class JoinScheduleInput {
   @Field()
   _id: string;
+  @Field()
+  email: string;
   @Field()
   nickname: string;
 }
@@ -184,4 +191,10 @@ export class EditRecordInput {
       count: number;
     },
   ];
+}
+
+@ObjectType()
+export class ScheduleId {
+  @Field()
+  _id: string;
 }

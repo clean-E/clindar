@@ -2,6 +2,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { UserModule } from './models/user/user.module';
+import { ScheduleModule } from './models/schedule/schedule.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { UserModule } from './models/user/user.module';
       },
     }),
     UserModule,
+    ScheduleModule,
   ],
 })
 export class AppModule {}

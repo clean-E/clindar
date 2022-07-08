@@ -5,7 +5,7 @@ export const UserProviders = [
   {
     provide: 'USER_MODEL',
     useFactory: (connection: Connection) =>
-      connection.model('clindar', UserSchema, 'User'),
+      connection.model('User', UserSchema, 'User'),
     inject: ['DATABASE_CONNECTION'],
   },
 ];

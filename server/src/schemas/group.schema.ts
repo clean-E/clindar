@@ -29,6 +29,8 @@ export class Group {
   mainCategory: string;
   @Field()
   secret: boolean;
+  @Field()
+  schedules: [string];
 }
 
 @ObjectType()
@@ -63,6 +65,12 @@ export class LeaveGroupInput {
 
 @ObjectType()
 export class DeleteGroupInput {
+  @Field()
+  _id: string;
+}
+
+@ObjectType()
+export class GroupId {
   @Field()
   _id: string;
 }

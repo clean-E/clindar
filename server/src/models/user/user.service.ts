@@ -9,16 +9,6 @@ export class UserService {
     private userModel: Model<User>,
   ) {}
 
-  async getMyPage(user: UserEmail): Promise<UserInfo> {
-    const { email } = user;
-
-    try {
-      return await this.userModel.findOne({ email });
-    } catch (err) {
-      throw err;
-    }
-  }
-
   async login(user: LoginInput): Promise<User> {
     const { email, nickname } = user;
 
@@ -34,6 +24,16 @@ export class UserService {
         });
       }
 
+      return await this.userModel.findOne({ email });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async getMyPage(user: UserEmail): Promise<UserInfo> {
+    const { email } = user;
+
+    try {
       return await this.userModel.findOne({ email });
     } catch (err) {
       throw err;
