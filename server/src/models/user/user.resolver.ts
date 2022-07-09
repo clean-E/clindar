@@ -6,6 +6,7 @@ import {
   User,
   UserInfo,
   UserEmail,
+  NicknameInput,
 } from '../../schemas/user.schema';
 
 @Resolver('User')
@@ -20,5 +21,10 @@ export class UserResolver {
   @Mutation(() => User)
   async login(@Args('user') user: LoginInput) {
     return await this.userService.login(user);
+  }
+
+  @Mutation(() => User)
+  async setNickname(@Args('user') user: NicknameInput) {
+    return await this.userService.setNickname(user);
   }
 }

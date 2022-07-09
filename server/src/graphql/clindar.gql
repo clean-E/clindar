@@ -192,6 +192,11 @@ input GroupPassword {
   password: String!
 }
 
+input NicknameInput {
+  email: String!
+  nickname: String!
+}
+
 type Query {
   getAllSchedule(schedule: UserEmail): [Schedule]!
   getScheduleDetail(schedule: ScheduleId): Schedule
@@ -203,6 +208,7 @@ type Query {
 
 type Mutation {
   login(user: LoginInput): User!
+  setNickname(user: NicknameInput): User!
 
   createSchedule(schedule: CreateScheduleInput): Schedule!
   deleteSchedule(schedule: DeleteScheduleInput): String!

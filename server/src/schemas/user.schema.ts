@@ -58,3 +58,12 @@ export class UserEmail {
   @Field()
   email: string;
 }
+
+@ObjectType()
+export class NicknameInput {
+  @Field()
+  email: string;
+
+  @Field()
+  nickname: string;
+}
