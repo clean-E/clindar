@@ -47,6 +47,7 @@ export class UserService {
       if (userInfo === null) {
         // 사용 가능한 닉네임
         await this.userModel.updateOne({ email }, { nickname });
+        return await this.userModel.findOne({ email });
       } else {
         // 사용 불가능한 닉네임
         return await this.userModel.findOne({ email });
