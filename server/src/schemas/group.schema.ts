@@ -74,3 +74,11 @@ export class GroupId {
   @Field()
   _id: string;
 }
+
+@ObjectType()
+export class GroupPassword {
+  @Field()
+  _id: string;
+  @Field()
+  password: string;
+}

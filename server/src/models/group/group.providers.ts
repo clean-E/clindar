@@ -6,7 +6,7 @@ export const GroupProviders = [
   {
     provide: 'GROUP_MODEL',
     useFactory: (connection: Connection) =>
-      connection.model('clindar', GroupSchema, 'Group'),
+      connection.model('Group', GroupSchema, 'Group'),
     inject: ['DATABASE_CONNECTION'],
   },
   {
