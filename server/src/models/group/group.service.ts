@@ -21,7 +21,9 @@ export class GroupService {
     private userModel: Model<User>,
   ) {}
 
-  async getAllGroup(): Promise<Group[]> {}
+  async getAllGroup(): Promise<Group[]> {
+    return await this.groupModel.find();
+  }
 
   async getGroupDetail(group: GroupId): Promise<Group> {}
 
