@@ -24,7 +24,7 @@ export class GroupResolver {
     return await this.groupService.getGroupDetail(group);
   }
 
-  @Query(() => Group)
+  @Query(() => Group || String)
   async openSecretGroup(@Args('group') group: GroupPassword) {
     return await this.groupService.openSecretGroup(group);
   }

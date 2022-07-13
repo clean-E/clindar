@@ -6,15 +6,15 @@ export const GroupSchema = new mongoose.Schema({
   leader: { type: String },
   createdAt: { type: String },
   description: { type: String },
-  memberList: [{ type: String }],
+  memberList: [String],
   mainCategory: { type: String },
   secret: { type: Boolean },
   password: { type: String },
-  schedules: [{ type: String }],
+  schedules: [String],
 });
 
 @ObjectType()
-export class Group {
+export class Group extends Document {
   @Field()
   gname: string;
   @Field()
@@ -24,17 +24,21 @@ export class Group {
   @Field()
   description: string;
   @Field()
-  memberList: [string];
+  memberList: string[];
   @Field()
   mainCategory: string;
   @Field()
   secret: boolean;
   @Field()
-  schedules: [string];
+  password: string;
+  @Field()
+  schedules: string[];
 }
 
 @ObjectType()
 export class CreateGroupInput {
+  @Field()
+  email: string;
   @Field()
   gname: string;
   @Field()
@@ -54,17 +58,23 @@ export class CreateGroupInput {
 @ObjectType()
 export class JoinGroupInput {
   @Field()
+  email: string;
+  @Field()
   _id: string;
 }
 
 @ObjectType()
 export class LeaveGroupInput {
   @Field()
+  email: string;
+  @Field()
   _id: string;
 }
 
 @ObjectType()
 export class DeleteGroupInput {
+  @Field()
+  email: string;
   @Field()
   _id: string;
 }

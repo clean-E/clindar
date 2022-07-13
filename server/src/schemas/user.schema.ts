@@ -22,10 +22,10 @@ export class User extends Document {
   nickname: string;
 
   @Field()
-  myGroupList: [string];
+  myGroupList: string[];
 
   @Field()
-  myScheduleList: [string];
+  myScheduleList: string[];
 }
 
 @ObjectType()
