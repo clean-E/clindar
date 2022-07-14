@@ -1,5 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import mongoose from 'mongoose';
+import { Document } from 'mongoose';
 
 export const GroupSchema = new mongoose.Schema({
   gname: { type: String },

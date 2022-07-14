@@ -10,7 +10,7 @@ export const UserSchema = new mongoose.Schema({
       gname: { type: String },
     },
   ],
-  myScheduleList: [{ cId: { type: String } }],
+  myScheduleList: [{ sId: { type: String } }],
 });
 
 @ObjectType()

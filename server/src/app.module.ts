@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { UserModule } from './models/user/user.module';
 import { ScheduleModule } from './models/schedule/schedule.module';
+import { GroupModule } from './models/group/group.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ScheduleModule } from './models/schedule/schedule.module';
     }),
     UserModule,
     ScheduleModule,
+    GroupModule,
   ],
 })
 export class AppModule {}
