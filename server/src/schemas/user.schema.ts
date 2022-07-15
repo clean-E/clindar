@@ -5,12 +5,8 @@ import { Document } from 'mongoose';
 export const UserSchema = new mongoose.Schema({
   email: { type: String, require: true },
   nickname: { type: String },
-  myGroupList: [
-    {
-      gname: { type: String },
-    },
-  ],
-  myScheduleList: [{ sId: { type: String } }],
+  myGroupList: [String],
+  myScheduleList: [String],
 });
 
 @ObjectType()

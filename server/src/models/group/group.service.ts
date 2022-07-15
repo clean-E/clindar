@@ -82,7 +82,7 @@ export class GroupService {
       const userInfo = await this.userModel.findOne({ email });
       await this.userModel.updateOne(
         { email },
-        { myGroupList: [...userInfo.myGroupList, { gname }] },
+        { myGroupList: [...userInfo.myGroupList, gname] },
       );
       return await this.groupModel.create(groupSchema);
     } catch (err) {
@@ -99,7 +99,7 @@ export class GroupService {
       const groupInfo = await this.groupModel.findOne({ _id });
       await this.userModel.updateOne(
         { email },
-        { myGroupList: [...userInfo.myGroupList, { gname: groupInfo.gname }] },
+        { myGroupList: [...userInfo.myGroupList, groupInfo.gname] },
       );
       await this.groupModel.updateOne(
         { _id },
