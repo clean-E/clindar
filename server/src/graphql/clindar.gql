@@ -60,7 +60,6 @@ type Schedule {
   when: When!
   who: Who!
   memo: String
-  secret: Boolean!
   group: [GroupName]!
 }
 
@@ -71,7 +70,6 @@ input CreateScheduleInput {
   when: WhenInput!
   who: WhoInput!
   memo: String
-  secret: Boolean!
   group: [GroupNameInput]!
 }
 
@@ -88,7 +86,6 @@ input EditScheduleInput {
   when: WhenInput!
   who: WhoInput!
   memo: String
-  secret: Boolean!
   group: [GroupNameInput]!
 }
 
