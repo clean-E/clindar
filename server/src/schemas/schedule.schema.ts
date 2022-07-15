@@ -28,7 +28,6 @@ export const ScheduleSchema = new mongoose.Schema({
     ],
   },
   memo: { type: String },
-  secret: { type: Boolean },
   group: [{ gname: { type: String } }],
 });
 
@@ -66,8 +65,6 @@ export class Schedule {
   @Field()
   memo: string;
   @Field()
-  secret: boolean;
-  @Field()
   group: [{ gname: string }];
 }
 
@@ -101,8 +98,6 @@ export class CreateScheduleInput {
   };
   @Field()
   memo: string;
-  @Field()
-  secret: boolean;
   @Field()
   group: [{ gname: string }];
 }
@@ -152,8 +147,6 @@ export class EditScheduleInput {
   };
   @Field()
   memo: string;
-  @Field()
-  secret: boolean;
   @Field()
   group: [{ gname: string }];
 }
