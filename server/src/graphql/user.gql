@@ -1,0 +1,37 @@
+type User {
+  email: String!
+  nickname: String!
+}
+
+type UserInfo {
+  email: String!
+  nickname: String!
+  myGroupList: [GroupName]
+}
+
+type GroupName {
+  gname: String!
+}
+
+input UserEmail {
+  email: String!
+}
+
+input LoginInput {
+  email: String!
+  nickname: String!
+}
+
+input NicknameInput {
+  email: String!
+  nickname: String!
+}
+
+type Query {
+  getMyPage(user: UserEmail): UserInfo
+}
+
+type Mutation {
+  login(user: LoginInput): User!
+  setNickname(user: NicknameInput): User!
+}

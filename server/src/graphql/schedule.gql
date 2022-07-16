@@ -1,0 +1,130 @@
+type Schedule {
+  _id: String!
+  category: String!
+  where: Where!
+  when: When!
+  who: Who!
+  memo: String
+  group: [GroupName]!
+}
+
+type Where {
+  place1: String!
+  place2: String!
+}
+
+type When {
+  year: String!
+  month: String!
+  date: String!
+  startTime: String!
+}
+
+type Who {
+  host: String!
+  guest: [Guest]!
+}
+
+type Guest {
+  nickname: String!
+  record: [Record]!
+}
+
+type Record {
+  level: String!
+  count: Int!
+}
+
+input ScheduleId {
+  _id: String!
+}
+
+input CreateScheduleInput {
+  email: String!
+  category: String!
+  where: WhereInput!
+  when: WhenInput!
+  who: WhoInput!
+  memo: String
+  group: [GroupNameInput]!
+}
+
+input DeleteScheduleInput {
+  email: String!
+  _id: String!
+}
+
+input EditScheduleInput {
+  email: String!
+  _id: String!
+  category: String!
+  where: WhereInput!
+  when: WhenInput!
+  who: WhoInput!
+  memo: String
+  group: [GroupNameInput]!
+}
+
+input InviteScheduleInput {
+  email: String!
+  _id: String!
+  nickname: String!
+}
+
+input JoinScheduleInput {
+  email: String!
+  _id: String!
+  nickname: String!
+}
+
+input EditRecordInput {
+  email: String!
+  _id: String!
+  nickname: String!
+  record: [RecordInput]!
+}
+
+input WhereInput {
+  place1: String!
+  place2: String!
+}
+
+input WhenInput {
+  year: String!
+  month: String!
+  date: String!
+  startTime: String!
+}
+
+input WhoInput {
+  host: String!
+  guest: [GuestInput]!
+}
+
+input GuestInput {
+  nickname: String!
+  record: [RecordInput]!
+}
+
+input GroupNameInput {
+  gname: String!
+}
+
+input RecordInput {
+  level: String!
+  count: Int!
+}
+
+type Query {
+  getAllSchedule(schedule: UserEmail): [Schedule]!
+  getScheduleDetail(schedule: ScheduleId): Schedule
+}
+
+type Mutation {
+  createSchedule(schedule: CreateScheduleInput): Schedule!
+  deleteSchedule(schedule: DeleteScheduleInput): String!
+  editSchedule(schedule: EditScheduleInput): Schedule!
+  inviteSchedule(schedule: InviteScheduleInput): Schedule!
+  joinSchedule(schedule: JoinScheduleInput): Schedule!
+  editRecord(schedule: EditRecordInput): Schedule!
+}

@@ -1,0 +1,58 @@
+type Group {
+  _id: String!
+  gname: String!
+  leader: String!
+  createdAt: String!
+  description: String!
+  memberList: [String]!
+  mainCategory: String!
+  secret: Boolean!
+}
+
+input GroupId {
+  _id: String!
+}
+
+input GroupPassword {
+  _id: String!
+  password: String!
+}
+
+input CreateGroupInput {
+  email: String!
+  gname: String!
+  leader: String!
+  createdAt: String!
+  mainCategory: String!
+  description: String!
+  secret: Boolean!
+  password: String
+}
+
+input JoinGroupInput {
+  email: String!
+  _id: String!
+}
+
+input LeaveGroupInput {
+  email: String!
+  _id: String!
+}
+
+input DeleteGroupInput {
+  email: String!
+  _id: String!
+}
+
+type Query {
+  getAllGroup: [Group]!
+  getGroupDetail(group: GroupId): Group
+  openSecretGroup(group: GroupPassword): Group
+}
+
+type Mutation {
+  createGroup(group: CreateGroupInput): Group!
+  joinGroup(group: JoinGroupInput): Group!
+  leaveGroup(group: LeaveGroupInput): Group!
+  deleteGroup(group: DeleteGroupInput): String!
+}
