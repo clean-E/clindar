@@ -175,5 +175,27 @@ export class ScheduleService {
     }
   }
 
-  // async editRecord(schedule: EditRecordInput): Promise<Schedule> {}
+  async editRecord(schedule: EditRecordInput): Promise<Schedule> {
+    const { _id, nickname, record } = schedule;
+
+    try {
+      const scheduleInfo = await this.scheduleModel.findOne({ _id });
+      const guestInfo = scheduleInfo.who.guest;
+
+      for (let i = 0; i < guestInfo.length; i++) {
+        if (guestInfo[i].nickname === nickname) {
+          guestInfo[i].record = [...record];
+        }
+      }
+
+      scheduleInfo.who.guest = guestInfo;
+
+      await this.scheduleModel.updateOne({ _id }, { who: scheduleInfo.who });
+
+      return await this.scheduleModel.findOne({ _id });
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  }
 }

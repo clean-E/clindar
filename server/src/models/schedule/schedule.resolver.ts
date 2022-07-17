@@ -2,6 +2,7 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import {
   CreateScheduleInput,
   DeleteScheduleInput,
+  EditRecordInput,
   EditScheduleInput,
   InviteScheduleInput,
   JoinScheduleInput,
@@ -43,8 +44,8 @@ export class ScheduleResolver {
   async joinSchedule(@Args('schedule') schedule: JoinScheduleInput) {
     return await this.scheduleService.joinSchedule(schedule);
   }
-  // @Mutation(() => Schedule)
-  // async editRecord(@Args('schedule') schedule: EditRecordInput) {
-  //    return await this.scheduleService.editRecord(schedule);
-  // }
+  @Mutation(() => Schedule)
+  async editRecord(@Args('schedule') schedule: EditRecordInput) {
+    return await this.scheduleService.editRecord(schedule);
+  }
 }
