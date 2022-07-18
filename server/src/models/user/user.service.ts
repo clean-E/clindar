@@ -34,7 +34,6 @@ export class UserService {
       // 회원 정보가 있음. 로그인
       return await this.userModel.findOne({ email });
     } catch (err) {
-      console.log(err);
       throw err;
     }
   }
@@ -53,7 +52,6 @@ export class UserService {
         return await this.userModel.findOne({ email });
       }
     } catch (err) {
-      console.log(err);
       throw err;
     }
   }
@@ -64,7 +62,6 @@ export class UserService {
     try {
       return await this.userModel.findOne({ email });
     } catch (err) {
-      console.log(err);
       throw err;
     }
   }

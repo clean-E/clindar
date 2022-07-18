@@ -54,7 +54,6 @@ export class ScheduleService {
 
       return Object.values(allSchedule);
     } catch (err) {
-      console.log(err);
       throw err;
     }
   }
@@ -64,7 +63,6 @@ export class ScheduleService {
     try {
       return await this.scheduleModel.findOne({ _id });
     } catch (err) {
-      console.log(err);
       throw err;
     }
   }
@@ -86,7 +84,6 @@ export class ScheduleService {
 
       return newSchedule;
     } catch (err) {
-      console.log(err);
       throw err;
     }
   }
@@ -115,7 +112,6 @@ export class ScheduleService {
 
       return 'Success';
     } catch (err) {
-      console.log(err);
       throw err;
     }
   }
@@ -134,7 +130,6 @@ export class ScheduleService {
       await this.scheduleModel.findOneAndUpdate({ _id }, schedule);
       return await this.scheduleModel.findOne({ _id });
     } catch (err) {
-      console.log(err);
       throw err;
     }
   }
@@ -155,7 +150,6 @@ export class ScheduleService {
 
       return await this.scheduleModel.findOne({ _id });
     } catch (err) {
-      console.log(err);
       throw err;
     }
   }
@@ -170,7 +164,6 @@ export class ScheduleService {
 
       return await this.scheduleModel.findOne({ _id });
     } catch (err) {
-      console.log(err);
       throw err;
     }
   }
@@ -194,7 +187,6 @@ export class ScheduleService {
 
       return await this.scheduleModel.findOne({ _id });
     } catch (err) {
-      console.log(err);
       throw err;
     }
   }

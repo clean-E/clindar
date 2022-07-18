@@ -25,7 +25,6 @@ export class GroupService {
     try {
       return await this.groupModel.find();
     } catch (err) {
-      console.log(err);
       throw err;
     }
   }
@@ -35,7 +34,6 @@ export class GroupService {
     try {
       return await this.groupModel.findOne({ _id });
     } catch (err) {
-      console.log(err);
       throw err;
     }
   }
@@ -50,7 +48,6 @@ export class GroupService {
         return 'Wrong Password';
       }
     } catch (err) {
-      console.log(err);
       throw err;
     }
   }
@@ -86,7 +83,6 @@ export class GroupService {
       );
       return await this.groupModel.create(groupSchema);
     } catch (err) {
-      console.log(err);
       throw err;
     }
   }
@@ -108,7 +104,6 @@ export class GroupService {
 
       return await this.groupModel.findOne({ _id });
     } catch (err) {
-      console.log(err);
       throw err;
     }
   }
@@ -142,7 +137,6 @@ export class GroupService {
 
       return await this.groupModel.findOne({ _id });
     } catch (err) {
-      console.log(err);
       throw err;
     }
   }
@@ -173,7 +167,6 @@ export class GroupService {
 
       return 'Success';
     } catch (err) {
-      console.log(err);
       throw err;
     }
   }
