@@ -155,7 +155,7 @@ export class ScheduleService {
   }
 
   async joinSchedule(schedule: JoinScheduleInput): Promise<Schedule> {
-    const { _id, email, nickname } = schedule;
+    const { _id, nickname } = schedule;
     try {
       const { who } = await this.scheduleModel.findOne({ _id });
 
