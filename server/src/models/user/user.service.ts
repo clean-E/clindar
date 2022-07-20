@@ -5,7 +5,6 @@ import {
   NicknameInput,
   User,
   UserEmail,
-  UserInfo,
 } from 'src/schemas/user.schema';
 
 @Injectable()
@@ -56,7 +55,7 @@ export class UserService {
     }
   }
 
-  async getMyPage(user: UserEmail): Promise<UserInfo> {
+  async getMyPage(user: UserEmail): Promise<User> {
     const { email } = user;
 
     try {

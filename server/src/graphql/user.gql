@@ -1,11 +1,6 @@
 type User {
   email: String!
   nickname: String!
-}
-
-type UserInfo {
-  email: String!
-  nickname: String!
   myGroupList: [GroupName]
 }
 
@@ -28,7 +23,7 @@ input NicknameInput {
 }
 
 type Query {
-  getMyPage(user: UserEmail): UserInfo
+  getMyPage(user: UserEmail): User
 }
 
 type Mutation {

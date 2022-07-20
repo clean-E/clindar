@@ -4,7 +4,6 @@ import { UserService } from './user.service';
 import {
   LoginInput,
   User,
-  UserInfo,
   UserEmail,
   NicknameInput,
 } from '../../schemas/user.schema';
@@ -13,7 +12,7 @@ import {
 export class UserResolver {
   constructor(private userService: UserService) {}
 
-  @Query(() => UserInfo)
+  @Query(() => User)
   async getMyPage(@Args('user') user: UserEmail) {
     return await this.userService.getMyPage(user);
   }

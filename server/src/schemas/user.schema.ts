@@ -25,22 +25,6 @@ export class User extends Document {
 }
 
 @ObjectType()
-export class UserInfo {
-  @Field()
-  nickname: string;
-
-  @Field()
-  email: string;
-
-  @Field()
-  myGroupList: [
-    {
-      gname: string;
-    },
-  ];
-}
-
-@ObjectType()
 export class LoginInput {
   @Field()
   email: string;
