@@ -122,7 +122,7 @@ type Query {
 
 type Mutation {
   createSchedule(schedule: CreateScheduleInput): Schedule!
-  deleteSchedule(schedule: DeleteScheduleInput): String!
+  deleteSchedule(schedule: DeleteScheduleInput): Message!
   editSchedule(schedule: EditScheduleInput): Schedule!
   inviteSchedule(schedule: InviteScheduleInput): Schedule!
   joinSchedule(schedule: JoinScheduleInput): Schedule!

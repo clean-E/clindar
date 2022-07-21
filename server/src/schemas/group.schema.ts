@@ -93,3 +93,9 @@ export class GroupPassword {
   @Field()
   password: string;
 }
+
+@ObjectType()
+export class Message {
+  @Field()
+  value: string;
+}

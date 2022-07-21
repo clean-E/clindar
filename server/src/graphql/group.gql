@@ -44,15 +44,21 @@ input DeleteGroupInput {
   _id: String!
 }
 
+type Message {
+  value: String
+}
+
+union openGroupResult = Group | Message
+
 type Query {
   getAllGroup: [Group]!
   getGroupDetail(group: GroupId): Group
-  openSecretGroup(group: GroupPassword): Group
+  openSecretGroup(group: GroupPassword): openGroupResult
 }
 
 type Mutation {
   createGroup(group: CreateGroupInput): Group!
   joinGroup(group: JoinGroupInput): Group!
   leaveGroup(group: LeaveGroupInput): Group!
-  deleteGroup(group: DeleteGroupInput): String!
+  deleteGroup(group: DeleteGroupInput): Message!
 }

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { Group } from 'src/schemas/group.schema';
+import { Group, Message } from 'src/schemas/group.schema';
 import {
   DeleteScheduleInput,
   EditRecordInput,
@@ -88,7 +88,7 @@ export class ScheduleService {
     }
   }
 
-  async deleteSchedule(schedule: DeleteScheduleInput): Promise<string> {
+  async deleteSchedule(schedule: DeleteScheduleInput): Promise<Message> {
     // group의 schedules에서 삭제
     // myScheduleList 에서 삭제
     // schedule에서 삭제
@@ -110,7 +110,7 @@ export class ScheduleService {
 
       await this.scheduleModel.deleteOne({ _id });
 
-      return 'Success';
+      return { value: 'Success' };
     } catch (err) {
       throw err;
     }

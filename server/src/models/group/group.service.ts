@@ -8,6 +8,7 @@ import {
   GroupPassword,
   JoinGroupInput,
   LeaveGroupInput,
+  Message,
 } from 'src/schemas/group.schema';
 import { User } from 'src/schemas/user.schema';
 
@@ -38,14 +39,14 @@ export class GroupService {
     }
   }
 
-  async openSecretGroup(group: GroupPassword): Promise<Group | string> {
+  async openSecretGroup(group: GroupPassword): Promise<Group | Message> {
     const { _id, password } = group;
     try {
       const groupInfo = await this.groupModel.findOne({ _id });
       if (groupInfo.password === password) {
         return await this.groupModel.findOne({ _id });
       } else {
-        return 'Wrong Password';
+        return { value: 'Wrong Password' };
       }
     } catch (err) {
       throw err;
@@ -141,7 +142,7 @@ export class GroupService {
     }
   }
 
-  async deleteGroup(group: DeleteGroupInput): Promise<string> {
+  async deleteGroup(group: DeleteGroupInput): Promise<Message> {
     const { email, _id } = group;
 
     try {
@@ -150,7 +151,7 @@ export class GroupService {
         _id,
       });
       if (nickname !== leader) {
-        return 'not the owner of the group.';
+        return { value: 'not the owner of the group.' };
       }
 
       for (const nickname of memberList) {
@@ -165,7 +166,7 @@ export class GroupService {
 
       await this.groupModel.deleteOne({ _id });
 
-      return 'Success';
+      return { value: 'Success' };
     } catch (err) {
       throw err;
     }
