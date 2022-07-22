@@ -32,3 +32,10 @@
 - perf : 성능 개선에 대한 커밋
 - rename : 파일 혹은 폴더명 수정에 대한 커밋
 - remove : 파일 삭제에 대한 커밋
+
+### 개발용 server 실행
+
+- server 폴더로 이동
+- env 파일 세팅
+- npm i
+- npm run start:dev

@@ -28,7 +28,6 @@ export class UserService {
           myGroupList: [],
           myScheduleList: [],
         });
-        return await this.userModel.findOne({ email });
       }
       // 회원 정보가 있음. 로그인
       return await this.userModel.findOne({ email });
@@ -45,11 +44,9 @@ export class UserService {
       if (userInfo === null) {
         // 사용 가능한 닉네임
         await this.userModel.updateOne({ email }, { nickname });
-        return await this.userModel.findOne({ email });
-      } else {
-        // 사용 불가능한 닉네임
-        return await this.userModel.findOne({ email });
       }
+
+      return await this.userModel.findOne({ email });
     } catch (err) {
       throw err;
     }
