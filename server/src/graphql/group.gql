@@ -49,6 +49,7 @@ type Message {
 }
 
 union openGroupResult = Group | Message
+union createGroupResult = Group | Message
 
 type Query {
   getAllGroup: [Group]!
@@ -57,7 +58,7 @@ type Query {
 }
 
 type Mutation {
-  createGroup(group: CreateGroupInput): Group!
+  createGroup(group: CreateGroupInput): createGroupResult
   joinGroup(group: JoinGroupInput): Group!
   leaveGroup(group: LeaveGroupInput): Group!
   deleteGroup(group: DeleteGroupInput): Message!

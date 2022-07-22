@@ -53,7 +53,7 @@ export class GroupService {
     }
   }
 
-  async createGroup(group: CreateGroupInput): Promise<Group> {
+  async createGroup(group: CreateGroupInput): Promise<Group | Message> {
     const {
       email,
       gname,
@@ -77,6 +77,10 @@ export class GroupService {
     };
 
     try {
+      const groupExist = await this.groupModel.exists({ gname });
+      if (groupExist !== null) {
+        return { value: 'Group name Already Exists' };
+      }
       const userInfo = await this.userModel.findOne({ email });
       await this.userModel.updateOne(
         { email },
