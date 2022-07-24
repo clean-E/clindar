@@ -18,10 +18,10 @@ export class UserService {
     const { email, nickname } = user;
 
     try {
-      const userInfo = await this.userModel.exists({ email, nickname });
+      const userInfo = await this.userModel.exists({ email });
 
       if (userInfo === null) {
-        // 회원 정보가 없음. 닉네임을 정해야함
+        // 회원 정보가 없음
         await this.userModel.create({
           email,
           nickname,
@@ -29,7 +29,6 @@ export class UserService {
           myScheduleList: [],
         });
       }
-      // 회원 정보가 있음. 로그인
       return await this.userModel.findOne({ email });
     } catch (err) {
       throw err;
