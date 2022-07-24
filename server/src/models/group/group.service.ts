@@ -39,21 +39,21 @@ export class GroupService {
     }
   }
 
-  async openSecretGroup(group: GroupPassword): Promise<Group | Message> {
+  async openSecretGroup(group: GroupPassword): Promise<Group> {
     const { _id, password } = group;
     try {
       const groupInfo = await this.groupModel.findOne({ _id });
       if (groupInfo.password === password) {
         return await this.groupModel.findOne({ _id });
       } else {
-        return { value: 'Wrong Password' };
+        throw new Error('Wrong Password');
       }
     } catch (err) {
       throw err;
     }
   }
 
-  async createGroup(group: CreateGroupInput): Promise<Group | Message> {
+  async createGroup(group: CreateGroupInput): Promise<Group> {
     const {
       email,
       gname,
@@ -79,7 +79,7 @@ export class GroupService {
     try {
       const groupExist = await this.groupModel.exists({ gname });
       if (groupExist !== null) {
-        return { value: 'Group name Already Exists' };
+        throw new Error('Group name Already Exists');
       }
       const userInfo = await this.userModel.findOne({ email });
       await this.userModel.updateOne(

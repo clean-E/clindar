@@ -48,17 +48,14 @@ type Message {
   value: String
 }
 
-union openGroupResult = Group | Message
-union createGroupResult = Group | Message
-
 type Query {
   getAllGroup: [Group]!
-  getGroupDetail(group: GroupId): Group
-  openSecretGroup(group: GroupPassword): openGroupResult
+  getGroupDetail(group: GroupId): Group!
+  openSecretGroup(group: GroupPassword): Group!
 }
 
 type Mutation {
-  createGroup(group: CreateGroupInput): createGroupResult
+  createGroup(group: CreateGroupInput): Group!
   joinGroup(group: JoinGroupInput): Group!
   leaveGroup(group: LeaveGroupInput): Group!
   deleteGroup(group: DeleteGroupInput): Message!
