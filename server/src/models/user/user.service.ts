@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
+import { Message } from 'src/schemas/group.schema';
 import {
   LoginInput,
   NicknameInput,
@@ -60,4 +61,10 @@ export class UserService {
       throw err;
     }
   }
+
+  /*
+  async deleteUser(user: UserEmail): Promise<Message> {
+
+  }
+  */
 }

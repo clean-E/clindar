@@ -29,4 +29,5 @@ type Query {
 type Mutation {
   login(user: LoginInput): User!
   setNickname(user: NicknameInput): User!
+  deleteUser(user: UserEmail): Message
 }
