@@ -99,3 +99,12 @@ export class Message {
   @Field()
   value: string;
 }
+
+@ObjectType()
+export class ChangeLeaderInput {
+  @Field()
+  leader: string;
+
+  @Field()
+  nextLeader: string;
+}

@@ -44,6 +44,11 @@ input DeleteGroupInput {
   _id: String!
 }
 
+input ChangeLeaderInput {
+  leader: String!
+  nextLeader: String!
+}
+
 type Message {
   value: String
 }
@@ -59,4 +64,5 @@ type Mutation {
   joinGroup(group: JoinGroupInput): Group!
   leaveGroup(group: LeaveGroupInput): Group!
   deleteGroup(group: DeleteGroupInput): Message!
+  changeLeader(group: ChangeLeaderInput): Group!
 }

@@ -175,4 +175,10 @@ export class GroupService {
       throw err;
     }
   }
+
+  /*
+  async changeLeader(group: ChangeLeaderInput): Promise<Group>{
+
+  }
+  */
 }
