@@ -45,6 +45,7 @@ input DeleteGroupInput {
 }
 
 input ChangeLeaderInput {
+  _id: String!
   leader: String!
   nextLeader: String!
 }

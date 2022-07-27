@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import {
+  ChangeLeaderInput,
   CreateGroupInput,
   DeleteGroupInput,
   Group,
@@ -176,9 +177,21 @@ export class GroupService {
     }
   }
 
-  /*
-  async changeLeader(group: ChangeLeaderInput): Promise<Group>{
+  async changeLeader(group: ChangeLeaderInput): Promise<Group> {
+    const { _id, leader, nextLeader } = group;
 
+    try {
+      const groupInfo = await this.groupModel.findOne({ _id });
+      if (groupInfo.leader === leader) {
+        return await this.groupModel.findOneAndUpdate(
+          { _id },
+          { leader: nextLeader },
+        );
+      } else {
+        throw new Error('You are not the group leader.');
+      }
+    } catch (err) {
+      throw err;
+    }
   }
-  */
 }

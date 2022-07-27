@@ -7,6 +7,7 @@ import {
   GroupPassword,
   JoinGroupInput,
   LeaveGroupInput,
+  ChangeLeaderInput,
 } from 'src/schemas/group.schema';
 import { GroupService } from './group.service';
 
@@ -47,5 +48,10 @@ export class GroupResolver {
   @Mutation(() => String)
   async deleteGroup(@Args('group') group: DeleteGroupInput) {
     return await this.groupService.deleteGroup(group);
+  }
+
+  @Mutation(() => Group)
+  async changeLeader(@Args('group') group: ChangeLeaderInput) {
+    return await this.groupService.changeLeader(group);
   }
 }

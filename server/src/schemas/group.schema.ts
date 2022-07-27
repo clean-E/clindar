@@ -103,6 +103,9 @@ export class Message {
 @ObjectType()
 export class ChangeLeaderInput {
   @Field()
+  _id: string;
+
+  @Field()
   leader: string;
 
   @Field()
