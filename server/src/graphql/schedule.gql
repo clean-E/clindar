@@ -9,8 +9,7 @@ type Schedule {
 }
 
 type Where {
-  place1: String!
-  place2: String!
+  place: String!
 }
 
 type When {
@@ -85,8 +84,7 @@ input EditRecordInput {
 }
 
 input WhereInput {
-  place1: String!
-  place2: String!
+  place: String!
 }
 
 input WhenInput {
