@@ -171,7 +171,7 @@ export class GroupService {
 
       await this.groupModel.deleteOne({ _id });
 
-      return { value: 'Success' };
+      return { value: 'Success delete group' };
     } catch (err) {
       throw err;
     }

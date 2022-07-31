@@ -110,7 +110,7 @@ export class ScheduleService {
 
       await this.scheduleModel.deleteOne({ _id });
 
-      return { value: 'Success' };
+      return { value: 'Success delete schedule' };
     } catch (err) {
       throw err;
     }
