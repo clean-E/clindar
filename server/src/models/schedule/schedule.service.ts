@@ -82,6 +82,14 @@ export class ScheduleService {
         { myScheduleList: userInfo.myScheduleList },
       );
 
+      for (const group of schedule.group) {
+        const gInfo = await this.groupModel.findOne({ gname: group.gname });
+        await this.groupModel.findOneAndUpdate(
+          { gname: group.gname },
+          { schedules: [...gInfo.schedules, newSchedule.id] },
+        );
+      }
+
       return newSchedule;
     } catch (err) {
       throw err;
