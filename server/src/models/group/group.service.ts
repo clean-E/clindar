@@ -12,6 +12,14 @@ import {
   Message,
 } from 'src/schemas/group.schema';
 import { User } from 'src/schemas/user.schema';
+import bcrypt from 'bcrypt';
+
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+dotenv.config({
+  path: path.resolve('.development.env'),
+});
 
 @Injectable()
 export class GroupService {
@@ -44,7 +52,11 @@ export class GroupService {
     const { _id, password } = group;
     try {
       const groupInfo = await this.groupModel.findOne({ _id });
-      if (groupInfo.password === password) {
+      const passwordCompareResult = await bcrypt.compare(
+        password,
+        groupInfo.password,
+      );
+      if (passwordCompareResult) {
         return await this.groupModel.findOne({ _id });
       } else {
         throw new Error('Wrong Password');
@@ -73,7 +85,7 @@ export class GroupService {
       memberList: [leader],
       mainCategory,
       secret,
-      password,
+      password: await bcrypt.hash(password, Number(process.env.SALT)),
       schedules: [],
     };
 
