@@ -12,7 +12,7 @@ import {
   Message,
 } from 'src/schemas/group.schema';
 import { User } from 'src/schemas/user.schema';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 
 import * as dotenv from 'dotenv';
 import * as path from 'path';
@@ -85,7 +85,9 @@ export class GroupService {
       memberList: [leader],
       mainCategory,
       secret,
-      password: await bcrypt.hash(password, Number(process.env.SALT)),
+      password: password
+        ? await bcrypt.hash(password, Number(process.env.SALT))
+        : password,
       schedules: [],
     };
 
