@@ -9,6 +9,10 @@ type Group {
   secret: Boolean!
 }
 
+type GroupInfo {
+  gname: String!
+}
+
 input GroupId {
   _id: String!
 }
@@ -50,8 +54,8 @@ input ChangeLeaderInput {
   nextLeader: String!
 }
 
-type Message {
-  value: String
+input GroupInfoInput {
+  gname: String!
 }
 
 type Query {

@@ -5,7 +5,7 @@ type Schedule {
   when: When!
   who: Who!
   memo: String
-  group: [GroupName]!
+  group: [GroupInfo]!
 }
 
 type Where {
@@ -45,7 +45,7 @@ input CreateScheduleInput {
   when: WhenInput!
   who: WhoInput!
   memo: String
-  group: [GroupNameInput]!
+  group: [GroupInfoInput]!
 }
 
 input DeleteScheduleInput {
@@ -61,7 +61,7 @@ input EditScheduleInput {
   when: WhenInput!
   who: WhoInput!
   memo: String
-  group: [GroupNameInput]!
+  group: [GroupInfoInput]!
 }
 
 input InviteScheduleInput {
@@ -102,10 +102,6 @@ input WhoInput {
 input GuestInput {
   nickname: String!
   record: [RecordInput]!
-}
-
-input GroupNameInput {
-  gname: String!
 }
 
 input RecordInput {

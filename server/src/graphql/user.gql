@@ -1,11 +1,11 @@
 type User {
   email: String!
   nickname: String!
-  myGroupList: [GroupName]
+  myGroupList: [GroupInfo]
 }
 
-type GroupName {
-  gname: String!
+type Message {
+  value: String
 }
 
 input UserEmail {
