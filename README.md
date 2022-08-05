@@ -39,6 +39,6 @@
 ### 개발용 server 실행
 
 - server 폴더로 이동
-- env 파일 세팅
+- env 파일 세팅 (DB_SECRET, SALT)
 - npm i
 - npm run start:dev
