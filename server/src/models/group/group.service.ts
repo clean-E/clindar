@@ -155,6 +155,10 @@ export class GroupService {
         },
       );
 
+      // 추가할 내용
+      // 그룹을 떠나는 유저가 해당 그룹에 공개로 설정한 일정 중에서
+      // 날짜가 지나지 않은 것만 제거
+
       return await this.groupModel.findOne({ _id });
     } catch (err) {
       throw err;
