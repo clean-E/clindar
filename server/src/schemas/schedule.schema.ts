@@ -3,9 +3,7 @@ import mongoose from 'mongoose';
 
 export const ScheduleSchema = new mongoose.Schema({
   category: { type: String },
-  where: {
-    place: { type: String },
-  },
+  where: { type: String },
   when: {
     year: { type: String },
     month: { type: String },
@@ -35,9 +33,7 @@ export class Schedule {
   @Field()
   category: string;
   @Field()
-  where: {
-    place: string;
-  };
+  where: string;
   @Field()
   when: {
     year: string;
@@ -73,9 +69,7 @@ export class CreateScheduleInput {
   @Field()
   category: string;
   @Field()
-  where: {
-    place: string;
-  };
+  where: string;
   @Field()
   when: {
     year: string;
@@ -116,9 +110,7 @@ export class EditScheduleInput {
   @Field()
   category: string;
   @Field()
-  where: {
-    place: string;
-  };
+  where: string;
   @Field()
   when: {
     year: string;

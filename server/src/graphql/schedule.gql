@@ -1,7 +1,7 @@
 type Schedule {
   _id: String!
   category: String!
-  where: Where!
+  where: String!
   when: When!
   who: Who!
   memo: String
@@ -41,7 +41,7 @@ input ScheduleId {
 input CreateScheduleInput {
   email: String!
   category: String!
-  where: WhereInput!
+  where: String!
   when: WhenInput!
   who: WhoInput!
   memo: String
@@ -57,7 +57,7 @@ input EditScheduleInput {
   email: String!
   _id: String!
   category: String!
-  where: WhereInput!
+  where: String!
   when: WhenInput!
   who: WhoInput!
   memo: String
