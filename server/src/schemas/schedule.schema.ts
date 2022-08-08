@@ -25,7 +25,7 @@ export const ScheduleSchema = new mongoose.Schema({
     ],
   },
   memo: { type: String },
-  group: [{ gname: { type: String } }],
+  group: { type: String },
 });
 
 @ObjectType()
@@ -59,7 +59,7 @@ export class Schedule {
   @Field()
   memo: string;
   @Field()
-  group: [{ gname: string }];
+  group: string;
 }
 
 @ObjectType()
@@ -90,7 +90,7 @@ export class CreateScheduleInput {
   @Field()
   memo: string;
   @Field()
-  group: [{ gname: string }];
+  group: string;
 }
 
 @ObjectType()
@@ -136,7 +136,7 @@ export class EditScheduleInput {
   @Field()
   memo: string;
   @Field()
-  group: [{ gname: string }];
+  group: string;
 }
 
 @ObjectType()

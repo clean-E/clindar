@@ -82,13 +82,11 @@ export class ScheduleService {
         { myScheduleList: userInfo.myScheduleList },
       );
 
-      for (const group of schedule.group) {
-        const gInfo = await this.groupModel.findOne({ gname: group.gname });
-        await this.groupModel.findOneAndUpdate(
-          { gname: group.gname },
-          { schedules: [...gInfo.schedules, newSchedule.id] },
-        );
-      }
+      const gInfo = await this.groupModel.findOne({ gname: schedule.group });
+      await this.groupModel.findOneAndUpdate(
+        { gname: schedule.group },
+        { schedules: [...gInfo.schedules, newSchedule.id] },
+      );
 
       return newSchedule;
     } catch (err) {
@@ -103,14 +101,13 @@ export class ScheduleService {
     const { _id, email } = schedule;
     try {
       const { group } = await this.scheduleModel.findOne({ _id });
-      for (let i = 0; i < group.length; i++) {
-        const g = await this.groupModel.findOne({ gname: group[i].gname });
-        g.schedules.splice(g.schedules.indexOf(_id), 1);
-        await this.groupModel.updateOne(
-          { gname: group[i].gname },
-          { schedules: g.schedules },
-        );
-      }
+
+      const gInfo = await this.groupModel.findOne({ gname: group });
+      gInfo.schedules.splice(gInfo.schedules.indexOf(_id), 1);
+      await this.groupModel.updateOne(
+        { gname: group },
+        { schedules: gInfo.schedules },
+      );
 
       const { myScheduleList } = await this.userModel.findOne({ email });
       myScheduleList.splice(myScheduleList.indexOf(_id), 1);
@@ -137,6 +134,8 @@ export class ScheduleService {
 
       await this.scheduleModel.findOneAndUpdate({ _id }, schedule);
       return await this.scheduleModel.findOne({ _id });
+
+      // 수정하면서 게스트, 그룹이 바뀌었을 경우를 처리해줘야함
     } catch (err) {
       throw err;
     }
@@ -157,6 +156,8 @@ export class ScheduleService {
       await this.scheduleModel.updateOne({ _id }, { who });
 
       return await this.scheduleModel.findOne({ _id });
+
+      // 초대 받은 사람도 해당 일정을 볼 수 있도록 해야함
     } catch (err) {
       throw err;
     }
@@ -171,6 +172,8 @@ export class ScheduleService {
       await this.scheduleModel.updateOne({ _id }, { who });
 
       return await this.scheduleModel.findOne({ _id });
+
+      // 참여한 사람도 해당 일정을 볼 수 있도록 해야함
     } catch (err) {
       throw err;
     }
