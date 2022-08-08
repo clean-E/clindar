@@ -4,12 +4,7 @@ import mongoose from 'mongoose';
 export const ScheduleSchema = new mongoose.Schema({
   category: { type: String },
   where: { type: String },
-  when: {
-    year: { type: String },
-    month: { type: String },
-    date: { type: String },
-    startTime: { type: String },
-  },
+  when: { type: String },
   who: {
     host: { type: String },
     guest: [
@@ -35,12 +30,7 @@ export class Schedule {
   @Field()
   where: string;
   @Field()
-  when: {
-    year: string;
-    month: string;
-    date: string;
-    startTime: string;
-  };
+  when: string;
   @Field()
   who: {
     host: string;
@@ -71,12 +61,7 @@ export class CreateScheduleInput {
   @Field()
   where: string;
   @Field()
-  when: {
-    year: string;
-    month: string;
-    date: string;
-    startTime: string;
-  };
+  when: string;
   @Field()
   who: {
     host: string;
@@ -112,12 +97,7 @@ export class EditScheduleInput {
   @Field()
   where: string;
   @Field()
-  when: {
-    year: string;
-    month: string;
-    date: string;
-    startTime: string;
-  };
+  when: string;
   @Field()
   who: {
     host: string;

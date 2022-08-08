@@ -2,17 +2,10 @@ type Schedule {
   _id: String!
   category: String!
   where: String!
-  when: When!
+  when: String!
   who: Who!
   memo: String
   group: String
-}
-
-type When {
-  year: String!
-  month: String!
-  date: String!
-  startTime: String!
 }
 
 type Who {
@@ -38,7 +31,7 @@ input CreateScheduleInput {
   email: String!
   category: String!
   where: String!
-  when: WhenInput!
+  when: String!
   who: WhoInput!
   memo: String
   group: String
@@ -54,7 +47,7 @@ input EditScheduleInput {
   _id: String!
   category: String!
   where: String!
-  when: WhenInput!
+  when: String!
   who: WhoInput!
   memo: String
   group: String
@@ -77,13 +70,6 @@ input EditRecordInput {
   _id: String!
   nickname: String!
   record: [RecordInput]!
-}
-
-input WhenInput {
-  year: String!
-  month: String!
-  date: String!
-  startTime: String!
 }
 
 input WhoInput {
