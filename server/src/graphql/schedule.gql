@@ -8,10 +8,6 @@ type Schedule {
   group: String
 }
 
-type Where {
-  place: String!
-}
-
 type When {
   year: String!
   month: String!
@@ -81,10 +77,6 @@ input EditRecordInput {
   _id: String!
   nickname: String!
   record: [RecordInput]!
-}
-
-input WhereInput {
-  place: String!
 }
 
 input WhenInput {

@@ -174,8 +174,6 @@ export class ScheduleService {
       await this.scheduleModel.updateOne({ _id }, { who });
 
       return await this.scheduleModel.findOne({ _id });
-
-      // 참여한 사람도 해당 일정을 볼 수 있도록 해야함
     } catch (err) {
       throw err;
     }
