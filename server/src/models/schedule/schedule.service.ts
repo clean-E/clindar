@@ -82,11 +82,13 @@ export class ScheduleService {
         { myScheduleList: userInfo.myScheduleList },
       );
 
-      const gInfo = await this.groupModel.findOne({ gname: schedule.group });
-      await this.groupModel.findOneAndUpdate(
-        { gname: schedule.group },
-        { schedules: [...gInfo.schedules, newSchedule.id] },
-      );
+      if (schedule.group) {
+        const gInfo = await this.groupModel.findOne({ gname: schedule.group });
+        await this.groupModel.findOneAndUpdate(
+          { gname: schedule.group },
+          { schedules: [...gInfo.schedules, newSchedule.id] },
+        );
+      }
 
       return newSchedule;
     } catch (err) {
