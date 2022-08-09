@@ -134,10 +134,22 @@ export class ScheduleService {
         throw new Error('User Not Found');
       }
 
-      await this.scheduleModel.findOneAndUpdate({ _id }, schedule);
-      return await this.scheduleModel.findOne({ _id });
-
       // 수정하면서 게스트, 그룹이 바뀌었을 경우를 처리해줘야함
+      /*
+      const sInfo = await this.scheduleModel.findOne({ _id });
+      // 그룹이 바뀐 경우
+      if (sInfo.group !== schedule.group){
+        // 기존 그룹의 일정 목록에서 제거
+        // 바뀐 그룹의 일정 목록에 추가
+
+      }
+      // 게스트 목록 비교해서 빠진 사람, 추가된 사람 체크
+      // 빠진 사람은 그 사람의 일정 목록에서 일정 제거
+      // 추가된 사람은 일정 목록에 추가
+      */
+      await this.scheduleModel.findOneAndUpdate({ _id }, schedule);
+
+      return await this.scheduleModel.findOne({ _id });
     } catch (err) {
       throw err;
     }
@@ -160,6 +172,7 @@ export class ScheduleService {
       return await this.scheduleModel.findOne({ _id });
 
       // 초대 받은 사람도 해당 일정을 볼 수 있도록 해야함
+      // 초대 받은 사람의 일정 목록에 추가
     } catch (err) {
       throw err;
     }
