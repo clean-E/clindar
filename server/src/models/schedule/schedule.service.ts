@@ -82,6 +82,20 @@ export class ScheduleService {
         { myScheduleList: userInfo.myScheduleList },
       );
 
+      for (const g of schedule.who.guest) {
+        const gusetInfo = await this.userModel.findOne({
+          nickname: g.nickname,
+        });
+        await this.userModel.findOneAndUpdate(
+          { nickname: g.nickname },
+          {
+            myScheduleList: gusetInfo.myScheduleList.push(
+              newSchedule.id.toString(),
+            ),
+          },
+        );
+      }
+
       if (schedule.group) {
         const gInfo = await this.groupModel.findOne({ gname: schedule.group });
         await this.groupModel.findOneAndUpdate(
@@ -173,6 +187,10 @@ export class ScheduleService {
 
       const guestInfo = await this.userModel.findOne({ nickname });
       guestInfo.myScheduleList.push(_id);
+      await this.userModel.findOneAndUpdate(
+        { nickname },
+        { schedule: guestInfo.myScheduleList },
+      );
 
       return await this.scheduleModel.findOne({ _id });
     } catch (err) {
