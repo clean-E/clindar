@@ -72,15 +72,7 @@ export class ScheduleService {
     delete schedule.email;
 
     try {
-      const userInfo = await this.userModel.findOne({ email });
-
       const newSchedule = await this.scheduleModel.create(schedule);
-      userInfo.myScheduleList.push(newSchedule.id.toString());
-
-      await this.userModel.updateOne(
-        { email },
-        { myScheduleList: userInfo.myScheduleList },
-      );
 
       for (const g of schedule.who.guest) {
         const gusetInfo = await this.userModel.findOne({
