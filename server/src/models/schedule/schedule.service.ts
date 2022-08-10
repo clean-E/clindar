@@ -121,6 +121,8 @@ export class ScheduleService {
     } catch (err) {
       throw err;
     }
+
+    // guest로 있는 사람들의 일정에서도 지워야함
   }
 
   async editSchedule(schedule: EditScheduleInput): Promise<Schedule> {
@@ -169,10 +171,10 @@ export class ScheduleService {
       who.guest.push({ nickname, record: [] });
       await this.scheduleModel.updateOne({ _id }, { who });
 
-      return await this.scheduleModel.findOne({ _id });
+      const guestInfo = await this.userModel.findOne({ nickname });
+      guestInfo.myScheduleList.push(_id);
 
-      // 초대 받은 사람도 해당 일정을 볼 수 있도록 해야함
-      // 초대 받은 사람의 일정 목록에 추가
+      return await this.scheduleModel.findOne({ _id });
     } catch (err) {
       throw err;
     }
