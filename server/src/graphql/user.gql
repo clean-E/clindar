@@ -1,7 +1,7 @@
 type User {
   email: String!
   nickname: String!
-  myGroupList: [GroupInfo]
+  myGroupList: [String]
 }
 
 type Message {
