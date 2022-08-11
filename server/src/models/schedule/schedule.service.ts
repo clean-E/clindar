@@ -104,22 +104,38 @@ export class ScheduleService {
 
   async deleteSchedule(schedule: DeleteScheduleInput): Promise<Message> {
     // group의 schedules에서 삭제
-    // myScheduleList 에서 삭제
+    // guest에 있는 모든 사람의 목록에서 일정 id 삭제
     // schedule에서 삭제
     const { _id, email } = schedule;
     try {
-      const { group } = await this.scheduleModel.findOne({ _id });
-
-      const gInfo = await this.groupModel.findOne({ gname: group });
-      gInfo.schedules.splice(gInfo.schedules.indexOf(_id), 1);
+      const scheduleInfo = await this.scheduleModel.findOne({ _id });
+      const groupInfo = await this.groupModel.findOne({
+        gname: scheduleInfo.group,
+      });
       await this.groupModel.updateOne(
-        { gname: group },
-        { schedules: gInfo.schedules },
+        { gname: scheduleInfo.group },
+        {
+          schedules: groupInfo.schedules.splice(
+            groupInfo.schedules.indexOf(_id),
+            1,
+          ),
+        },
       );
 
-      const { myScheduleList } = await this.userModel.findOne({ email });
-      myScheduleList.splice(myScheduleList.indexOf(_id), 1);
-      await this.userModel.updateOne({ email }, { myScheduleList });
+      for (const guest of scheduleInfo.who.guest) {
+        const { myScheduleList } = await this.userModel.findOne({
+          nickname: guest.nickname,
+        });
+        await this.userModel.updateOne(
+          { nickname: guest.nickname },
+          {
+            myScheduleList: myScheduleList.splice(
+              myScheduleList.indexOf(_id),
+              1,
+            ),
+          },
+        );
+      }
 
       await this.scheduleModel.deleteOne({ _id });
 
@@ -127,8 +143,6 @@ export class ScheduleService {
     } catch (err) {
       throw err;
     }
-
-    // guest로 있는 사람들의 일정에서도 지워야함
   }
 
   async editSchedule(schedule: EditScheduleInput): Promise<Schedule> {
