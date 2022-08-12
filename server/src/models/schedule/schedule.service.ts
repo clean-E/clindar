@@ -38,8 +38,10 @@ export class ScheduleService {
       const allSchedule = {};
 
       for (let i = 0; i < myScheduleList.length; i++) {
-        const s = await this.scheduleModel.findOne({ _id: myScheduleList[i] });
-        allSchedule[myScheduleList[i]] = s;
+        const scheduleInfo = await this.scheduleModel.findOne({
+          _id: myScheduleList[i],
+        });
+        allSchedule[myScheduleList[i]] = scheduleInfo;
       }
 
       for (let i = 0; i < myGroupList.length; i++) {
@@ -47,8 +49,10 @@ export class ScheduleService {
           gname: myGroupList[i],
         });
         for (let j = 0; j < schedules.length; j++) {
-          const s = await this.scheduleModel.findOne({ _id: schedules[i] });
-          allSchedule[schedules[i]] = s;
+          const scheduleInfo = await this.scheduleModel.findOne({
+            _id: schedules[i],
+          });
+          allSchedule[schedules[i]] = scheduleInfo;
         }
       }
 
