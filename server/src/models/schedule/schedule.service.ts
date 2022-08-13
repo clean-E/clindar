@@ -79,15 +79,16 @@ export class ScheduleService {
       const newSchedule = await this.scheduleModel.create(schedule);
 
       for (const g of schedule.who.guest) {
-        const gusetInfo = await this.userModel.findOne({
+        const guestInfo = await this.userModel.findOne({
           nickname: g.nickname,
         });
         await this.userModel.findOneAndUpdate(
           { nickname: g.nickname },
           {
-            myScheduleList: gusetInfo.myScheduleList.push(
-              newSchedule.id.toString(),
-            ),
+            myScheduleList: [
+              ...guestInfo.myScheduleList,
+              newSchedule._id.toString(),
+            ],
           },
         );
       }

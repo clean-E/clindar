@@ -1,5 +1,6 @@
 import { ObjectType, Field } from '@nestjs/graphql';
 import mongoose from 'mongoose';
+import { Document } from 'mongoose';
 
 export const ScheduleSchema = new mongoose.Schema({
   category: { type: String },
@@ -24,7 +25,7 @@ export const ScheduleSchema = new mongoose.Schema({
 });
 
 @ObjectType()
-export class Schedule {
+export class Schedule extends Document {
   @Field()
   category: string;
   @Field()
