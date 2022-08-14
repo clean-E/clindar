@@ -12,6 +12,7 @@ export const GroupSchema = new mongoose.Schema({
   secret: { type: Boolean },
   password: { type: String },
   schedules: [String],
+  // 수정할 부분
 });
 
 @ObjectType()
@@ -34,6 +35,7 @@ export class Group extends Document {
   password: string;
   @Field()
   schedules: string[];
+  // 수정할 부분
 }
 
 @ObjectType()
