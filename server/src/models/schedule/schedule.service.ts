@@ -51,6 +51,8 @@ export class ScheduleService {
   }
 
   async getGroupSchedule(schedule: UserEmail): Promise<Schedule[]> {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     try {
       const { email } = schedule;
       const { myGroupList } = await this.userModel.findOne({
@@ -65,9 +67,12 @@ export class ScheduleService {
         });
         for (let j = 0; j < schedules.length; j++) {
           const scheduleInfo = await this.scheduleModel.findOne({
-            _id: schedules[i],
+            _id: schedules[j],
           });
-          allSchedule[schedules[i]] = scheduleInfo;
+
+          if (today <= new Date(scheduleInfo.when)) {
+            allSchedule[schedules[j]] = scheduleInfo;
+          }
         }
       }
 
