@@ -31,7 +31,7 @@ export class ScheduleService {
   async getAllSchedule(schedule: UserEmail): Promise<Schedule[]> {
     try {
       const { email } = schedule;
-      const { myGroupList, myScheduleList } = await this.userModel.findOne({
+      const { myScheduleList } = await this.userModel.findOne({
         email,
       });
 
@@ -43,6 +43,21 @@ export class ScheduleService {
         });
         allSchedule[myScheduleList[i]] = scheduleInfo;
       }
+
+      return Object.values(allSchedule);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async getGroupSchedule(schedule: UserEmail): Promise<Schedule[]> {
+    try {
+      const { email } = schedule;
+      const { myGroupList } = await this.userModel.findOne({
+        email,
+      });
+
+      const allSchedule = {};
 
       for (let i = 0; i < myGroupList.length; i++) {
         const { schedules } = await this.groupModel.findOne({

@@ -89,6 +89,7 @@ input RecordInput {
 
 type Query {
   getAllSchedule(schedule: UserEmail): [Schedule]!
+  getGroupSchedule(schedule: UserEmail): [Schedule]!
   getScheduleDetail(schedule: ScheduleId): Schedule
 }
 
