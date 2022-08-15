@@ -218,10 +218,9 @@ export class ScheduleService {
       await this.scheduleModel.updateOne({ _id }, { who });
 
       const guestInfo = await this.userModel.findOne({ nickname });
-      guestInfo.myScheduleList.push(_id);
       await this.userModel.findOneAndUpdate(
         { nickname },
-        { schedule: guestInfo.myScheduleList },
+        { myScheduleList: [...guestInfo.myScheduleList, _id] },
       );
 
       return await this.scheduleModel.findOne({ _id });
