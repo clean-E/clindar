@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import { Document } from 'mongoose';
 
 export const ScheduleSchema = new mongoose.Schema({
-  category: { type: String },
+  category: [String],
   where: { type: String },
   when: { type: String },
   who: {
@@ -27,7 +27,7 @@ export const ScheduleSchema = new mongoose.Schema({
 @ObjectType()
 export class Schedule extends Document {
   @Field()
-  category: string;
+  category: string[];
   @Field()
   where: string;
   @Field()
@@ -58,7 +58,7 @@ export class CreateScheduleInput {
   @Field()
   email: string;
   @Field()
-  category: string;
+  category: string[];
   @Field()
   where: string;
   @Field()
@@ -94,7 +94,7 @@ export class EditScheduleInput {
   @Field()
   _id: string;
   @Field()
-  category: string;
+  category: string[];
   @Field()
   where: string;
   @Field()
