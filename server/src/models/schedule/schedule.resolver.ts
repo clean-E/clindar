@@ -40,10 +40,10 @@ export class ScheduleResolver {
   async editSchedule(@Args('schedule') schedule: EditScheduleInput) {
     return await this.scheduleService.editSchedule(schedule);
   }
-  @Mutation(() => Schedule)
-  async inviteSchedule(@Args('schedule') schedule: InviteScheduleInput) {
-    return await this.scheduleService.inviteSchedule(schedule);
-  }
+  // @Mutation(() => Schedule)
+  // async inviteSchedule(@Args('schedule') schedule: InviteScheduleInput) {
+  //   return await this.scheduleService.inviteSchedule(schedule);
+  // }
   @Mutation(() => Schedule)
   async joinSchedule(@Args('schedule') schedule: JoinScheduleInput) {
     return await this.scheduleService.joinSchedule(schedule);
