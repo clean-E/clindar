@@ -254,12 +254,41 @@ export class ScheduleService {
       for (let i = 0; i < guestInfo.length; i++) {
         if (guestInfo[i].nickname === nickname) {
           guestInfo[i].record = [...record];
+          break;
         }
       }
-
       scheduleInfo.who.guest = guestInfo;
-
       await this.scheduleModel.updateOne({ _id }, { who: scheduleInfo.who });
+
+      const userInfo = await this.userModel.findOne({ nickname });
+      let flag = true;
+      for (let i = 0; i < userInfo.records.length; i++) {
+        if (userInfo.records[i].sId === _id) {
+          userInfo.records[i].record = [...record];
+          await this.userModel.findOneAndUpdate(
+            { nickname },
+            { records: [...userInfo.records] },
+          );
+          flag = false;
+          break;
+        }
+      }
+      if (flag) {
+        await this.userModel.findOneAndUpdate(
+          { nickname },
+          {
+            records: [
+              ...userInfo.records,
+              {
+                sId: _id,
+                when: scheduleInfo.when,
+                where: scheduleInfo.where,
+                record,
+              },
+            ],
+          },
+        );
+      }
 
       return await this.scheduleModel.findOne({ _id });
     } catch (err) {

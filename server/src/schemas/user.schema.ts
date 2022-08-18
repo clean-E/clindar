@@ -7,6 +7,19 @@ export const UserSchema = new mongoose.Schema({
   nickname: { type: String },
   myGroupList: [String],
   myScheduleList: [String],
+  records: [
+    {
+      sId: { type: String },
+      when: { type: String },
+      where: { type: String },
+      record: [
+        {
+          level: { type: String },
+          count: { type: Number },
+        },
+      ],
+    },
+  ],
 });
 
 @ObjectType()
@@ -22,6 +35,21 @@ export class User extends Document {
 
   @Field()
   myScheduleList: string[];
+
+  @Field()
+  records: [
+    {
+      sId: string;
+      when: string;
+      where: string;
+      record: [
+        {
+          level: string;
+          count: number;
+        }?,
+      ];
+    }?,
+  ];
 }
 
 @ObjectType()
