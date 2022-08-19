@@ -183,14 +183,34 @@ export class ScheduleService {
       }
 
       // 수정하면서 게스트, 그룹이 바뀌었을 경우를 처리해줘야함
-      /*
+
       const sInfo = await this.scheduleModel.findOne({ _id });
       // 그룹이 바뀐 경우
-      if (sInfo.group !== schedule.group){
+      // sInfo.group -> 기존 그룹
+      // schedule.group -> 수정된 그룹 (변경되었다면)
+      if (sInfo.group !== schedule.group) {
         // 기존 그룹의 일정 목록에서 제거
+        const groupInfo = await this.groupModel.findOne({ gname: sInfo.group });
+        await this.groupModel.updateOne(
+          { gname: sInfo.group },
+          {
+            schedules: groupInfo.schedules.splice(
+              groupInfo.schedules.indexOf(_id),
+              1,
+            ),
+          },
+        );
         // 바뀐 그룹의 일정 목록에 추가
-
+        const newGroupInfo = await this.groupModel.findOne({
+          gname: schedule.group,
+        });
+        await this.groupModel.findOneAndUpdate(
+          { gname: schedule.group },
+          { schedules: [...newGroupInfo.schedules, _id] },
+        );
       }
+
+      /*
       // 게스트 목록 비교해서 빠진 사람, 추가된 사람 체크
       // 빠진 사람은 그 사람의 일정 목록에서 일정 제거
       // 추가된 사람은 일정 목록에 추가
