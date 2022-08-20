@@ -87,6 +87,11 @@ input RecordInput {
   count: Int!
 }
 
+input ComeoutScheduleInput {
+  email: String!
+  _id: String!
+}
+
 type Query {
   getAllSchedule(schedule: UserEmail): [Schedule]!
   getGroupSchedule(schedule: UserEmail): [Schedule]!
@@ -99,5 +104,6 @@ type Mutation {
   editSchedule(schedule: EditScheduleInput): Schedule!
   # inviteSchedule(schedule: InviteScheduleInput): Schedule!
   joinSchedule(schedule: JoinScheduleInput): Schedule!
+  comeoutSchedule(schedule: ComeoutScheduleInput): Message!
   editRecord(schedule: EditRecordInput): Schedule!
 }

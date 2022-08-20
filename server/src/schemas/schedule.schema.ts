@@ -141,6 +141,14 @@ export class JoinScheduleInput {
 }
 
 @ObjectType()
+export class ComeoutScheduleInput {
+  @Field()
+  _id: string;
+  @Field()
+  email: string;
+}
+
+@ObjectType()
 export class EditRecordInput {
   @Field()
   _id: string;

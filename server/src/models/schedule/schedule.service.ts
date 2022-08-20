@@ -5,6 +5,7 @@ import {
   DeleteScheduleInput,
   EditRecordInput,
   InviteScheduleInput,
+  ComeoutScheduleInput,
   Schedule,
   ScheduleId,
 } from 'src/schemas/schedule.schema';
@@ -262,6 +263,18 @@ export class ScheduleService {
     } catch (err) {
       throw err;
     }
+  }
+
+  async comeoutSchedule(schedule: ComeoutScheduleInput): Promise<Message> {
+    const { _id, email } = schedule;
+    const userInfo = await this.userModel.findOne({ email });
+    const scheduleInfo = await this.scheduleModel.findOne({ _id });
+
+    // 유저 스케쥴에서 제거
+
+    // 스케쥴의 게스트에서 제거
+
+    return { value: 'Succeeded in coming out of Schedule.' };
   }
 
   async editRecord(schedule: EditRecordInput): Promise<Schedule> {
