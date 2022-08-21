@@ -60,6 +60,7 @@ input GroupInfoInput {
 
 type Query {
   getAllGroup: [Group]!
+  getMyGroup(group: UserEmail): [Group]!
   getGroupDetail(group: GroupId): Group!
   openSecretGroup(group: GroupPassword): Group!
 }

@@ -11,7 +11,7 @@ import {
   LeaveGroupInput,
   Message,
 } from 'src/schemas/group.schema';
-import { User } from 'src/schemas/user.schema';
+import { User, UserEmail } from 'src/schemas/user.schema';
 import * as bcrypt from 'bcrypt';
 
 import * as dotenv from 'dotenv';
@@ -34,6 +34,22 @@ export class GroupService {
   async getAllGroup(): Promise<Group[]> {
     try {
       return await this.groupModel.find();
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async getMyGroup(group: UserEmail): Promise<Group[]> {
+    try {
+      const { email } = group;
+      const { myGroupList } = await this.userModel.findOne({ email });
+      const myGroup = [];
+      for (const gname of myGroupList) {
+        const groupInfo = await this.groupModel.findOne({ gname });
+        myGroup.push(groupInfo);
+      }
+
+      return myGroup;
     } catch (err) {
       throw err;
     }

@@ -9,6 +9,7 @@ import {
   LeaveGroupInput,
   ChangeLeaderInput,
 } from 'src/schemas/group.schema';
+import { UserEmail } from 'src/schemas/user.schema';
 import { GroupService } from './group.service';
 
 @Resolver('Group')
@@ -18,6 +19,11 @@ export class GroupResolver {
   @Query(() => [Group])
   async getAllGroup() {
     return await this.groupService.getAllGroup();
+  }
+
+  @Query(() => [Group])
+  async getMyGroup(@Args('group') group: UserEmail) {
+    return await this.groupService.getMyGroup(group);
   }
 
   @Query(() => Group)
