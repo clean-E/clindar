@@ -186,7 +186,7 @@ export class GroupService {
 
     try {
       const { nickname } = await this.userModel.findOne({ email });
-      const { gname, leader, memberList } = await this.groupModel.findOne({
+      const { gname, leader, memberList } = await this.groupModel.findById({
         _id,
       });
       if (nickname !== leader) {
@@ -195,15 +195,11 @@ export class GroupService {
 
       for (const nickname of memberList) {
         const { myGroupList } = await this.userModel.findOne({ nickname });
-        await this.userModel.updateOne(
-          { nickname },
-          {
-            myGroupList: myGroupList.splice(myGroupList.indexOf(gname), 1),
-          },
-        );
+        myGroupList.splice(myGroupList.indexOf(gname), 1);
+        await this.userModel.updateOne({ nickname }, { myGroupList });
       }
 
-      await this.groupModel.deleteOne({ _id });
+      await this.groupModel.findByIdAndDelete({ _id });
 
       return { value: 'Success delete group' };
     } catch (err) {
