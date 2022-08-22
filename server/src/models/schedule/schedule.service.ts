@@ -139,13 +139,11 @@ export class ScheduleService {
       const groupInfo = await this.groupModel.findOne({
         gname: scheduleInfo.group,
       });
+      groupInfo.schedules.splice(groupInfo.schedules.indexOf(_id), 1);
       await this.groupModel.updateOne(
         { gname: scheduleInfo.group },
         {
-          schedules: groupInfo.schedules.splice(
-            groupInfo.schedules.indexOf(_id),
-            1,
-          ),
+          schedules: groupInfo.schedules,
         },
       );
 
@@ -153,13 +151,11 @@ export class ScheduleService {
         const { myScheduleList } = await this.userModel.findOne({
           nickname: guest.nickname,
         });
+        myScheduleList.splice(myScheduleList.indexOf(_id), 1);
         await this.userModel.updateOne(
           { nickname: guest.nickname },
           {
-            myScheduleList: myScheduleList.splice(
-              myScheduleList.indexOf(_id),
-              1,
-            ),
+            myScheduleList,
           },
         );
       }
@@ -271,8 +267,19 @@ export class ScheduleService {
     const scheduleInfo = await this.scheduleModel.findOne({ _id });
 
     // 유저 스케쥴에서 제거
+    userInfo.myScheduleList.splice(userInfo.myScheduleList.indexOf(_id), 1);
+    await this.userModel.findOneAndUpdate(
+      { email },
+      { myScheduleList: userInfo.myScheduleList },
+    );
 
     // 스케쥴의 게스트에서 제거
+    for (let i = 0; i < scheduleInfo.who.guest.length; i++) {
+      if (scheduleInfo.who.guest[i].nickname === userInfo.nickname) {
+        scheduleInfo.who.guest.splice(i, 1);
+        break;
+      }
+    }
 
     return { value: 'Succeeded in coming out of Schedule.' };
   }
