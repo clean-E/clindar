@@ -188,13 +188,11 @@ export class ScheduleService {
       if (sInfo.group !== schedule.group) {
         // 기존 그룹의 일정 목록에서 제거
         const groupInfo = await this.groupModel.findOne({ gname: sInfo.group });
+        groupInfo.schedules.splice(groupInfo.schedules.indexOf(_id), 1);
         await this.groupModel.updateOne(
           { gname: sInfo.group },
           {
-            schedules: groupInfo.schedules.splice(
-              groupInfo.schedules.indexOf(_id),
-              1,
-            ),
+            schedules: groupInfo.schedules,
           },
         );
         // 바뀐 그룹의 일정 목록에 추가
@@ -212,6 +210,54 @@ export class ScheduleService {
       // 빠진 사람은 그 사람의 일정 목록에서 일정 제거
       // 추가된 사람은 일정 목록에 추가
       */
+      const addedGuests = [];
+      const canceledGuests = [];
+
+      const existingGuests = {};
+      const newGuests = {};
+      for (const guest of sInfo.who.guest) {
+        existingGuests[guest.nickname] = 1;
+      }
+      for (const guest of schedule.who.guest) {
+        newGuests[guest.nickname] = 1;
+      }
+
+      // schedule.who.guest, newGuests -> 새로 들어온 게스트 목록
+      // sInfo.who.guest, existingGuest -> 기존 게스트 목록
+      for (const guest of schedule.who.guest) {
+        if (!existingGuests.hasOwnProperty(guest.nickname)) {
+          addedGuests.push(guest.nickname);
+        }
+      }
+
+      for (const guest of sInfo.who.guest) {
+        if (!newGuests.hasOwnProperty(guest.nickname)) {
+          canceledGuests.push(guest.nickname);
+        }
+      }
+
+      for (const nickname of addedGuests) {
+        const guestInfo = await this.userModel.findOne({ nickname });
+        await this.userModel.findOneAndUpdate(
+          { nickname },
+          {
+            myScheduleList: [...guestInfo.myScheduleList, _id.toString()],
+          },
+        );
+      }
+
+      for (const nickname of canceledGuests) {
+        const guestInfo = await this.userModel.findOne({ nickname });
+        guestInfo.myScheduleList.splice(
+          guestInfo.myScheduleList.indexOf(_id),
+          1,
+        );
+        await this.userModel.findOneAndUpdate(
+          { nickname },
+          { myScheduleList: guestInfo.myScheduleList },
+        );
+      }
+
       await this.scheduleModel.findOneAndUpdate({ _id }, schedule);
 
       return await this.scheduleModel.findOne({ _id });
