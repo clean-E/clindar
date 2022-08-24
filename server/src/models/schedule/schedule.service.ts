@@ -114,7 +114,6 @@ export class ScheduleService {
         );
       }
 
-      // 수정할 부분
       if (schedule.group) {
         const gInfo = await this.groupModel.findOne({ gname: schedule.group });
         await this.groupModel.findOneAndUpdate(
