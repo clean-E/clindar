@@ -12,6 +12,7 @@ export const GroupSchema = new mongoose.Schema({
   secret: { type: Boolean },
   password: { type: String },
   schedules: [String],
+  image: { type: String },
 });
 
 @ObjectType()
@@ -34,6 +35,8 @@ export class Group extends Document {
   password: string;
   @Field()
   schedules: string[];
+  @Field()
+  image: string;
 }
 
 @ObjectType()
@@ -54,6 +57,8 @@ export class CreateGroupInput {
   secret: boolean;
   @Field()
   password: string;
+  @Field()
+  image: string;
 }
 
 @ObjectType()
