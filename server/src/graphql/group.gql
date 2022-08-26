@@ -7,6 +7,7 @@ type Group {
   memberList: [String]!
   mainCategory: String!
   secret: Boolean!
+  image: String
 }
 
 type GroupInfo {
@@ -31,6 +32,7 @@ input CreateGroupInput {
   description: String!
   secret: Boolean!
   password: String
+  image: String
 }
 
 input JoinGroupInput {
