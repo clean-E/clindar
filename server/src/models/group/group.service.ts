@@ -10,6 +10,7 @@ import {
   JoinGroupInput,
   LeaveGroupInput,
   Message,
+  ImageUrlInput,
 } from 'src/schemas/group.schema';
 import { User, UserEmail } from 'src/schemas/user.schema';
 import * as bcrypt from 'bcrypt';
@@ -220,4 +221,10 @@ export class GroupService {
       throw err;
     }
   }
+
+  /*
+  async changeGroupImage(user: ImageUrlInput): Promise<Group> {
+
+  }
+  */
 }
