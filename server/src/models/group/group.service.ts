@@ -106,6 +106,7 @@ export class GroupService {
         ? await bcrypt.hash(password, Number(process.env.SALT))
         : password,
       schedules: [],
+      image: '',
     };
 
     try {

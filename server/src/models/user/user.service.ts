@@ -29,6 +29,7 @@ export class UserService {
           myGroupList: [],
           myScheduleList: [],
           records: [],
+          image: '',
         });
       }
       return await this.userModel.findOne({ email });
