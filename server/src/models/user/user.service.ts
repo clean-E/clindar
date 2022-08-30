@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { ImageUrlInput } from 'src/schemas/group.schema';
 import {
   LoginInput,
   NicknameInput,
@@ -63,12 +62,6 @@ export class UserService {
       throw err;
     }
   }
-
-  /*
-  async changeUserImage(user: ImageUrlInput): Promise<User> {
-
-  }
-  */
 
   /*
   async deleteUser(user: UserEmail): Promise<Message> {

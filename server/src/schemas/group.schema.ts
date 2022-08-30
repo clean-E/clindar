@@ -116,9 +116,3 @@ export class ChangeLeaderInput {
   @Field()
   nextLeader: string;
 }
-
-@ObjectType()
-export class ImageUrlInput {
-  @Field()
-  image: string;
-}

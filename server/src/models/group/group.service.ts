@@ -10,13 +10,13 @@ import {
   JoinGroupInput,
   LeaveGroupInput,
   Message,
-  ImageUrlInput,
 } from 'src/schemas/group.schema';
 import { User, UserEmail } from 'src/schemas/user.schema';
 import * as bcrypt from 'bcrypt';
 
 import * as dotenv from 'dotenv';
 import * as path from 'path';
+import { FileUpload } from 'graphql-upload';
 
 dotenv.config({
   path: path.resolve('.development.env'),
@@ -93,6 +93,7 @@ export class GroupService {
       description,
       secret,
       password,
+      image,
     } = group;
     const groupSchema = {
       gname,
@@ -106,7 +107,7 @@ export class GroupService {
         ? await bcrypt.hash(password, Number(process.env.SALT))
         : password,
       schedules: [],
-      image: '',
+      image,
     };
 
     try {
@@ -223,9 +224,16 @@ export class GroupService {
     }
   }
 
-  /*
-  async changeGroupImage(user: ImageUrlInput): Promise<Group> {
+  async changeGroupImage(group: FileUpload): Promise<Message> {
+    const { createReadStream, filename, mimetype, encoding } = group;
 
+    console.log(createReadStream);
+    console.log(filename);
+    console.log(mimetype);
+    console.log(encoding);
+
+    //const stream = createReadStream();
+
+    return { value: '???' };
   }
-  */
 }

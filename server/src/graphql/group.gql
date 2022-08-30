@@ -60,9 +60,7 @@ input GroupInfoInput {
   gname: String!
 }
 
-input ImageUrlInput {
-  image: String!
-}
+scalar Upload
 
 type Query {
   getAllGroup: [Group]!
@@ -77,5 +75,5 @@ type Mutation {
   leaveGroup(group: LeaveGroupInput): Group!
   deleteGroup(group: DeleteGroupInput): Message!
   changeLeader(group: ChangeLeaderInput): Group!
-  changeGroupImage(group: ImageUrlInput): Group!
+  changeGroupImage(group: Upload): Message!
 }

@@ -1,4 +1,5 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { FileUpload } from 'graphql-upload';
 import {
   CreateGroupInput,
   DeleteGroupInput,
@@ -59,5 +60,10 @@ export class GroupResolver {
   @Mutation(() => Group)
   async changeLeader(@Args('group') group: ChangeLeaderInput) {
     return await this.groupService.changeLeader(group);
+  }
+
+  @Mutation(() => Group)
+  async changeGroupImage(@Args('group') group: FileUpload) {
+    return await this.groupService.changeGroupImage(group);
   }
 }

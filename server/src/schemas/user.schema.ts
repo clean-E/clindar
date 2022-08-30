@@ -5,7 +5,6 @@ import { Document } from 'mongoose';
 export const UserSchema = new mongoose.Schema({
   email: { type: String, require: true },
   nickname: { type: String },
-  image: { type: String },
   myGroupList: [String],
   myScheduleList: [String],
   records: [
@@ -30,9 +29,6 @@ export class User extends Document {
 
   @Field()
   nickname: string;
-
-  @Field()
-  image: string;
 
   @Field()
   myGroupList: string[];
