@@ -15,6 +15,7 @@ import { GroupModule } from './models/group/group.module';
         credentials: true,
       },
     }),
+
     UserModule,
     ScheduleModule,
     GroupModule,

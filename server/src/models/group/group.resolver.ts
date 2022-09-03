@@ -1,5 +1,5 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { GraphQLUpload, FileUpload } from 'graphql-upload';
+import { FileUpload } from 'graphql-upload';
 
 import {
   CreateGroupInput,
