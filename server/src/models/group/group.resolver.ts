@@ -12,59 +12,63 @@ import {
   ChangeLeaderInput,
 } from 'src/schemas/group.schema';
 import { UserEmail } from 'src/schemas/user.schema';
-import { GroupService } from './group.service';
+import { GroupQuery } from './group_query.service';
+import { GroupMutation } from './group_mutation.service';
 
 @Resolver('Group')
 export class GroupResolver {
-  constructor(private groupService: GroupService) {}
+  constructor(
+    private groupQuery: GroupQuery,
+    private groupMutation: GroupMutation,
+  ) {}
 
   @Query(() => [Group])
   async getAllGroup() {
-    return await this.groupService.getAllGroup();
+    return await this.groupQuery.getAllGroup();
   }
 
   @Query(() => [Group])
   async getMyGroup(@Args('group') group: UserEmail) {
-    return await this.groupService.getMyGroup(group);
+    return await this.groupQuery.getMyGroup(group);
   }
 
   @Query(() => Group)
   async getGroupDetail(@Args('group') group: GroupId) {
-    return await this.groupService.getGroupDetail(group);
+    return await this.groupQuery.getGroupDetail(group);
   }
 
   @Query(() => Group || String)
   async openSecretGroup(@Args('group') group: GroupPassword) {
-    return await this.groupService.openSecretGroup(group);
+    return await this.groupQuery.openSecretGroup(group);
   }
 
   @Mutation(() => Group)
   async createGroup(@Args('group') group: CreateGroupInput) {
-    return await this.groupService.createGroup(group);
+    return await this.groupMutation.createGroup(group);
   }
 
   @Mutation(() => Group)
   async joinGroup(@Args('group') group: JoinGroupInput) {
-    return await this.groupService.joinGroup(group);
+    return await this.groupMutation.joinGroup(group);
   }
 
   @Mutation(() => Group)
   async leaveGroup(@Args('group') group: LeaveGroupInput) {
-    return await this.groupService.leaveGroup(group);
+    return await this.groupMutation.leaveGroup(group);
   }
 
   @Mutation(() => String)
   async deleteGroup(@Args('group') group: DeleteGroupInput) {
-    return await this.groupService.deleteGroup(group);
+    return await this.groupMutation.deleteGroup(group);
   }
 
   @Mutation(() => Group)
   async changeLeader(@Args('group') group: ChangeLeaderInput) {
-    return await this.groupService.changeLeader(group);
+    return await this.groupMutation.changeLeader(group);
   }
 
   @Mutation(() => Group)
   async changeGroupImage(@Args('group') group: FileUpload) {
-    return await this.groupService.changeGroupImage(group);
+    return await this.groupMutation.changeGroupImage(group);
   }
 }

@@ -5,13 +5,11 @@ import {
   CreateGroupInput,
   DeleteGroupInput,
   Group,
-  GroupId,
-  GroupPassword,
   JoinGroupInput,
   LeaveGroupInput,
   Message,
 } from 'src/schemas/group.schema';
-import { User, UserEmail } from 'src/schemas/user.schema';
+import { User } from 'src/schemas/user.schema';
 import * as bcrypt from 'bcrypt';
 
 import * as dotenv from 'dotenv';
@@ -23,7 +21,7 @@ dotenv.config({
 });
 
 @Injectable()
-export class GroupService {
+export class GroupMutation {
   constructor(
     @Inject('GROUP_MODEL')
     private groupModel: Model<Group>,
@@ -31,57 +29,6 @@ export class GroupService {
     @Inject('USER_MODEL')
     private userModel: Model<User>,
   ) {}
-
-  async getAllGroup(): Promise<Group[]> {
-    try {
-      return await this.groupModel.find();
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  async getMyGroup(group: UserEmail): Promise<Group[]> {
-    try {
-      const { email } = group;
-      const { myGroupList } = await this.userModel.findOne({ email });
-      const myGroup = [];
-      for (const gname of myGroupList) {
-        const groupInfo = await this.groupModel.findOne({ gname });
-        myGroup.push(groupInfo);
-      }
-
-      return myGroup;
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  async getGroupDetail(group: GroupId): Promise<Group> {
-    const { _id } = group;
-    try {
-      return await this.groupModel.findOne({ _id });
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  async openSecretGroup(group: GroupPassword): Promise<Group> {
-    const { _id, password } = group;
-    try {
-      const groupInfo = await this.groupModel.findOne({ _id });
-      const passwordCompareResult = await bcrypt.compare(
-        password,
-        groupInfo.password,
-      );
-      if (passwordCompareResult) {
-        return await this.groupModel.findOne({ _id });
-      } else {
-        throw new Error('Wrong Password');
-      }
-    } catch (err) {
-      throw err;
-    }
-  }
 
   async createGroup(group: CreateGroupInput): Promise<Group> {
     const {

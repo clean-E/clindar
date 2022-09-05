@@ -1,14 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import {
-  LoginInput,
-  NicknameInput,
-  User,
-  UserEmail,
-} from 'src/schemas/user.schema';
+import { LoginInput, NicknameInput, User } from 'src/schemas/user.schema';
 
 @Injectable()
-export class UserService {
+export class UserMutation {
   constructor(
     @Inject('USER_MODEL')
     private userModel: Model<User>,
@@ -47,16 +42,6 @@ export class UserService {
         await this.userModel.updateOne({ email }, { nickname });
       }
 
-      return await this.userModel.findOne({ email });
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  async getMyPage(user: UserEmail): Promise<User> {
-    const { email } = user;
-
-    try {
       return await this.userModel.findOne({ email });
     } catch (err) {
       throw err;
