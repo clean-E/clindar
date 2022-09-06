@@ -197,34 +197,7 @@ export class ScheduleMutation {
       throw err;
     }
   }
-  /*
-  // 초대할 때 알림을 보내고 상세 페이지로 이동해 join을 하는 방식이 되면 invite가 필요 없을 수도
-  async inviteSchedule(schedule: InviteScheduleInput): Promise<Schedule> {
-    const { _id, email, nickname } = schedule;
-    try {
-      const hostInfo = await this.userModel.findOne({ email });
-      const host = hostInfo.nickname;
 
-      const { who } = await this.scheduleModel.findOne({ _id });
-
-      if (who.host !== host) {
-        throw new Error();
-      }
-      who.guest.push({ nickname, record: [] });
-      await this.scheduleModel.updateOne({ _id }, { who });
-
-      const guestInfo = await this.userModel.findOne({ nickname });
-      await this.userModel.findOneAndUpdate(
-        { nickname },
-        { myScheduleList: [...guestInfo.myScheduleList, _id] },
-      );
-
-      return await this.scheduleModel.findOne({ _id });
-    } catch (err) {
-      throw err;
-    }
-  }
-  */
   async joinSchedule(schedule: JoinScheduleInput): Promise<Schedule> {
     const { _id, nickname } = schedule;
     try {
