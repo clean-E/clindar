@@ -2,6 +2,7 @@ type User {
   email: String!
   nickname: String!
   myGroupList: [String]
+  success: Boolean!
 }
 
 type Message {

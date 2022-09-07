@@ -50,6 +50,9 @@ export class User extends Document {
       ];
     }?,
   ];
+
+  @Field()
+  success: boolean;
 }
 
 @ObjectType()

@@ -23,7 +23,6 @@ export class UserMutation {
           myGroupList: [],
           myScheduleList: [],
           records: [],
-          image: '',
         });
       }
       return await this.userModel.findOne({ email });
@@ -39,10 +38,18 @@ export class UserMutation {
 
       if (userInfo === null) {
         // 사용 가능한 닉네임
-        await this.userModel.updateOne({ email }, { nickname });
+        const changeNickname = await this.userModel.findOneAndUpdate(
+          { email },
+          { nickname },
+        );
+        changeNickname.nickname = nickname;
+        changeNickname.success = true;
+        return changeNickname;
+      } else {
+        const failChangeNickname = await this.userModel.findOne({ email });
+        failChangeNickname.success = false;
+        return failChangeNickname;
       }
-
-      return await this.userModel.findOne({ email });
     } catch (err) {
       throw err;
     }
