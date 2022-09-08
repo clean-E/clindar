@@ -151,6 +151,8 @@ export class GroupMutation {
     } catch (err) {
       throw err;
     }
+
+    // 응답에 result 추가 예정
   }
 
   async changeLeader(group: ChangeLeaderInput): Promise<Group> {

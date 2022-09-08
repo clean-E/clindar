@@ -98,6 +98,8 @@ export class ScheduleMutation {
     } catch (err) {
       throw err;
     }
+
+    // 응답에 result 추가 예정
   }
 
   async editSchedule(schedule: EditScheduleInput): Promise<Schedule> {
@@ -233,6 +235,8 @@ export class ScheduleMutation {
     }
 
     return { value: 'Succeeded in coming out of Schedule.' };
+
+    // 응답에 result 추가 예정
   }
 
   async editRecord(schedule: EditRecordInput): Promise<Schedule> {
