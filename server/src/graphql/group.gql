@@ -8,6 +8,7 @@ type Group {
   mainCategory: String!
   secret: Boolean!
   image: String
+  success: Boolean
 }
 
 type GroupInfo {
