@@ -94,12 +94,11 @@ export class ScheduleMutation {
 
       await this.scheduleModel.deleteOne({ _id });
 
-      return { value: 'Success delete schedule' };
+      return { message: 'Successed delete schedule', success: true };
     } catch (err) {
-      throw err;
+      console.log(err);
+      return { message: 'Failed delete schedule', success: false };
     }
-
-    // 응답에 result 추가 예정
   }
 
   async editSchedule(schedule: EditScheduleInput): Promise<Schedule> {
@@ -216,27 +215,31 @@ export class ScheduleMutation {
 
   async comeoutSchedule(schedule: ComeoutScheduleInput): Promise<Message> {
     const { _id, email } = schedule;
-    const userInfo = await this.userModel.findOne({ email });
-    const scheduleInfo = await this.scheduleModel.findOne({ _id });
 
-    // 유저 스케쥴에서 제거
-    userInfo.myScheduleList.splice(userInfo.myScheduleList.indexOf(_id), 1);
-    await this.userModel.findOneAndUpdate(
-      { email },
-      { myScheduleList: userInfo.myScheduleList },
-    );
+    try {
+      const userInfo = await this.userModel.findOne({ email });
+      const scheduleInfo = await this.scheduleModel.findOne({ _id });
 
-    // 스케쥴의 게스트에서 제거
-    for (let i = 0; i < scheduleInfo.who.guest.length; i++) {
-      if (scheduleInfo.who.guest[i].nickname === userInfo.nickname) {
-        scheduleInfo.who.guest.splice(i, 1);
-        break;
+      // 유저 스케쥴에서 제거
+      userInfo.myScheduleList.splice(userInfo.myScheduleList.indexOf(_id), 1);
+      await this.userModel.findOneAndUpdate(
+        { email },
+        { myScheduleList: userInfo.myScheduleList },
+      );
+
+      // 스케쥴의 게스트에서 제거
+      for (let i = 0; i < scheduleInfo.who.guest.length; i++) {
+        if (scheduleInfo.who.guest[i].nickname === userInfo.nickname) {
+          scheduleInfo.who.guest.splice(i, 1);
+          break;
+        }
       }
+
+      return { message: 'Succeeded in coming out of Schedule.', success: true };
+    } catch (err) {
+      console.log(err);
+      return { message: 'Failed in coming out of Schedule.', success: false };
     }
-
-    return { value: 'Succeeded in coming out of Schedule.' };
-
-    // 응답에 result 추가 예정
   }
 
   async editRecord(schedule: EditRecordInput): Promise<Schedule> {

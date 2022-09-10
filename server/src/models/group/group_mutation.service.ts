@@ -136,7 +136,7 @@ export class GroupMutation {
         _id,
       });
       if (nickname !== leader) {
-        return { value: 'not the owner of the group.' };
+        return { message: 'not the owner of the group.', success: false };
       }
 
       for (const nickname of memberList) {
@@ -147,12 +147,11 @@ export class GroupMutation {
 
       await this.groupModel.findByIdAndDelete({ _id });
 
-      return { value: 'Success delete group' };
+      return { message: 'Successed delete group', success: true };
     } catch (err) {
-      throw err;
+      console.log(err);
+      return { message: 'Failed delete group', success: false };
     }
-
-    // 응답에 result 추가 예정
   }
 
   async changeLeader(group: ChangeLeaderInput): Promise<Group> {
@@ -183,6 +182,6 @@ export class GroupMutation {
 
     //const stream = createReadStream();
 
-    return { value: '???' };
+    return { message: '???' };
   }
 }

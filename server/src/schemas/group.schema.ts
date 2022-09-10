@@ -102,7 +102,9 @@ export class GroupPassword {
 @ObjectType()
 export class Message {
   @Field()
-  value: string;
+  message: string;
+  @Field()
+  success?: boolean;
 }
 
 @ObjectType()

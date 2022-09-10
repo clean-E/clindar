@@ -6,7 +6,7 @@ type User {
 }
 
 type Message {
-  value: String
+  message: String
   success: Boolean
 }
 
