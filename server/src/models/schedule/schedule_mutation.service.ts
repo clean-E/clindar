@@ -69,16 +69,21 @@ export class ScheduleMutation {
     const { _id, email } = schedule;
     try {
       const scheduleInfo = await this.scheduleModel.findOne({ _id });
-      const groupInfo = await this.groupModel.findOne({
+      const groupExist = await this.groupModel.exists({
         gname: scheduleInfo.group,
       });
-      groupInfo.schedules.splice(groupInfo.schedules.indexOf(_id), 1);
-      await this.groupModel.updateOne(
-        { gname: scheduleInfo.group },
-        {
-          schedules: groupInfo.schedules,
-        },
-      );
+      if (groupExist !== null) {
+        const groupInfo = await this.groupModel.findOne({
+          gname: scheduleInfo.group,
+        });
+        groupInfo.schedules.splice(groupInfo.schedules.indexOf(_id), 1);
+        await this.groupModel.updateOne(
+          { gname: scheduleInfo.group },
+          {
+            schedules: groupInfo.schedules,
+          },
+        );
+      }
 
       for (const guest of scheduleInfo.who.guest) {
         const { myScheduleList } = await this.userModel.findOne({
