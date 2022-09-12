@@ -57,6 +57,7 @@ export class ScheduleMutation {
 
       return newSchedule;
     } catch (err) {
+      console.log(err);
       throw err;
     }
   }
@@ -195,6 +196,7 @@ export class ScheduleMutation {
 
       return await this.scheduleModel.findOne({ _id });
     } catch (err) {
+      console.log(err);
       throw err;
     }
   }
@@ -209,6 +211,7 @@ export class ScheduleMutation {
 
       return await this.scheduleModel.findOne({ _id });
     } catch (err) {
+      console.log(err);
       throw err;
     }
   }
@@ -290,6 +293,7 @@ export class ScheduleMutation {
 
       return await this.scheduleModel.findOne({ _id });
     } catch (err) {
+      console.log(err);
       throw err;
     }
   }

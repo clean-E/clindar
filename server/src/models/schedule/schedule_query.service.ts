@@ -35,6 +35,7 @@ export class ScheduleQuery {
 
       return Object.values(allSchedule);
     } catch (err) {
+      console.log(err);
       throw err;
     }
   }
@@ -67,6 +68,7 @@ export class ScheduleQuery {
 
       return Object.values(allSchedule);
     } catch (err) {
+      console.log(err);
       throw err;
     }
   }
@@ -76,6 +78,7 @@ export class ScheduleQuery {
     try {
       return await this.scheduleModel.findOne({ _id });
     } catch (err) {
+      console.log(err);
       throw err;
     }
   }

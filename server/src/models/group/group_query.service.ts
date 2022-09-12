@@ -25,6 +25,7 @@ export class GroupQuery {
     try {
       return await this.groupModel.find();
     } catch (err) {
+      console.log(err);
       throw err;
     }
   }
@@ -41,6 +42,7 @@ export class GroupQuery {
 
       return myGroup;
     } catch (err) {
+      console.log(err);
       throw err;
     }
   }
@@ -50,6 +52,7 @@ export class GroupQuery {
     try {
       return await this.groupModel.findOne({ _id });
     } catch (err) {
+      console.log(err);
       throw err;
     }
   }
@@ -68,6 +71,7 @@ export class GroupQuery {
         throw new Error('Wrong Password');
       }
     } catch (err) {
+      console.log(err);
       throw err;
     }
   }

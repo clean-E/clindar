@@ -69,6 +69,7 @@ export class GroupMutation {
       );
       return await this.groupModel.create(groupSchema);
     } catch (err) {
+      console.log(err);
       throw err;
     }
   }
@@ -90,6 +91,7 @@ export class GroupMutation {
 
       return await this.groupModel.findOne({ _id });
     } catch (err) {
+      console.log(err);
       throw err;
     }
   }
@@ -123,6 +125,7 @@ export class GroupMutation {
 
       return await this.groupModel.findOne({ _id });
     } catch (err) {
+      console.log(err);
       throw err;
     }
   }
@@ -168,6 +171,7 @@ export class GroupMutation {
         throw new Error('You are not the group leader.');
       }
     } catch (err) {
+      console.log(err);
       throw err;
     }
   }

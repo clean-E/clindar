@@ -15,6 +15,7 @@ export class UserQuery {
     try {
       return await this.userModel.findOne({ email });
     } catch (err) {
+      console.log(err);
       throw err;
     }
   }

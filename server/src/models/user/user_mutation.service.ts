@@ -27,6 +27,7 @@ export class UserMutation {
       }
       return await this.userModel.findOne({ email });
     } catch (err) {
+      console.log(err);
       throw err;
     }
   }
@@ -51,6 +52,7 @@ export class UserMutation {
         return failChangeNickname;
       }
     } catch (err) {
+      console.log(err);
       throw err;
     }
   }
