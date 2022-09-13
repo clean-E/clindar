@@ -69,6 +69,10 @@ export class ScheduleMutation {
     const { _id, email } = schedule;
     try {
       const scheduleInfo = await this.scheduleModel.findOne({ _id });
+      const userInfo = await this.userModel.findOne({ email });
+      if (userInfo.nickname !== scheduleInfo.who.host) {
+        throw new Error();
+      }
       const groupExist = await this.groupModel.exists({
         gname: scheduleInfo.group,
       });
