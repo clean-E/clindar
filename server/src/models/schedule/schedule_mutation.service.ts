@@ -71,7 +71,7 @@ export class ScheduleMutation {
       const scheduleInfo = await this.scheduleModel.findOne({ _id });
       const userInfo = await this.userModel.findOne({ email });
       if (userInfo.nickname !== scheduleInfo.who.host) {
-        throw new Error();
+        throw '일정의 호스트가 아닙니다.';
       }
       const groupExist = await this.groupModel.exists({
         gname: scheduleInfo.group,
@@ -104,10 +104,10 @@ export class ScheduleMutation {
 
       await this.scheduleModel.deleteOne({ _id });
 
-      return { message: 'Successed delete schedule', success: true };
+      return { message: '일정 삭제 성공', success: true };
     } catch (err) {
       console.log(err);
-      return { message: 'Failed delete schedule', success: false };
+      return { message: err, success: false };
     }
   }
 

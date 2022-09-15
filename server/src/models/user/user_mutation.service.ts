@@ -16,7 +16,7 @@ export class UserMutation {
       const userInfo = await this.userModel.exists({ email });
 
       if (userInfo === null) {
-        // 회원 정보가 없음
+        // 회원 정보가 없음, 첫 로그인
         await this.userModel.create({
           email,
           nickname,

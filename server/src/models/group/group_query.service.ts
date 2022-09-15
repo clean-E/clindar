@@ -68,7 +68,7 @@ export class GroupQuery {
       if (passwordCompareResult) {
         return await this.groupModel.findOne({ _id });
       } else {
-        throw new Error('Wrong Password');
+        throw '올바른 비밀번호가 아닙니다.';
       }
     } catch (err) {
       console.log(err);
