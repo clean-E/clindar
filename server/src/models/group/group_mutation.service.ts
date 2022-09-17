@@ -123,7 +123,10 @@ export class GroupMutation {
         },
       );
 
-      return await this.groupModel.findOne({ _id });
+      const result = await this.groupModel.findOne({ _id });
+      result.success = true;
+
+      return result;
     } catch (err) {
       console.log(err);
       throw err;
@@ -163,12 +166,16 @@ export class GroupMutation {
     try {
       const groupInfo = await this.groupModel.findOne({ _id });
       if (groupInfo.leader === leader) {
-        return await this.groupModel.findOneAndUpdate(
-          { _id },
-          { leader: nextLeader },
-        );
+        await this.groupModel.findOneAndUpdate({ _id }, { leader: nextLeader });
+        const result = await this.groupModel.findOne({ _id });
+        result.success = true;
+
+        return result;
       } else {
-        throw new Error('You are not the group leader.');
+        const result = await this.groupModel.findOne({ _id });
+        result.success = false;
+
+        return result;
       }
     } catch (err) {
       console.log(err);

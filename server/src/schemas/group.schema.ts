@@ -37,6 +37,8 @@ export class Group extends Document {
   schedules: string[];
   @Field()
   image: string;
+  @Field()
+  success: boolean;
 }
 
 @ObjectType()
