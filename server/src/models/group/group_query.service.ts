@@ -66,9 +66,13 @@ export class GroupQuery {
         groupInfo.password,
       );
       if (passwordCompareResult) {
-        return await this.groupModel.findOne({ _id });
+        const groupInfo = await this.groupModel.findOne({ _id });
+        groupInfo.success = true;
+        return groupInfo;
       } else {
-        throw '올바른 비밀번호가 아닙니다.';
+        let groupInfo: Group;
+        groupInfo.success = false;
+        return groupInfo;
       }
     } catch (err) {
       console.log(err);

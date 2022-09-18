@@ -1,12 +1,12 @@
 type Group {
-  _id: String!
-  gname: String!
-  leader: String!
-  createdAt: String!
-  description: String!
-  memberList: [String]!
-  mainCategory: String!
-  secret: Boolean!
+  _id: String
+  gname: String
+  leader: String
+  createdAt: String
+  description: String
+  memberList: [String]
+  mainCategory: String
+  secret: Boolean
   image: String
   success: Boolean
 }
