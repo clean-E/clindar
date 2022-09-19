@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { ApolloError } from 'apollo-server-express';
 import { Model } from 'mongoose';
 import { User, UserEmail } from 'src/schemas/user.schema';
 
@@ -12,11 +13,12 @@ export class UserQuery {
   async getMyPage(user: UserEmail): Promise<User> {
     const { email } = user;
 
-    try {
-      return await this.userModel.findOne({ email });
-    } catch (err) {
-      console.log(err);
-      throw err;
+    const userInfo = await this.userModel.findOne({ email });
+
+    if (userInfo) {
+      return userInfo;
+    } else {
+      throw new ApolloError('Not Found User');
     }
   }
 }
