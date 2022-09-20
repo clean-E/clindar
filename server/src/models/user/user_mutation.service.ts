@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { LoginInput, NicknameInput, User } from 'src/schemas/user.schema';
+import { ApolloError } from 'apollo-server-express';
 
 @Injectable()
 export class UserMutation {
@@ -28,7 +29,7 @@ export class UserMutation {
       return await this.userModel.findOne({ email });
     } catch (err) {
       console.log(err);
-      throw err;
+      throw new ApolloError('Server Error');
     }
   }
 
