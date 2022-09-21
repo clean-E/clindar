@@ -6,6 +6,7 @@ import * as bcrypt from 'bcrypt';
 
 import * as dotenv from 'dotenv';
 import * as path from 'path';
+import { ApolloError } from 'apollo-server-express';
 
 dotenv.config({
   path: path.resolve('.development.env'),
@@ -26,7 +27,7 @@ export class GroupQuery {
       return await this.groupModel.find();
     } catch (err) {
       console.log(err);
-      throw err;
+      throw new ApolloError('DB Error', 'DB_ERROR');
     }
   }
 
@@ -43,7 +44,7 @@ export class GroupQuery {
       return myGroup;
     } catch (err) {
       console.log(err);
-      throw err;
+      throw new ApolloError('DB Error', 'DB_ERROR');
     }
   }
 
@@ -53,7 +54,7 @@ export class GroupQuery {
       return await this.groupModel.findOne({ _id });
     } catch (err) {
       console.log(err);
-      throw err;
+      throw new ApolloError('DB Error', 'DB_ERROR');
     }
   }
 
@@ -76,7 +77,7 @@ export class GroupQuery {
       }
     } catch (err) {
       console.log(err);
-      throw err;
+      throw new ApolloError('DB Error', 'DB_ERROR');
     }
   }
 

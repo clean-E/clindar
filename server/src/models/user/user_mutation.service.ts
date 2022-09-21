@@ -29,7 +29,7 @@ export class UserMutation {
       return await this.userModel.findOne({ email });
     } catch (err) {
       console.log(err);
-      throw new ApolloError('Server Error');
+      throw new ApolloError('DB Error', 'DB_ERROR');
     }
   }
 
@@ -54,7 +54,7 @@ export class UserMutation {
       }
     } catch (err) {
       console.log(err);
-      throw err;
+      throw new ApolloError('DB Error', 'DB_ERROR');
     }
   }
 

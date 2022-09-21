@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { ApolloError } from 'apollo-server-express';
 import { Model } from 'mongoose';
 import { Group, Message } from 'src/schemas/group.schema';
 import {
@@ -58,7 +59,7 @@ export class ScheduleMutation {
       return newSchedule;
     } catch (err) {
       console.log(err);
-      throw err;
+      throw new ApolloError('DB Error', 'DB_ERROR');
     }
   }
 
@@ -206,7 +207,7 @@ export class ScheduleMutation {
       return await this.scheduleModel.findOne({ _id });
     } catch (err) {
       console.log(err);
-      throw err;
+      throw new ApolloError('DB Error', 'DB_ERROR');
     }
   }
 
@@ -221,7 +222,7 @@ export class ScheduleMutation {
       return await this.scheduleModel.findOne({ _id });
     } catch (err) {
       console.log(err);
-      throw err;
+      throw new ApolloError('DB Error', 'DB_ERROR');
     }
   }
 
@@ -303,7 +304,7 @@ export class ScheduleMutation {
       return await this.scheduleModel.findOne({ _id });
     } catch (err) {
       console.log(err);
-      throw err;
+      throw new ApolloError('DB Error', 'DB_ERROR');
     }
   }
 }
