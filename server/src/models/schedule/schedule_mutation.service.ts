@@ -284,6 +284,7 @@ export class ScheduleMutation {
           break;
         }
       }
+
       if (flag) {
         await this.userModel.findOneAndUpdate(
           { nickname },
