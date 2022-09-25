@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ApolloError } from 'apollo-server-express';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { Group, Message } from 'src/schemas/group.schema';
 import {
   DeleteScheduleInput,
@@ -27,35 +27,79 @@ export class ScheduleMutation {
   ) {}
 
   async createSchedule(schedule: CreateScheduleInput): Promise<Schedule> {
+    /*
+    1. 들어온 데이터 중 string에서 object id로 바꿔야하는 것들을 바꿈
+    2. 일정 document 생성
+    3. 새로 생성된 일정 데이터를 불러옴
+    4. 게스트들의 일정 리스트에 id 추가
+    5. 그룹의 일정 리스트에 id 추가
+    6. object id에서 string으로 바꿔야하는 것들을 다시 바꾸고 반환
+    */
+
     const { email } = schedule;
     delete schedule.email;
 
     try {
-      const newSchedule = await this.scheduleModel.create(schedule);
-
-      for (const g of schedule.who.guest) {
+      //1. 들어온 데이터 중 string에서 object id로 바꿔야하는 것들을 바꿈
+      for (let idx = 0; idx < schedule.who.guest.length; idx++) {
         const guestInfo = await this.userModel.findOne({
-          nickname: g.nickname,
+          nickname: schedule.who.guest[idx].nickname,
         });
-        await this.userModel.findOneAndUpdate(
-          { nickname: g.nickname },
-          {
-            myScheduleList: [
-              ...guestInfo.myScheduleList,
-              newSchedule._id.toString(),
-            ],
-          },
-        );
+
+        if (idx === 0) {
+          schedule.who.host = guestInfo._id;
+        }
+
+        schedule.who.guest[idx].nickname = guestInfo._id;
+        schedule.who.guest[idx].record = null;
       }
 
       if (schedule.group) {
-        const gInfo = await this.groupModel.findOne({ gname: schedule.group });
-        await this.groupModel.findOneAndUpdate(
-          { gname: schedule.group },
-          { schedules: [...gInfo.schedules, newSchedule.id] },
-        );
+        schedule.group = (
+          await this.groupModel.findOne({
+            gname: schedule.group,
+          })
+        )._id;
       }
 
+      //2. 일정 document 생성
+      //3. 새로 생성된 일정 데이터를 불러옴
+      const newSchedule = await this.scheduleModel.create(schedule);
+
+      //4. 게스트들의 일정 리스트에 id 추가
+      for (const guest of schedule.who.guest) {
+        const guestInfo = await this.userModel.findById(guest.nickname);
+        await this.userModel.findOneAndUpdate(
+          { nickname: guestInfo.nickname },
+          {
+            myScheduleList: [...guestInfo.myScheduleList, newSchedule._id],
+          },
+        );
+      }
+      //5. 그룹의 일정 리스트에 id 추가
+      if (schedule.group) {
+        const groupInfo = await this.groupModel.findById(schedule.group);
+        await this.groupModel.findByIdAndUpdate(schedule.group, {
+          schedules: [...groupInfo.schedules, newSchedule._id],
+        });
+
+        newSchedule.group = groupInfo.gname;
+      }
+      //6. object id에서 string으로 바꿔야하는 것들을 다시 바꾸고 반환
+      //host, guest nickname
+
+      for (let idx = 0; idx < newSchedule.who.guest.length; idx++) {
+        const { nickname } = await this.userModel.findById(
+          newSchedule.who.guest[idx].nickname,
+        );
+        if (idx === 0) {
+          newSchedule.who.host = nickname;
+        }
+
+        newSchedule.who.guest[idx].nickname = nickname;
+        newSchedule.who.guest[idx].record = [];
+      }
+      console.log(newSchedule);
       return newSchedule;
     } catch (err) {
       console.log(err);

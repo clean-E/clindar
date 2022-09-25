@@ -1,17 +1,17 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
 import { Document } from 'mongoose';
 
 export const GroupSchema = new mongoose.Schema({
   gname: { type: String },
-  leader: { type: Schema.Types.ObjectId, ref: 'User' },
+  leader: { type: String },
   createdAt: { type: String },
   description: { type: String },
-  memberList: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  memberList: [String],
   mainCategory: { type: String },
   secret: { type: Boolean },
   password: { type: String },
-  schedules: [{ type: Schema.Types.ObjectId, ref: 'Schedule' }],
+  schedules: [String],
   image: { type: String },
 });
 

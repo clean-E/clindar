@@ -11,12 +11,7 @@ export const ScheduleSchema = new mongoose.Schema({
     guest: [
       {
         nickname: { type: String },
-        record: [
-          {
-            level: { type: String },
-            count: { type: Number },
-          },
-        ],
+        record: { type: String },
       },
     ],
   },
@@ -38,7 +33,7 @@ export class Schedule extends Document {
     guest: [
       {
         nickname: string;
-        record: [
+        record?: [
           {
             level: string;
             count: number;

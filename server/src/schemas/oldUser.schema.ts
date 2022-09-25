@@ -1,13 +1,25 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
 import { Document } from 'mongoose';
 
 export const UserSchema = new mongoose.Schema({
   email: { type: String, require: true },
   nickname: { type: String },
-  myGroupList: [{ type: Schema.Types.ObjectId, ref: 'Group' }],
-  myScheduleList: [{ type: Schema.Types.ObjectId, ref: 'Schedule' }],
-  records: [{ type: Schema.Types.ObjectId, ref: 'Record' }],
+  myGroupList: [String],
+  myScheduleList: [String],
+  records: [
+    {
+      sId: { type: String },
+      when: { type: String },
+      where: { type: String },
+      record: [
+        {
+          level: { type: String },
+          count: { type: Number },
+        },
+      ],
+    },
+  ],
 });
 
 @ObjectType()

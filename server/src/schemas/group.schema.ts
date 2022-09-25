@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import { Document } from 'mongoose';
 
 export const GroupSchema = new mongoose.Schema({
@@ -7,11 +7,11 @@ export const GroupSchema = new mongoose.Schema({
   leader: { type: String },
   createdAt: { type: String },
   description: { type: String },
-  memberList: [String],
+  memberList: [{ type: String }],
   mainCategory: { type: String },
   secret: { type: Boolean },
   password: { type: String },
-  schedules: [String],
+  schedules: [{ type: String }],
   image: { type: String },
 });
 

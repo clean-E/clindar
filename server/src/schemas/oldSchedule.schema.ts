@@ -1,5 +1,5 @@
 import { ObjectType, Field } from '@nestjs/graphql';
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
 import { Document } from 'mongoose';
 
 export const ScheduleSchema = new mongoose.Schema({
@@ -7,16 +7,21 @@ export const ScheduleSchema = new mongoose.Schema({
   where: { type: String },
   when: { type: String },
   who: {
-    host: { type: Schema.Types.ObjectId, ref: 'User' },
+    host: { type: String },
     guest: [
       {
         nickname: { type: String },
-        record: { type: Schema.Types.ObjectId, ref: 'Record' },
+        record: [
+          {
+            level: { type: String },
+            count: { type: Number },
+          },
+        ],
       },
     ],
   },
   memo: { type: String },
-  group: { type: Schema.Types.ObjectId, ref: 'Group' },
+  group: { type: String },
 });
 
 @ObjectType()
