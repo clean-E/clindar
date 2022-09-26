@@ -96,10 +96,11 @@ export class ScheduleMutation {
           newSchedule.who.host = nickname;
         }
 
-        newSchedule.who.guest[idx].nickname = nickname;
-        newSchedule.who.guest[idx].record = [];
+        newSchedule.who.guest[idx] = { nickname, record: [] };
+        console.log(newSchedule.who.guest[idx]);
+        console.log({ nickname, record: [] });
       }
-      console.log(newSchedule);
+      console.log(newSchedule.who.guest[0].record);
       return newSchedule;
     } catch (err) {
       console.log(err);

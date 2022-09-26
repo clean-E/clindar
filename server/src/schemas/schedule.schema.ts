@@ -33,7 +33,7 @@ export class Schedule extends Document {
     guest: [
       {
         nickname: string;
-        record?: [
+        record: [
           {
             level: string;
             count: number;
