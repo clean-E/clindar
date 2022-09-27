@@ -10,6 +10,8 @@ import {
   CreateScheduleInput,
   EditScheduleInput,
   JoinScheduleInput,
+  ReturnSchedule,
+  Guest,
 } from 'src/schemas/schedule.schema';
 import { User } from 'src/schemas/user.schema';
 
@@ -26,7 +28,7 @@ export class ScheduleMutation {
     private groupModel: Model<Group>,
   ) {}
 
-  async createSchedule(schedule: CreateScheduleInput): Promise<Schedule> {
+  async createSchedule(schedule: CreateScheduleInput): Promise<ReturnSchedule> {
     /*
     1. 들어온 데이터 중 string에서 object id로 바꿔야하는 것들을 바꿈
     2. 일정 document 생성
@@ -88,17 +90,29 @@ export class ScheduleMutation {
       //6. object id에서 string으로 바꿔야하는 것들을 다시 바꾸고 반환
       //host, guest nickname
 
+      const who = { host: '', guest: [] };
       for (let idx = 0; idx < newSchedule.who.guest.length; idx++) {
         const { nickname } = await this.userModel.findById(
           newSchedule.who.guest[idx].nickname,
         );
         if (idx === 0) {
-          newSchedule.who.host = nickname;
+          who.host = nickname;
         }
-
-        newSchedule.who.guest[idx] = { nickname, record: [] };
+        const guest: Guest = { nickname, record: [] };
+        who.guest.push(guest);
       }
-      return newSchedule;
+
+      const returnSchedule: ReturnSchedule = {
+        _id: newSchedule._id,
+        category: newSchedule.category,
+        where: newSchedule.where,
+        when: newSchedule.when,
+        who,
+        memo: newSchedule.memo,
+        group: newSchedule.group,
+      };
+
+      return returnSchedule;
     } catch (err) {
       console.log(err);
       throw new ApolloError('DB Error', 'DB_ERROR');
@@ -253,12 +267,14 @@ export class ScheduleMutation {
     }
   }
 
-  async joinSchedule(schedule: JoinScheduleInput): Promise<Schedule> {
+  /*
+  async joinSchedule(schedule: JoinScheduleInput): Promise<ReturnSchedule> {
     const { _id, nickname } = schedule;
     try {
       const { who } = await this.scheduleModel.findOne({ _id });
 
-      who.guest.push({ nickname, record: [] });
+      const guest: Guest = { nickname, record: [] };
+      who.guest.push(guest);
       await this.scheduleModel.updateOne({ _id }, { who });
 
       return await this.scheduleModel.findOne({ _id });
@@ -267,6 +283,7 @@ export class ScheduleMutation {
       throw new ApolloError('DB Error', 'DB_ERROR');
     }
   }
+  */
 
   async comeoutSchedule(schedule: ComeoutScheduleInput): Promise<Message> {
     const { _id, email } = schedule;
@@ -297,7 +314,8 @@ export class ScheduleMutation {
     }
   }
 
-  async editRecord(schedule: EditRecordInput): Promise<Schedule> {
+  /*
+  async editRecord(schedule: EditRecordInput): Promise<ReturnSchedule> {
     const { _id, nickname, record } = schedule;
 
     try {
@@ -350,4 +368,5 @@ export class ScheduleMutation {
       throw new ApolloError('DB Error', 'DB_ERROR');
     }
   }
+  */
 }
