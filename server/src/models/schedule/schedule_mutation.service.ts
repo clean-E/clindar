@@ -267,23 +267,37 @@ export class ScheduleMutation {
     }
   }
 
-  /*
   async joinSchedule(schedule: JoinScheduleInput): Promise<ReturnSchedule> {
     const { _id, nickname } = schedule;
     try {
-      const { who } = await this.scheduleModel.findOne({ _id });
+      const scheduleInfo = await this.scheduleModel.findOne({ _id });
 
-      const guest: Guest = { nickname, record: [] };
-      who.guest.push(guest);
-      await this.scheduleModel.updateOne({ _id }, { who });
+      let guests: [Guest];
 
-      return await this.scheduleModel.findOne({ _id });
+      for (let i = 0; i < scheduleInfo.who.guest.length; i++) {
+        const { nickname } = await this.userModel.findById(
+          scheduleInfo.who.guest[i].nickname,
+        );
+        const guest: Guest = { nickname, record: [] };
+        guests.push(guest);
+      }
+
+      const returnSchedule: ReturnSchedule = {
+        _id: scheduleInfo._id,
+        category: scheduleInfo.category,
+        where: scheduleInfo.where,
+        when: scheduleInfo.when,
+        who: { host: scheduleInfo.who.host, guest: guests },
+        memo: scheduleInfo.memo,
+        group: scheduleInfo.group,
+      };
+
+      return returnSchedule;
     } catch (err) {
       console.log(err);
       throw new ApolloError('DB Error', 'DB_ERROR');
     }
   }
-  */
 
   async comeoutSchedule(schedule: ComeoutScheduleInput): Promise<Message> {
     const { _id, email } = schedule;
