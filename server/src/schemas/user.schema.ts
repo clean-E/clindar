@@ -25,19 +25,7 @@ export class User extends Document {
   myScheduleList: string[];
 
   @Field()
-  records: [
-    {
-      sId: string;
-      when: string;
-      where: string;
-      record: [
-        {
-          level: string;
-          count: number;
-        }?,
-      ];
-    }?,
-  ];
+  records: string[];
 
   @Field()
   success: boolean;

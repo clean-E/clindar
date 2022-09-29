@@ -12,3 +12,20 @@ export const RecordSchema = new mongoose.Schema({
     },
   ],
 });
+
+@ObjectType()
+export class Record extends Document {
+  @Field()
+  sId: string;
+
+  @Field()
+  uId: string;
+
+  @Field()
+  records: [
+    {
+      level: string;
+      count: number;
+    }?,
+  ];
+}
