@@ -14,6 +14,7 @@ import {
   Guest,
 } from 'src/schemas/schedule.schema';
 import { User } from 'src/schemas/user.schema';
+import { Record } from 'src/schemas/record.schema';
 
 @Injectable()
 export class ScheduleMutation {
@@ -26,6 +27,9 @@ export class ScheduleMutation {
 
     @Inject('GROUP_MODEL')
     private groupModel: Model<Group>,
+
+    @Inject('RECORD_MODEL')
+    private recordModel: Model<Record>,
   ) {}
 
   async createSchedule(schedule: CreateScheduleInput): Promise<ReturnSchedule> {
@@ -283,13 +287,8 @@ export class ScheduleMutation {
       }
 
       const returnSchedule: ReturnSchedule = {
-        _id: scheduleInfo._id,
-        category: scheduleInfo.category,
-        where: scheduleInfo.where,
-        when: scheduleInfo.when,
+        ...scheduleInfo,
         who: { host: scheduleInfo.who.host, guest: guests },
-        memo: scheduleInfo.memo,
-        group: scheduleInfo.group,
       };
 
       return returnSchedule;
@@ -328,59 +327,60 @@ export class ScheduleMutation {
     }
   }
 
-  /*
   async editRecord(schedule: EditRecordInput): Promise<ReturnSchedule> {
     const { _id, nickname, record } = schedule;
 
+    // record 없으면 생성, 있으면 업데이트
+    // record 없어서 생성했으면 user, schedule에도 추가
     try {
-      const scheduleInfo = await this.scheduleModel.findOne({ _id });
-      const guestInfo = scheduleInfo.who.guest;
-
-      for (let i = 0; i < guestInfo.length; i++) {
-        if (guestInfo[i].nickname === nickname) {
-          guestInfo[i].record = [...record];
-          break;
-        }
-      }
-      scheduleInfo.who.guest = guestInfo;
-      await this.scheduleModel.updateOne({ _id }, { who: scheduleInfo.who });
-
+      const recordInfo = await this.recordModel.findOne({ sId: _id });
       const userInfo = await this.userModel.findOne({ nickname });
-      let flag = true;
-      for (let i = 0; i < userInfo.records.length; i++) {
-        if (userInfo.records[i].sId === _id) {
-          userInfo.records[i].record = [...record];
-          await this.userModel.findOneAndUpdate(
-            { nickname },
-            { records: [...userInfo.records] },
-          );
-          flag = false;
-          break;
-        }
-      }
 
-      if (flag) {
-        await this.userModel.findOneAndUpdate(
+      if (recordInfo) {
+        await this.recordModel.updateOne({ sId: _id }, { record });
+      } else {
+        const recordSchema = {
+          sId: _id,
+          uId: userInfo.id,
+          records: record,
+        };
+        const newRecord = await this.recordModel.create(recordSchema);
+        const scheduleInfo = await this.scheduleModel.findOne({ _id });
+        for (let i = 0; i < scheduleInfo.who.guest.length; i++) {
+          if (scheduleInfo.who.guest[i].nickname === nickname) {
+            scheduleInfo.who.guest[i].record = newRecord.id;
+            break;
+          }
+        }
+        await this.scheduleModel.updateOne({ _id }, { who: scheduleInfo.who });
+        await this.userModel.updateOne(
           { nickname },
-          {
-            records: [
-              ...userInfo.records,
-              {
-                sId: _id,
-                when: scheduleInfo.when,
-                where: scheduleInfo.where,
-                record,
-              },
-            ],
-          },
+          { records: [...userInfo.records, newRecord.id] },
         );
       }
 
+      const scheduleInfo = await this.scheduleModel.findOne({ _id });
+      const host = await this.userModel.findOne({ id: scheduleInfo.who.host });
+      let guests: [Guest];
+
+      for (let i = 0; i < scheduleInfo.who.guest.length; i++) {
+        const { nickname } = await this.userModel.findById(
+          scheduleInfo.who.guest[i].nickname,
+        );
+        const { records } = await this.recordModel.findById(
+          scheduleInfo.who.guest[i].record,
+        );
+        const guest: Guest = { nickname, record: records };
+        guests.push(guest);
+      }
+      const who = { host: host.nickname, guest: guests };
+      const returnSchedule: ReturnSchedule = { ...scheduleInfo, who };
+
+      return returnSchedule;
       return await this.scheduleModel.findOne({ _id });
     } catch (err) {
       console.log(err);
       throw new ApolloError('DB Error', 'DB_ERROR');
     }
   }
-  */
 }

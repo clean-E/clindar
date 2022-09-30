@@ -69,7 +69,7 @@ export class Guest {
   @Field()
   nickname: string;
   @Field()
-  record: [];
+  record: [{ level: string; count: number }?];
 }
 
 @ObjectType()
