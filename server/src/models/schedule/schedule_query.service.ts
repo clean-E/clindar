@@ -2,7 +2,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ApolloError } from 'apollo-server-express';
 import { Model } from 'mongoose';
 import { Group } from 'src/schemas/group.schema';
-import { Schedule, ScheduleId } from 'src/schemas/schedule.schema';
+import {
+  Schedule,
+  ScheduleId,
+  ReturnSchedule,
+  Guest,
+} from 'src/schemas/schedule.schema';
 import { User, UserEmail } from 'src/schemas/user.schema';
 
 @Injectable()
@@ -18,7 +23,7 @@ export class ScheduleQuery {
     private groupModel: Model<Group>,
   ) {}
 
-  async getAllSchedule(schedule: UserEmail): Promise<Schedule[]> {
+  async getAllSchedule(schedule: UserEmail): Promise<ReturnSchedule[]> {
     try {
       const { email } = schedule;
       const { myScheduleList } = await this.userModel.findOne({
@@ -31,7 +36,23 @@ export class ScheduleQuery {
         const scheduleInfo = await this.scheduleModel.findOne({
           _id: myScheduleList[i],
         });
-        allSchedule[myScheduleList[i]] = scheduleInfo;
+        const who = { host: '', guest: [] };
+        for (let idx = 0; idx < scheduleInfo.who.guest.length; idx++) {
+          const { nickname } = await this.userModel.findById(
+            scheduleInfo.who.guest[idx].nickname,
+          );
+          if (idx === 0) {
+            who.host = nickname;
+          }
+          const guest: Guest = { nickname, record: [] };
+          who.guest.push(guest);
+        }
+
+        const returnSchedule: ReturnSchedule = {
+          ...scheduleInfo,
+          who,
+        };
+        allSchedule[myScheduleList[i]] = returnSchedule;
       }
 
       return Object.values(allSchedule);

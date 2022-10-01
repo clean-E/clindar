@@ -2,12 +2,19 @@ type User {
   email: String!
   nickname: String!
   myGroupList: [String]
+  records: [MyRecord]
   success: Boolean!
 }
 
 type Message {
   message: String
   success: Boolean
+}
+
+type MyRecord {
+  where: String
+  when: String
+  record: [Record]
 }
 
 input UserEmail {

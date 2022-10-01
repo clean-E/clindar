@@ -32,6 +32,41 @@ export class User extends Document {
 }
 
 @ObjectType()
+export class ReturnUser {
+  @Field()
+  email: string;
+
+  @Field()
+  nickname: string;
+
+  @Field()
+  myGroupList: string[];
+
+  @Field()
+  records: MyRecord[];
+
+  @Field()
+  success: boolean;
+}
+
+@ObjectType()
+export class MyRecord {
+  @Field()
+  where: string;
+
+  @Field()
+  when: string;
+
+  @Field()
+  records: [
+    {
+      level: string;
+      count: number;
+    }?,
+  ];
+}
+
+@ObjectType()
 export class LoginInput {
   @Field()
   email: string;
