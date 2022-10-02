@@ -107,8 +107,13 @@ export class ScheduleMutation {
       }
 
       const returnSchedule: ReturnSchedule = {
-        ...newSchedule,
+        _id: newSchedule.id,
+        category: newSchedule.category,
+        where: newSchedule.where,
+        when: newSchedule.when,
         who,
+        memo: newSchedule.memo,
+        group: newSchedule.group,
       };
 
       return returnSchedule;

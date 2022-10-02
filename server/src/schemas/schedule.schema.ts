@@ -46,7 +46,7 @@ export class Schedule extends Document {
 @ObjectType()
 export class ReturnSchedule {
   @Field()
-  _id: ObjectId;
+  _id: string;
   @Field()
   category: string[];
   @Field()

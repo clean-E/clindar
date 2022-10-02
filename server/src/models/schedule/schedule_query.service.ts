@@ -49,9 +49,15 @@ export class ScheduleQuery {
         }
 
         const returnSchedule: ReturnSchedule = {
-          ...scheduleInfo,
+          _id: scheduleInfo.id,
+          category: scheduleInfo.category,
+          where: scheduleInfo.where,
+          when: scheduleInfo.when,
           who,
+          memo: scheduleInfo.memo,
+          group: scheduleInfo.group,
         };
+
         allSchedule[myScheduleList[i]] = returnSchedule;
       }
 
