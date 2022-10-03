@@ -36,27 +36,10 @@ export class ScheduleQuery {
         const scheduleInfo = await this.scheduleModel.findOne({
           _id: myScheduleList[i],
         });
-        const who = { host: '', guest: [] };
-        for (let idx = 0; idx < scheduleInfo.who.guest.length; idx++) {
-          const { nickname } = await this.userModel.findById(
-            scheduleInfo.who.guest[idx].nickname,
-          );
-          if (idx === 0) {
-            who.host = nickname;
-          }
-          const guest: Guest = { nickname, record: [] };
-          who.guest.push(guest);
-        }
 
-        const returnSchedule: ReturnSchedule = {
-          _id: scheduleInfo.id,
-          category: scheduleInfo.category,
-          where: scheduleInfo.where,
-          when: scheduleInfo.when,
-          who,
-          memo: scheduleInfo.memo,
-          group: scheduleInfo.group,
-        };
+        const returnSchedule: ReturnSchedule = await this.makeReturnSchedule(
+          scheduleInfo,
+        );
 
         allSchedule[myScheduleList[i]] = returnSchedule;
       }
@@ -68,7 +51,7 @@ export class ScheduleQuery {
     }
   }
 
-  async getGroupSchedule(schedule: UserEmail): Promise<Schedule[]> {
+  async getGroupSchedule(schedule: UserEmail): Promise<ReturnSchedule[]> {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     try {
@@ -88,8 +71,12 @@ export class ScheduleQuery {
             _id: schedules[j],
           });
 
+          const returnSchedule: ReturnSchedule = await this.makeReturnSchedule(
+            scheduleInfo,
+          );
+
           if (today <= new Date(scheduleInfo.when)) {
-            allSchedule[schedules[j]] = scheduleInfo;
+            allSchedule[schedules[j]] = returnSchedule;
           }
         }
       }
@@ -101,13 +88,46 @@ export class ScheduleQuery {
     }
   }
 
-  async getScheduleDetail(schedule: ScheduleId): Promise<Schedule> {
+  async getScheduleDetail(schedule: ScheduleId): Promise<ReturnSchedule> {
     const { _id } = schedule;
     try {
-      return await this.scheduleModel.findOne({ _id });
+      const scheduleInfo = await this.scheduleModel.findOne({ _id });
+
+      return await this.makeReturnSchedule(scheduleInfo);
     } catch (err) {
       console.log(err);
       throw new ApolloError('DB Error', 'DB_ERROR');
     }
+  }
+
+  async makeReturnSchedule(schedule: Schedule): Promise<ReturnSchedule> {
+    const { who, group } = schedule;
+
+    const editWho = { host: '', guest: [] };
+    for (let idx = 0; idx < who.guest.length; idx++) {
+      const { nickname } = await this.userModel.findById(
+        who.guest[idx].nickname,
+      );
+      if (idx === 0) {
+        editWho.host = nickname;
+      }
+      const guest: Guest = { nickname, record: [] };
+      editWho.guest.push(guest);
+    }
+
+    const returnSchedule: ReturnSchedule = {
+      _id: schedule.id,
+      category: schedule.category,
+      where: schedule.where,
+      when: schedule.when,
+      who: editWho,
+      memo: schedule.memo,
+      group:
+        group === null
+          ? group
+          : (await this.groupModel.findOne({ id: group })).gname,
+    };
+
+    return returnSchedule;
   }
 }
