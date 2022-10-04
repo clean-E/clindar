@@ -115,6 +115,11 @@ export class ScheduleQuery {
       editWho.guest.push(guest);
     }
 
+    let editGroup = '';
+    if (group !== '') {
+      const groupInfo = await this.groupModel.findOne({ id: group });
+      editGroup = groupInfo.gname;
+    }
     const returnSchedule: ReturnSchedule = {
       _id: schedule.id,
       category: schedule.category,
@@ -122,10 +127,7 @@ export class ScheduleQuery {
       when: schedule.when,
       who: editWho,
       memo: schedule.memo,
-      group:
-        group === null
-          ? group
-          : (await this.groupModel.findOne({ id: group })).gname,
+      group: editGroup,
     };
 
     return returnSchedule;

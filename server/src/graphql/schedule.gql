@@ -54,7 +54,11 @@ input EditScheduleInput {
 }
 
 input JoinScheduleInput {
-  email: String!
+  _id: String!
+  nickname: String!
+}
+
+input InviteScheduleInput {
   _id: String!
   nickname: String!
 }
@@ -97,6 +101,7 @@ type Mutation {
   deleteSchedule(schedule: DeleteScheduleInput): Message!
   editSchedule(schedule: EditScheduleInput): Schedule!
   joinSchedule(schedule: JoinScheduleInput): Schedule!
+  inviteSchedule(schedule: InviteScheduleInput): Schedule!
   comeoutSchedule(schedule: ComeoutScheduleInput): Message!
   editRecord(schedule: EditRecordInput): Schedule!
 }

@@ -11,7 +11,6 @@ import {
 } from 'src/schemas/group.schema';
 import { User } from 'src/schemas/user.schema';
 import * as bcrypt from 'bcrypt';
-
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 import { FileUpload } from 'graphql-upload';

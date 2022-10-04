@@ -44,16 +44,16 @@ export class ScheduleResolver {
   async editSchedule(@Args('schedule') schedule: EditScheduleInput) {
     return await this.scheduleMutation.editSchedule(schedule);
   }
-  // @Mutation(() => Schedule)
-  // async inviteSchedule(@Args('schedule') schedule: InviteScheduleInput) {
-  //   return await this.scheduleMutation.inviteSchedule(schedule);
-  // }
-  // @Mutation(() => Schedule)
-  // async joinSchedule(@Args('schedule') schedule: JoinScheduleInput) {
-  //   return await this.scheduleMutation.joinSchedule(schedule);
-  // }
-  // @Mutation(() => Schedule)
-  // async editRecord(@Args('schedule') schedule: EditRecordInput) {
-  //   return await this.scheduleMutation.editRecord(schedule);
-  // }
+  @Mutation(() => Schedule)
+  async joinSchedule(@Args('schedule') schedule: JoinScheduleInput) {
+    return await this.scheduleMutation.joinSchedule(schedule);
+  }
+  @Mutation(() => Schedule)
+  async inviteSchedule(@Args('schedule') schedule: InviteScheduleInput) {
+    return await this.scheduleMutation.inviteSchedule(schedule);
+  }
+  @Mutation(() => Schedule)
+  async editRecord(@Args('schedule') schedule: EditRecordInput) {
+    return await this.scheduleMutation.editRecord(schedule);
+  }
 }

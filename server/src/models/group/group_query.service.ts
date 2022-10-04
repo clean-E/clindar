@@ -3,7 +3,6 @@ import { Model } from 'mongoose';
 import { Group, GroupId, GroupPassword } from 'src/schemas/group.schema';
 import { User, UserEmail } from 'src/schemas/user.schema';
 import * as bcrypt from 'bcrypt';
-
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 import { ApolloError } from 'apollo-server-express';

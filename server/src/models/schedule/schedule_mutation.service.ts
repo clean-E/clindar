@@ -12,6 +12,7 @@ import {
   JoinScheduleInput,
   ReturnSchedule,
   Guest,
+  InviteScheduleInput,
 } from 'src/schemas/schedule.schema';
 import { User } from 'src/schemas/user.schema';
 import { Record } from 'src/schemas/record.schema';
@@ -94,27 +95,9 @@ export class ScheduleMutation {
       //6. object id에서 string으로 바꿔야하는 것들을 다시 바꾸고 반환
       //host, guest nickname
 
-      const who = { host: '', guest: [] };
-      for (let idx = 0; idx < newSchedule.who.guest.length; idx++) {
-        const { nickname } = await this.userModel.findById(
-          newSchedule.who.guest[idx].nickname,
-        );
-        if (idx === 0) {
-          who.host = nickname;
-        }
-        const guest: Guest = { nickname, record: [] };
-        who.guest.push(guest);
-      }
-
-      const returnSchedule: ReturnSchedule = {
-        _id: newSchedule.id,
-        category: newSchedule.category,
-        where: newSchedule.where,
-        when: newSchedule.when,
-        who,
-        memo: newSchedule.memo,
-        group: newSchedule.group,
-      };
+      const returnSchedule: ReturnSchedule = await this.makeReturnSchedule(
+        newSchedule,
+      );
 
       return returnSchedule;
     } catch (err) {
@@ -172,7 +155,7 @@ export class ScheduleMutation {
     }
   }
 
-  async editSchedule(schedule: EditScheduleInput): Promise<Schedule> {
+  async editSchedule(schedule: EditScheduleInput): Promise<ReturnSchedule> {
     const { email, _id } = schedule;
     delete schedule.email;
     delete schedule._id;
@@ -264,7 +247,8 @@ export class ScheduleMutation {
 
       await this.scheduleModel.findOneAndUpdate({ _id }, schedule);
 
-      return await this.scheduleModel.findOne({ _id });
+      const scheduleInfo = await this.scheduleModel.findOne({ _id });
+      return await this.makeReturnSchedule(scheduleInfo);
     } catch (err) {
       console.log(err);
       throw new ApolloError('DB Error', 'DB_ERROR');
@@ -272,26 +256,53 @@ export class ScheduleMutation {
   }
 
   async joinSchedule(schedule: JoinScheduleInput): Promise<ReturnSchedule> {
+    // 내 일정 목록 업데이트, 일정 게스트 목록 업데이트
+    // returnSchedule 생성
     const { _id, nickname } = schedule;
     try {
+      // 내 일정 목록 업데이트
+      const userInfo = await this.userModel.findOne({ nickname });
+      await this.userModel.updateOne(
+        { nickname },
+        { myScheduleList: [...userInfo.myScheduleList, _id] },
+      );
+
+      // 일정 게스트 목록 업데이트
       const scheduleInfo = await this.scheduleModel.findOne({ _id });
+      scheduleInfo.who.guest.push({ nickname: userInfo.id, record: null });
 
-      let guests: [Guest];
+      await this.scheduleModel.updateOne({ _id }, scheduleInfo);
 
-      for (let i = 0; i < scheduleInfo.who.guest.length; i++) {
-        const { nickname } = await this.userModel.findById(
-          scheduleInfo.who.guest[i].nickname,
-        );
-        const guest: Guest = { nickname, record: [] };
-        guests.push(guest);
-      }
+      const newScheduleInfo = await this.scheduleModel.findOne({ _id });
 
-      const returnSchedule: ReturnSchedule = {
-        ...scheduleInfo,
-        who: { host: scheduleInfo.who.host, guest: guests },
-      };
+      return await this.makeReturnSchedule(newScheduleInfo);
+    } catch (err) {
+      console.log(err);
+      throw new ApolloError('DB Error', 'DB_ERROR');
+    }
+  }
 
-      return returnSchedule;
+  async inviteSchedule(schedule: InviteScheduleInput): Promise<ReturnSchedule> {
+    // 초대된 사람 일정 목록 업데이트, 일정 게스트 목록 업데이트
+    // returnSchedule 생성
+    const { _id, nickname } = schedule;
+    try {
+      // 내 일정 목록 업데이트
+      const userInfo = await this.userModel.findOne({ nickname });
+      await this.userModel.updateOne(
+        { nickname },
+        { myScheduleList: [...userInfo.myScheduleList, _id] },
+      );
+
+      // 일정 게스트 목록 업데이트
+      const scheduleInfo = await this.scheduleModel.findOne({ _id });
+      scheduleInfo.who.guest.push({ nickname: userInfo.id, record: null });
+
+      await this.scheduleModel.updateOne({ _id }, scheduleInfo);
+
+      const newScheduleInfo = await this.scheduleModel.findOne({ _id });
+
+      return await this.makeReturnSchedule(newScheduleInfo);
     } catch (err) {
       console.log(err);
       throw new ApolloError('DB Error', 'DB_ERROR');
@@ -314,7 +325,7 @@ export class ScheduleMutation {
 
       // 스케쥴의 게스트에서 제거
       for (let i = 0; i < scheduleInfo.who.guest.length; i++) {
-        if (scheduleInfo.who.guest[i].nickname === userInfo.nickname) {
+        if (scheduleInfo.who.guest[i].nickname === userInfo.id) {
           scheduleInfo.who.guest.splice(i, 1);
           break;
         }
@@ -361,7 +372,7 @@ export class ScheduleMutation {
 
       const scheduleInfo = await this.scheduleModel.findOne({ _id });
       const host = await this.userModel.findOne({ id: scheduleInfo.who.host });
-      let guests: [Guest];
+      const guests = [];
 
       for (let i = 0; i < scheduleInfo.who.guest.length; i++) {
         const { nickname } = await this.userModel.findById(
@@ -374,13 +385,59 @@ export class ScheduleMutation {
         guests.push(guest);
       }
       const who = { host: host.nickname, guest: guests };
-      const returnSchedule: ReturnSchedule = { ...scheduleInfo, who };
+      let editGroup = '';
+      if (scheduleInfo.group !== '') {
+        const groupInfo = await this.groupModel.findOne({
+          id: scheduleInfo.group,
+        });
+        editGroup = groupInfo.gname;
+      }
+      const returnSchedule: ReturnSchedule = {
+        _id: scheduleInfo.id,
+        category: scheduleInfo.category,
+        where: scheduleInfo.where,
+        when: scheduleInfo.when,
+        who,
+        memo: scheduleInfo.memo,
+        group: editGroup,
+      };
 
       return returnSchedule;
-      return await this.scheduleModel.findOne({ _id });
     } catch (err) {
       console.log(err);
       throw new ApolloError('DB Error', 'DB_ERROR');
     }
+  }
+
+  async makeReturnSchedule(schedule: Schedule): Promise<ReturnSchedule> {
+    const { who, group } = schedule;
+
+    const editWho = { host: '', guest: [] };
+    for (let idx = 0; idx < who.guest.length; idx++) {
+      const { nickname } = await this.userModel.findById(
+        who.guest[idx].nickname,
+      );
+      if (idx === 0) {
+        editWho.host = nickname;
+      }
+      const guest: Guest = { nickname, record: [] };
+      editWho.guest.push(guest);
+    }
+
+    let editGroup = '';
+    if (group === '') {
+      editGroup = await this.groupModel.findOne({ id: group });
+    }
+    const returnSchedule: ReturnSchedule = {
+      _id: schedule.id,
+      category: schedule.category,
+      where: schedule.where,
+      when: schedule.when,
+      who: editWho,
+      memo: schedule.memo,
+      group: editGroup,
+    };
+
+    return returnSchedule;
   }
 }
