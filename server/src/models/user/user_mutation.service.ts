@@ -1,7 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { LoginInput, NicknameInput, User } from 'src/schemas/user.schema';
+import {
+  LoginInput,
+  NicknameInput,
+  User,
+  UserEmail,
+} from 'src/schemas/user.schema';
 import { ApolloError } from 'apollo-server-express';
+import { Message } from 'src/schemas/group.schema';
 
 @Injectable()
 export class UserMutation {
@@ -58,13 +64,14 @@ export class UserMutation {
     }
   }
 
-  /*
   async deleteUser(user: UserEmail): Promise<Message> {
     // 탈퇴할 때 삭제되어야 할 내용
-    // 내 일정 조회 -> 기록 삭제 -> 일정에서 삭제 
+    // 내 일정 조회 -> 기록 삭제 -> 일정에서 삭제
     // (호스트인 경우 다음 사람에게 넘겨주고 본인만 삭제, 혼자면 일정 자체를 삭제)
     // 내 그룹 조회 -> 그룹 멤버에서 삭제
     // (리더인 경우 다음 사람에게 넘겨주고 본인만 삭제, 혼자면 그룹 자체를 삭제)
+    const { email } = user;
+    const userInfo = await this.userModel.findOne({ email });
+    const { myScheduleList, myGroupList } = userInfo;
   }
-  */
 }
