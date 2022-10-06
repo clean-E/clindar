@@ -23,7 +23,7 @@ export class UserMutation {
       const userInfo = await this.userModel.exists({ email });
 
       if (userInfo === null) {
-        // 회원 정보가 없음, 첫 로그인
+        // 회원 정보가 없음, 첫 로그인 -> 유저 정보 생성
         await this.userModel.create({
           email,
           nickname,
@@ -54,6 +54,7 @@ export class UserMutation {
         changeNickname.success = true;
         return changeNickname;
       } else {
+        // 이미 있는 닉네임
         const failChangeNickname = await this.userModel.findOne({ email });
         failChangeNickname.success = false;
         return failChangeNickname;
@@ -73,5 +74,7 @@ export class UserMutation {
     const { email } = user;
     const userInfo = await this.userModel.findOne({ email });
     const { myScheduleList, myGroupList } = userInfo;
+
+    return { message: '', success: true };
   }
 }

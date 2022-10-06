@@ -10,6 +10,7 @@ export class UserQuery {
     private userModel: Model<User>,
   ) {}
 
+  // 내 기록을 모아서 볼 수 있도록 - 암장별 기록
   async getMyPage(user: UserEmail): Promise<User> {
     const { email } = user;
 

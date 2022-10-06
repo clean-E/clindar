@@ -33,14 +33,17 @@ export class ScheduleQuery {
       const allSchedule = {};
 
       for (let i = 0; i < myScheduleList.length; i++) {
+        // 일정 id로 일정을 하나씩 조회
         const scheduleInfo = await this.scheduleModel.findOne({
           _id: myScheduleList[i],
         });
 
+        // id로 되어있는 host, guest를 nickname으로 변경
         const returnSchedule: ReturnSchedule = await this.makeReturnSchedule(
           scheduleInfo,
         );
 
+        // 저장
         allSchedule[myScheduleList[i]] = returnSchedule;
       }
 
@@ -63,18 +66,22 @@ export class ScheduleQuery {
       const allSchedule = {};
 
       for (let i = 0; i < myGroupList.length; i++) {
+        // 내 그룹의 일정을 조회
         const { schedules } = await this.groupModel.findOne({
           gname: myGroupList[i],
         });
         for (let j = 0; j < schedules.length; j++) {
+          // 일정을 하나씩 조회
           const scheduleInfo = await this.scheduleModel.findOne({
             _id: schedules[j],
           });
 
+          // id로 되어있는 host, guest를 nickname으로 변경
           const returnSchedule: ReturnSchedule = await this.makeReturnSchedule(
             scheduleInfo,
           );
 
+          // 날짜가 지난 일정은 제외
           if (today <= new Date(scheduleInfo.when)) {
             allSchedule[schedules[j]] = returnSchedule;
           }

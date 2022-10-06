@@ -47,7 +47,7 @@ export class ScheduleMutation {
     delete schedule.email;
 
     try {
-      //1. 들어온 데이터 중 string에서 object id로 바꿔야하는 것들을 바꿈
+      //1. 들어온 데이터 중 string에서 objectId로 바꿔야하는 것들을 바꿈
       for (let idx = 0; idx < schedule.who.guest.length; idx++) {
         const guestInfo = await this.userModel.findOne({
           nickname: schedule.who.guest[idx].nickname,
@@ -117,6 +117,7 @@ export class ScheduleMutation {
       if (userInfo.nickname !== scheduleInfo.who.host) {
         throw '일정의 호스트가 아닙니다.';
       }
+      // 지정된 그룹이 있으면 그룹의 일정에서 해당 일정을 제거
       const groupExist = await this.groupModel.exists({
         gname: scheduleInfo.group,
       });
@@ -133,6 +134,7 @@ export class ScheduleMutation {
         );
       }
 
+      // 일정의 게스트들의 일정에서 해당 일정을 제거
       for (const guest of scheduleInfo.who.guest) {
         const { myScheduleList } = await this.userModel.findOne({
           nickname: guest.nickname,
@@ -330,6 +332,7 @@ export class ScheduleMutation {
           break;
         }
       }
+      await this.scheduleModel.findOneAndUpdate({ _id }, scheduleInfo);
 
       return { message: 'Succeeded in coming out of Schedule.', success: true };
     } catch (err) {
@@ -350,12 +353,15 @@ export class ScheduleMutation {
       if (recordInfo) {
         await this.recordModel.updateOne({ sId: _id }, { record });
       } else {
+        // 기록 데이터 생성, 저장
         const recordSchema = {
           sId: _id,
           uId: userInfo.id,
           records: record,
         };
         const newRecord = await this.recordModel.create(recordSchema);
+
+        // 일정에 기록 저장
         const scheduleInfo = await this.scheduleModel.findOne({ _id });
         for (let i = 0; i < scheduleInfo.who.guest.length; i++) {
           if (scheduleInfo.who.guest[i].nickname === nickname) {
@@ -364,12 +370,15 @@ export class ScheduleMutation {
           }
         }
         await this.scheduleModel.updateOne({ _id }, { who: scheduleInfo.who });
+
+        // 유저에 기록 저장
         await this.userModel.updateOne(
           { nickname },
           { records: [...userInfo.records, newRecord.id] },
         );
       }
 
+      // 업데이트된 일정 정보를 가져와서 id로 된 데이터를 알맞게 변경
       const scheduleInfo = await this.scheduleModel.findOne({ _id });
       const host = await this.userModel.findOne({ id: scheduleInfo.who.host });
       const guests = [];

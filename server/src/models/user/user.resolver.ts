@@ -30,4 +30,9 @@ export class UserResolver {
   async setNickname(@Args('user') user: NicknameInput) {
     return await this.userMutation.setNickname(user);
   }
+
+  @Mutation(() => User)
+  async deleteUser(@Args('user') user: UserEmail) {
+    return await this.userMutation.deleteUser(user);
+  }
 }
