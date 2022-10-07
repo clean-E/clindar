@@ -21,6 +21,7 @@ export class GroupQuery {
     private userModel: Model<User>,
   ) {}
 
+  // 멤버, 일정이 id로 되어있으니 바꿔서 반환
   async getAllGroup(): Promise<Group[]> {
     try {
       return await this.groupModel.find();
@@ -35,8 +36,8 @@ export class GroupQuery {
       const { email } = group;
       const { myGroupList } = await this.userModel.findOne({ email });
       const myGroup = [];
-      for (const gname of myGroupList) {
-        const groupInfo = await this.groupModel.findOne({ gname });
+      for (const id of myGroupList) {
+        const groupInfo = await this.groupModel.findOne({ id });
         myGroup.push(groupInfo);
       }
 
@@ -79,6 +80,4 @@ export class GroupQuery {
       throw new ApolloError('DB Error', 'DB_ERROR');
     }
   }
-
-  // 응답에 result 추가 예정
 }
