@@ -80,4 +80,17 @@ export class GroupQuery {
       throw new ApolloError('DB Error', 'DB_ERROR');
     }
   }
+
+  async getMemberName(memberList: string[]): Promise<string[]> {
+    const memberName = [];
+    for (const memberId of memberList) {
+      const { nickname } = await this.userModel.findOne({ id: memberId });
+      memberList.push(nickname);
+    }
+    return memberName;
+  }
+
+  // async getSchedulesOfMembers(schedules: string[]): Promise<Schedule[]> {
+
+  // }
 }
