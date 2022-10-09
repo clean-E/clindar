@@ -21,8 +21,8 @@ export class ScheduleResolver {
   ) {}
 
   @Query(() => [Schedule])
-  async getAllSchedule(@Args('schedule') schedule: UserEmail) {
-    return await this.scheduleQuery.getAllSchedule(schedule);
+  async getMySchedule(@Args('schedule') schedule: UserEmail) {
+    return await this.scheduleQuery.getMySchedule(schedule);
   }
   @Query(() => [Schedule])
   async getGroupSchedule(@Args('schedule') schedule: UserEmail) {

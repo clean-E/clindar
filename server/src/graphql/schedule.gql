@@ -91,7 +91,7 @@ input ComeoutScheduleInput {
 }
 
 type Query {
-  getAllSchedule(schedule: UserEmail): [Schedule]!
+  getMySchedule(schedule: UserEmail): [Schedule]!
   getGroupSchedule(schedule: UserEmail): [Schedule]!
   getScheduleDetail(schedule: ScheduleId): Schedule
 }

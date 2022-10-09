@@ -23,7 +23,7 @@ export class ScheduleQuery {
     private groupModel: Model<Group>,
   ) {}
 
-  async getAllSchedule(schedule: UserEmail): Promise<ReturnSchedule[]> {
+  async getMySchedule(schedule: UserEmail): Promise<ReturnSchedule[]> {
     try {
       const { email } = schedule;
       const { myScheduleList } = await this.userModel.findOne({
