@@ -4,7 +4,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { UserModule } from './models/user/user.module';
 import { ScheduleModule } from './models/schedule/schedule.module';
 import { GroupModule } from './models/group/group.module';
-import { SpotModule } from './spot/spot.module';
+import { SpotModule } from './models/spot/spot.module';
 
 @Module({
   imports: [
