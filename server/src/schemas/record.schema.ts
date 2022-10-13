@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
 import { Document } from 'mongoose';
 
 export const RecordSchema = new mongoose.Schema({
