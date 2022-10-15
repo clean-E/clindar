@@ -2,7 +2,7 @@ type User {
   email: String!
   nickname: String!
   myGroupList: [String]
-  records: [MyRecord]
+  myRecord: [MyRecord]
 }
 
 type MyRecord {
@@ -62,6 +62,7 @@ type Group {
   secret: Boolean!
   password: String
   schedules: [Schedule]!
+  join: Boolean!
 }
 
 type Result {
@@ -138,5 +139,5 @@ type Mutation {
   joinGroup(groupId: String, email: String): Group!
   leaveGroup(groupId: String, email: String): Group!
   deleteGroup(groupId: String, email: String): Result!
-  changeLeader(groupId: String, leader: String, newLeader: String): Group!
+  changeLeader(groupId: String, email: String, newLeader: String): Group!
 }

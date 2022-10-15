@@ -8,7 +8,7 @@ export const UserSchema = new mongoose.Schema({
   nickname: { type: String },
   myGroupList: [{ type: String }],
   myScheduleList: [{ type: String }],
-  records: [{ type: String }],
+  myRecord: [{ type: String }],
 });
 
 @ObjectType()
@@ -26,7 +26,7 @@ export class User extends Document {
   myScheduleList: string[];
 
   @Field()
-  records: string[];
+  myRecord: string[];
 }
 
 @ObjectType()
@@ -41,7 +41,7 @@ export class ReturnUser {
   myGroupList: string[];
 
   @Field()
-  records: MyRecord[];
+  myRecord: MyRecord[];
 }
 
 @ObjectType()
