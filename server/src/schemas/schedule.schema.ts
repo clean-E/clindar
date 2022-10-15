@@ -1,11 +1,12 @@
 import { ObjectType, Field } from '@nestjs/graphql';
 import mongoose, { ObjectId } from 'mongoose';
 import { Document } from 'mongoose';
+import { Record } from './record.schema';
 
 export const ScheduleSchema = new mongoose.Schema({
   category: [String],
-  where: { type: String },
   when: { type: String },
+  where: { type: String },
   who: {
     host: { type: String },
     guest: [
@@ -33,7 +34,7 @@ export class Schedule extends Document {
     guest: [
       {
         nickname: string;
-        record: { type: string };
+        record: string;
       },
     ];
   };
@@ -69,11 +70,11 @@ export class Guest {
   @Field()
   nickname: string;
   @Field()
-  record: [{ level: string; count: number }?];
+  record: Record[];
 }
 
 @ObjectType()
-export class CreateScheduleInput {
+export class ScheduleInput {
   @Field()
   email: string;
   @Field()
@@ -88,7 +89,7 @@ export class CreateScheduleInput {
     guest: [
       {
         nickname: string;
-        record: [];
+        record: Record[];
       },
     ];
   };
@@ -99,91 +100,11 @@ export class CreateScheduleInput {
 }
 
 @ObjectType()
-export class DeleteScheduleInput {
-  @Field()
-  _id: string;
-  @Field()
-  email: string;
-}
-
-@ObjectType()
-export class EditScheduleInput {
+export class RecordInput {
   @Field()
   email: string;
   @Field()
-  _id: string;
+  scheduleId: string;
   @Field()
-  category: string[];
-  @Field()
-  where: string;
-  @Field()
-  when: string;
-  @Field()
-  who: {
-    host: string;
-    guest: [
-      {
-        nickname: string;
-        record: [
-          {
-            level: string;
-            count: number;
-          },
-        ];
-      },
-    ];
-  };
-  @Field()
-  memo: string;
-  @Field()
-  group: string;
-}
-
-@ObjectType()
-export class InviteScheduleInput {
-  @Field()
-  _id: string;
-  @Field()
-  email: string;
-  @Field()
-  nickname: string;
-}
-
-@ObjectType()
-export class JoinScheduleInput {
-  @Field()
-  _id: string;
-  @Field()
-  email: string;
-  @Field()
-  nickname: string;
-}
-
-@ObjectType()
-export class ComeoutScheduleInput {
-  @Field()
-  _id: string;
-  @Field()
-  email: string;
-}
-
-@ObjectType()
-export class EditRecordInput {
-  @Field()
-  _id: string;
-  @Field()
-  nickname: string;
-  @Field()
-  record: [
-    {
-      level: string;
-      count: number;
-    },
-  ];
-}
-
-@ObjectType()
-export class ScheduleId {
-  @Field()
-  _id: string;
+  record: Record[];
 }

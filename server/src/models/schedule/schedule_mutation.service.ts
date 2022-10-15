@@ -15,7 +15,7 @@ import {
   InviteScheduleInput,
 } from 'src/schemas/schedule.schema';
 import { User } from 'src/schemas/user.schema';
-import { Record } from 'src/schemas/record.schema';
+import { Records } from 'src/schemas/record.schema';
 
 @Injectable()
 export class ScheduleMutation {
@@ -30,7 +30,7 @@ export class ScheduleMutation {
     private groupModel: Model<Group>,
 
     @Inject('RECORD_MODEL')
-    private recordModel: Model<Record>,
+    private recordModel: Model<Records>,
   ) {}
 
   async createSchedule(schedule: CreateScheduleInput): Promise<ReturnSchedule> {

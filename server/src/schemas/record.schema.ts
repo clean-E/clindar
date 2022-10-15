@@ -5,16 +5,17 @@ import { Document } from 'mongoose';
 export const RecordSchema = new mongoose.Schema({
   sId: { type: String },
   uId: { type: String },
-  record: [
+  records: [
     {
       level: { type: String },
+      nameOrColor: { type: String },
       count: { type: Number },
     },
   ],
 });
 
 @ObjectType()
-export class Record extends Document {
+export class Records extends Document {
   @Field()
   sId: string;
 
@@ -22,10 +23,17 @@ export class Record extends Document {
   uId: string;
 
   @Field()
-  records: [
-    {
-      level: string;
-      count: number;
-    }?,
-  ];
+  records: Record[];
+}
+
+@ObjectType()
+export class Record {
+  @Field()
+  level: string;
+
+  @Field()
+  nameOrColor: string;
+
+  @Field()
+  count: number;
 }

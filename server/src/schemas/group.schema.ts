@@ -1,6 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import mongoose, { Schema } from 'mongoose';
 import { Document } from 'mongoose';
+import { ReturnSchedule } from './schedule.schema';
 
 export const GroupSchema = new mongoose.Schema({
   gname: { type: String },
@@ -9,10 +10,11 @@ export const GroupSchema = new mongoose.Schema({
   description: { type: String },
   memberList: [{ type: String }],
   mainCategory: { type: String },
+  age: [Number],
   secret: { type: Boolean },
   password: { type: String },
   schedules: [{ type: String }],
-  image: { type: String },
+  // image: { type: String },
 });
 
 @ObjectType()
@@ -30,21 +32,45 @@ export class Group extends Document {
   @Field()
   mainCategory: string;
   @Field()
+  age: number[];
+  @Field()
   secret: boolean;
   @Field()
   password: string;
   @Field()
   schedules: string[];
-  @Field()
-  image: string;
-  @Field()
-  success: boolean;
+  // @Field()
+  // image: string;
 }
 
 @ObjectType()
-export class CreateGroupInput {
+export class GroupInput {
   @Field()
-  email: string;
+  gname: string;
+  @Field()
+  leader: string;
+  @Field()
+  createdAt: string;
+  @Field()
+  description: string;
+  @Field()
+  mainCategory: string;
+  @Field()
+  age: number[];
+  @Field()
+  secret: boolean;
+  @Field()
+  password: string;
+  @Field()
+  schedules: string[];
+  // @Field()
+  // image: string;
+}
+
+@ObjectType()
+export class ReturnGroup {
+  @Field()
+  _id: string;
   @Field()
   gname: string;
   @Field()
@@ -58,65 +84,7 @@ export class CreateGroupInput {
   @Field()
   secret: boolean;
   @Field()
-  password: string;
-  @Field()
-  image: string;
-}
-
-@ObjectType()
-export class JoinGroupInput {
-  @Field()
-  email: string;
-  @Field()
-  _id: string;
-}
-
-@ObjectType()
-export class LeaveGroupInput {
-  @Field()
-  email: string;
-  @Field()
-  _id: string;
-}
-
-@ObjectType()
-export class DeleteGroupInput {
-  @Field()
-  email: string;
-  @Field()
-  _id: string;
-}
-
-@ObjectType()
-export class GroupId {
-  @Field()
-  _id: string;
-}
-
-@ObjectType()
-export class GroupPassword {
-  @Field()
-  _id: string;
-  @Field()
-  password: string;
-}
-
-@ObjectType()
-export class Message {
-  @Field()
-  message: string;
-  @Field()
-  success?: boolean;
-}
-
-@ObjectType()
-export class ChangeLeaderInput {
-  @Field()
-  _id: string;
-
-  @Field()
-  leader: string;
-
-  @Field()
-  nextLeader: string;
+  schedules: ReturnSchedule[];
+  // @Field()
+  // image: string;
 }

@@ -1,9 +1,10 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import mongoose from 'mongoose';
 import { Document } from 'mongoose';
+import { Record } from './record.schema';
 
 export const UserSchema = new mongoose.Schema({
-  email: { type: String, require: true },
+  email: { type: String },
   nickname: { type: String },
   myGroupList: [{ type: String }],
   myScheduleList: [{ type: String }],
@@ -26,9 +27,6 @@ export class User extends Document {
 
   @Field()
   records: string[];
-
-  @Field()
-  success: boolean;
 }
 
 @ObjectType()
@@ -44,45 +42,19 @@ export class ReturnUser {
 
   @Field()
   records: MyRecord[];
-
-  @Field()
-  success: boolean;
 }
 
 @ObjectType()
 export class MyRecord {
   @Field()
-  where: string;
+  spotName: string;
 
   @Field()
-  when: string;
-
-  @Field()
-  records: [
-    {
-      level: string;
-      count: number;
-    }?,
-  ];
+  records: Record[];
 }
 
 @ObjectType()
-export class LoginInput {
-  @Field()
-  email: string;
-
-  @Field()
-  nickname: string;
-}
-
-@ObjectType()
-export class UserEmail {
-  @Field()
-  email: string;
-}
-
-@ObjectType()
-export class NicknameInput {
+export class UserInput {
   @Field()
   email: string;
 
