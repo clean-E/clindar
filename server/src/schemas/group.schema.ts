@@ -44,7 +44,37 @@ export class Group extends Document {
 }
 
 @ObjectType()
-export class GroupInput {
+export class CreateGroupInput {
+  @Field()
+  email: string;
+  @Field()
+  gname: string;
+  @Field()
+  leader: string;
+  @Field()
+  createdAt: string;
+  @Field()
+  description: string;
+  @Field()
+  mainCategory: string;
+  @Field()
+  age: number[];
+  @Field()
+  secret: boolean;
+  @Field()
+  password: string;
+  @Field()
+  schedules: string[];
+  // @Field()
+  // image: string;
+}
+
+@ObjectType()
+export class EditGroupInput {
+  @Field()
+  _id: string;
+  @Field()
+  email: string;
   @Field()
   gname: string;
   @Field()
@@ -85,6 +115,8 @@ export class ReturnGroup {
   secret: boolean;
   @Field()
   schedules: ReturnSchedule[];
+  @Field()
+  join: boolean;
   // @Field()
   // image: string;
 }

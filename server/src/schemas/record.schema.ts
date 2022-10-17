@@ -18,10 +18,8 @@ export const RecordSchema = new mongoose.Schema({
 export class Records extends Document {
   @Field()
   sId: string;
-
   @Field()
   uId: string;
-
   @Field()
   records: Record[];
 }
@@ -30,10 +28,18 @@ export class Records extends Document {
 export class Record {
   @Field()
   level: string;
-
   @Field()
   nameOrColor: string;
-
   @Field()
   count: number;
+}
+
+@ObjectType()
+export class RecordInput {
+  @Field()
+  email: string;
+  @Field()
+  scheduleId: string;
+  @Field()
+  record: Record[];
 }

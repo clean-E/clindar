@@ -15,16 +15,12 @@ export const UserSchema = new mongoose.Schema({
 export class User extends Document {
   @Field()
   email: string;
-
   @Field()
   nickname: string;
-
   @Field()
   myGroupList: string[];
-
   @Field()
   myScheduleList: string[];
-
   @Field()
   myRecord: string[];
 }
@@ -33,13 +29,10 @@ export class User extends Document {
 export class ReturnUser {
   @Field()
   email: string;
-
   @Field()
   nickname: string;
-
   @Field()
   myGroupList: string[];
-
   @Field()
   myRecord: MyRecord[];
 }
@@ -48,7 +41,6 @@ export class ReturnUser {
 export class MyRecord {
   @Field()
   spotName: string;
-
   @Field()
   records: Record[];
 }
@@ -57,7 +49,6 @@ export class MyRecord {
 export class UserInput {
   @Field()
   email: string;
-
   @Field()
   nickname: string;
 }

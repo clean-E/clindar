@@ -74,7 +74,7 @@ export class Guest {
 }
 
 @ObjectType()
-export class ScheduleInput {
+export class CreateScheduleInput {
   @Field()
   email: string;
   @Field()
@@ -86,12 +86,7 @@ export class ScheduleInput {
   @Field()
   who: {
     host: string;
-    guest: [
-      {
-        nickname: string;
-        record: Record[];
-      },
-    ];
+    guest: Guest[];
   };
   @Field()
   memo: string;
@@ -100,11 +95,24 @@ export class ScheduleInput {
 }
 
 @ObjectType()
-export class RecordInput {
+export class EditScheduleInput {
+  @Field()
+  id: string;
   @Field()
   email: string;
   @Field()
-  scheduleId: string;
+  category: string[];
   @Field()
-  record: Record[];
+  where: string;
+  @Field()
+  when: string;
+  @Field()
+  who: {
+    host: string;
+    guest: Guest[];
+  };
+  @Field()
+  memo: string;
+  @Field()
+  group: string;
 }

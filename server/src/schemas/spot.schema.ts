@@ -20,16 +20,12 @@ export const SpotSchema = new mongoose.Schema({
 export class Spot extends Document {
   @Field()
   spotName: string;
-
   @Field()
   spotBranch: string;
-
   @Field()
   address: string;
-
   @Field()
   phase: Phase[];
-
   @Field()
   category: string[];
 }
@@ -38,7 +34,6 @@ export class Spot extends Document {
 export class Phase {
   @Field()
   level: string;
-
   @Field()
   nameOrColor: string;
 }

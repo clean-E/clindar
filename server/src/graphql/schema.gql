@@ -80,7 +80,8 @@ input RecordInput {
   record: [Record]!
 }
 
-input ScheduleInput {
+input CreateScheduleInput {
+  email: String!
   category: [String]!
   when: String!
   where: String!
@@ -89,7 +90,32 @@ input ScheduleInput {
   group: String!
 }
 
-input GroupInput {
+input EditScheduleInput {
+  _id: String!
+  email: String!
+  category: [String]!
+  when: String!
+  where: String!
+  who: Who!
+  memo: String!
+  group: String!
+}
+
+input CreateGroupInput {
+  email: String!
+  gname: String!
+  leader: String!
+  createdAt: String!
+  description: String!
+  mainCatecory: String!
+  age: [Number]!
+  secret: Boolean!
+  password: String
+}
+
+input EditGroupInput {
+  _id: String!
+  email: String!
   gname: String!
   leader: String!
   createdAt: String!
@@ -110,6 +136,7 @@ type Query {
   getAllSpot: [Spot!]!
   getSpotDetail(spotId: String): Spot!
 
+  checkDuplicateGroupName(gname: String): Result!
   getAllGroup: [Group]!
   getMyGroup(email: String): [Group]!
   getGroupDetail(groupId: String): Group!
@@ -121,12 +148,8 @@ type Mutation {
   setNickname(userInfo: UserInput): User!
   deleteUser(email: String): Result!
 
-  createSchedule(schedule: ScheduleInput, email: String): Schedule!
-  editSchedule(
-    scheduleId: String
-    schedule: ScheduleInput
-    email: String
-  ): Schedule!
+  createSchedule(schedule: CreateScheduleInput): Schedule!
+  editSchedule(schedule: EditScheduleInput): Schedule!
   deleteSchedule(scheduleId: String, email: String): Result!
   joinSchedule(scheduleId: String, email: String): Schedule!
   comeoutSchedule(scheduleId: String, email: String): Schedule!
@@ -134,8 +157,8 @@ type Mutation {
 
   editRecord(records: RecordInput): Schedule!
 
-  createGroup(group: GroupInput, email: String): Group!
-  editGroup(groupId: String, group: GroupInput, email: String): Group!
+  createGroup(group: CreateGroupInput): Group!
+  editGroup(group: EditGroupInput): Group!
   joinGroup(groupId: String, email: String): Group!
   leaveGroup(groupId: String, email: String): Group!
   deleteGroup(groupId: String, email: String): Result!
