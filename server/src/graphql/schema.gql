@@ -76,7 +76,7 @@ input UserInput {
 
 input RecordInput {
   email: String!
-  scheduleId: String!
+  _id: String!
   record: [Record]!
 }
 
@@ -131,7 +131,7 @@ type Query {
   getAllUser: [User]!
 
   getMySchedule(email: String): [Schedule]!
-  getScheduleDetail(scheduleId: String): Schedule!
+  getScheduleDetail(_id: String): Schedule!
 
   getAllSpot: [Spot!]!
   getSpotDetail(spotId: String): Spot!
@@ -139,8 +139,8 @@ type Query {
   checkDuplicateGroupName(gname: String): Result!
   getAllGroup: [Group]!
   getMyGroup(email: String): [Group]!
-  getGroupDetail(groupId: String): Group!
-  openSecretGroup(groupId: String, password: String): Group!
+  getGroupDetail(_id: String): Group!
+  openSecretGroup(_id: String, password: String): Group!
 }
 
 type Mutation {
@@ -150,17 +150,17 @@ type Mutation {
 
   createSchedule(schedule: CreateScheduleInput): Schedule!
   editSchedule(schedule: EditScheduleInput): Schedule!
-  deleteSchedule(scheduleId: String, email: String): Result!
-  joinSchedule(scheduleId: String, email: String): Schedule!
-  comeoutSchedule(scheduleId: String, email: String): Schedule!
-  inviteSchedule(scheduleId: String, email: String, guest: String): Schedule!
+  deleteSchedule(_id: String, email: String): Result!
+  joinSchedule(_id: String, email: String): Schedule!
+  comeoutSchedule(_id: String, email: String): Schedule!
+  inviteSchedule(_id: String, email: String, guest: String): Schedule!
 
   editRecord(records: RecordInput): Schedule!
 
   createGroup(group: CreateGroupInput): Group!
   editGroup(group: EditGroupInput): Group!
-  joinGroup(groupId: String, email: String): Group!
-  leaveGroup(groupId: String, email: String): Group!
-  deleteGroup(groupId: String, email: String): Result!
-  changeLeader(groupId: String, email: String, newLeader: String): Group!
+  joinGroup(_id: String, email: String): Group!
+  leaveGroup(_id: String, email: String): Group!
+  deleteGroup(_id: String, email: String): Result!
+  changeLeader(_id: String, email: String, newLeader: String): Group!
 }

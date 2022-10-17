@@ -97,7 +97,7 @@ export class CreateScheduleInput {
 @ObjectType()
 export class EditScheduleInput {
   @Field()
-  id: string;
+  _id: string;
   @Field()
   email: string;
   @Field()
