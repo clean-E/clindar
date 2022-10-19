@@ -2,12 +2,7 @@ import { Args, Mutation, Query } from '@nestjs/graphql';
 import { Resolver } from '@nestjs/graphql';
 import { UserQuery } from './user_query.service';
 import { UserMutation } from './user_mutation.service';
-import {
-  LoginInput,
-  User,
-  UserEmail,
-  NicknameInput,
-} from '../../schemas/user.schema';
+import { User, ReturnUser, UserInput, Result } from '../../schemas/user.schema';
 
 @Resolver('User')
 export class UserResolver {
@@ -16,23 +11,28 @@ export class UserResolver {
     private userMutation: UserMutation,
   ) {}
 
-  @Query(() => User)
-  async getMyPage(@Args('user') user: UserEmail) {
-    return await this.userQuery.getMyPage(user);
+  // @Query(() => ReturnUser)
+  // async getMyPage(@Args('email') email: string) {
+  //   return await this.userQuery.getMyPage(email);
+  // }
+
+  @Query(() => [User])
+  async getAllUser() {
+    return await this.userQuery.getAllUser();
   }
 
   @Mutation(() => User)
-  async login(@Args('user') user: LoginInput) {
-    return await this.userMutation.login(user);
+  async login(@Args('userInfo') userInfo: UserInput) {
+    return await this.userMutation.login(userInfo);
   }
 
   @Mutation(() => User)
-  async setNickname(@Args('user') user: NicknameInput) {
-    return await this.userMutation.setNickname(user);
+  async setNickname(@Args('userInfo') userInfo: UserInput) {
+    return await this.userMutation.setNickname(userInfo);
   }
 
-  @Mutation(() => User)
-  async deleteUser(@Args('user') user: UserEmail) {
-    return await this.userMutation.deleteUser(user);
-  }
+  // @Mutation(() => Result)
+  // async deleteUser(@Args('email') email: string) {
+  //   return await this.userMutation.deleteUser(email);
+  // }
 }

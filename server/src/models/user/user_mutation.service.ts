@@ -1,13 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import {
-  LoginInput,
-  NicknameInput,
-  User,
-  UserEmail,
-} from 'src/schemas/user.schema';
+import { Result, User, UserInput } from 'src/schemas/user.schema';
 import { ApolloError } from 'apollo-server-express';
-import { Message } from 'src/schemas/group.schema';
 
 @Injectable()
 export class UserMutation {
@@ -16,65 +10,46 @@ export class UserMutation {
     private userModel: Model<User>,
   ) {}
 
-  async login(user: LoginInput): Promise<User> {
-    const { email, nickname } = user;
+  async login(userInfo: UserInput): Promise<User> {
+    const { email, nickname } = userInfo;
 
-    try {
-      const userInfo = await this.userModel.exists({ email });
+    const userExists = await this.userModel.exists({ email });
 
-      if (userInfo === null) {
-        // 회원 정보가 없음, 첫 로그인 -> 유저 정보 생성
-        await this.userModel.create({
-          email,
-          nickname,
-          myGroupList: [],
-          myScheduleList: [],
-          records: [],
-        });
-      }
-      return await this.userModel.findOne({ email });
-    } catch (err) {
-      console.log(err);
-      throw new ApolloError('DB Error', 'DB_ERROR');
+    if (userExists === null) {
+      // 회원 정보가 없음, 첫 로그인 -> 유저 정보 생성
+      await this.userModel.create({
+        email,
+        nickname,
+        myGroupList: [],
+        myScheduleList: [],
+        myRecord: [],
+      });
+    }
+    return await this.userModel.findOne({ email });
+  }
+
+  async setNickname(userInfo: UserInput): Promise<User> {
+    const { email, nickname } = userInfo;
+
+    const duplicateCheck = await this.userModel.exists({ nickname });
+
+    if (duplicateCheck === null) {
+      // 사용 가능한 닉네임
+      const changeNickname = await this.userModel.findOneAndUpdate(
+        { email },
+        { nickname },
+      );
+      changeNickname.nickname = nickname;
+      return changeNickname;
+    } else {
+      // 이미 있는 닉네임
+      throw new ApolloError('중복된 닉네임', 'DUPLICATE_NICKNAME');
     }
   }
 
-  async setNickname(user: NicknameInput): Promise<User> {
-    const { email, nickname } = user;
-    try {
-      const userInfo = await this.userModel.exists({ nickname });
+  // async deleteUser(email: string): Promise<Result> {
+  //   const userInfo = await this.userModel.findOne({ email });
 
-      if (userInfo === null) {
-        // 사용 가능한 닉네임
-        const changeNickname = await this.userModel.findOneAndUpdate(
-          { email },
-          { nickname },
-        );
-        changeNickname.nickname = nickname;
-        changeNickname.success = true;
-        return changeNickname;
-      } else {
-        // 이미 있는 닉네임
-        const failChangeNickname = await this.userModel.findOne({ email });
-        failChangeNickname.success = false;
-        return failChangeNickname;
-      }
-    } catch (err) {
-      console.log(err);
-      throw new ApolloError('DB Error', 'DB_ERROR');
-    }
-  }
-
-  async deleteUser(user: UserEmail): Promise<Message> {
-    // 탈퇴할 때 삭제되어야 할 내용
-    // 내 일정 조회 -> 기록 삭제 -> 일정에서 삭제
-    // (호스트인 경우 다음 사람에게 넘겨주고 본인만 삭제, 혼자면 일정 자체를 삭제)
-    // 내 그룹 조회 -> 그룹 멤버에서 삭제
-    // (리더인 경우 다음 사람에게 넘겨주고 본인만 삭제, 혼자면 그룹 자체를 삭제)
-    const { email } = user;
-    const userInfo = await this.userModel.findOne({ email });
-    const { myScheduleList, myGroupList } = userInfo;
-
-    return { message: '', success: true };
-  }
+  //   return { success: true };
+  // }
 }

@@ -52,3 +52,9 @@ export class UserInput {
   @Field()
   nickname: string;
 }
+
+@ObjectType()
+export class Result {
+  @Field()
+  success: boolean;
+}
