@@ -1,15 +1,11 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import {
   CreateScheduleInput,
-  DeleteScheduleInput,
-  EditRecordInput,
   EditScheduleInput,
-  InviteScheduleInput,
-  JoinScheduleInput,
+  ReturnSchedule,
   Schedule,
-  ScheduleId,
 } from 'src/schemas/schedule.schema';
-import { UserEmail } from 'src/schemas/user.schema';
+import { Result } from 'src/schemas/user.schema';
 import { ScheduleMutation } from './schedule_mutation.service';
 import { ScheduleQuery } from './schedule_query.service';
 
@@ -20,40 +16,48 @@ export class ScheduleResolver {
     private scheduleMutation: ScheduleMutation,
   ) {}
 
-  @Query(() => [Schedule])
-  async getMySchedule(@Args('schedule') schedule: UserEmail) {
-    return await this.scheduleQuery.getMySchedule(schedule);
+  @Query(() => [ReturnSchedule])
+  async getMySchedule(@Args('email') email: string) {
+    return await this.scheduleQuery.getMySchedule(email);
   }
-  @Query(() => [Schedule])
-  async getGroupSchedule(@Args('schedule') schedule: UserEmail) {
-    return await this.scheduleQuery.getGroupSchedule(schedule);
+  @Query(() => ReturnSchedule)
+  async getScheduleDetail(@Args('_id') _id: string) {
+    return await this.scheduleQuery.getScheduleDetail(_id);
   }
-  @Query(() => Schedule)
-  async getScheduleDetail(@Args('schedule') schedule: ScheduleId) {
-    return await this.scheduleQuery.getScheduleDetail(schedule);
-  }
-  @Mutation(() => Schedule)
+
+  @Mutation(() => ReturnSchedule)
   async createSchedule(@Args('schedule') schedule: CreateScheduleInput) {
     return await this.scheduleMutation.createSchedule(schedule);
   }
-  @Mutation(() => String)
-  async deleteSchedule(@Args('schedule') schedule: DeleteScheduleInput) {
-    return await this.scheduleMutation.deleteSchedule(schedule);
-  }
-  @Mutation(() => Schedule)
+  @Mutation(() => ReturnSchedule)
   async editSchedule(@Args('schedule') schedule: EditScheduleInput) {
     return await this.scheduleMutation.editSchedule(schedule);
   }
-  @Mutation(() => Schedule)
-  async joinSchedule(@Args('schedule') schedule: JoinScheduleInput) {
-    return await this.scheduleMutation.joinSchedule(schedule);
+  @Mutation(() => Result)
+  async deleteSchedule(@Args('_id') _id: string, @Args('email') email: string) {
+    return await this.scheduleMutation.deleteSchedule(_id, email);
   }
-  @Mutation(() => Schedule)
-  async inviteSchedule(@Args('schedule') schedule: InviteScheduleInput) {
-    return await this.scheduleMutation.inviteSchedule(schedule);
+  @Mutation(() => ReturnSchedule)
+  async joinSchedule(@Args('_id') _id: string, @Args('email') email: string) {
+    return await this.scheduleMutation.joinSchedule(_id, email);
   }
-  @Mutation(() => Schedule)
-  async editRecord(@Args('schedule') schedule: EditRecordInput) {
-    return await this.scheduleMutation.editRecord(schedule);
+  @Mutation(() => ReturnSchedule)
+  async comeoutSchedule(
+    @Args('_id') _id: string,
+    @Args('email') email: string,
+  ) {
+    return await this.scheduleMutation.comeoutSchedule(_id, email);
   }
+  @Mutation(() => ReturnSchedule)
+  async inviteSchedule(
+    @Args('_id') _id: string,
+    @Args('email') email: string,
+    @Args('guest') guest: string,
+  ) {
+    return await this.scheduleMutation.inviteSchedule(_id, email, guest);
+  }
+  // @Mutation(() => ReturnSchedule)
+  // async editRecord(@Args('schedule') schedule: EditRecordInput) {
+  //   return await this.scheduleMutation.editRecord(schedule);
+  // }
 }

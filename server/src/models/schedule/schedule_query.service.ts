@@ -2,13 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ApolloError } from 'apollo-server-express';
 import { Model } from 'mongoose';
 import { Group } from 'src/schemas/group.schema';
-import {
-  Schedule,
-  ScheduleId,
-  ReturnSchedule,
-  Guest,
-} from 'src/schemas/schedule.schema';
-import { User, UserEmail } from 'src/schemas/user.schema';
+import { Schedule, ReturnSchedule, Guest } from 'src/schemas/schedule.schema';
+import { User } from 'src/schemas/user.schema';
 
 @Injectable()
 export class ScheduleQuery {
@@ -23,37 +18,31 @@ export class ScheduleQuery {
     private groupModel: Model<Group>,
   ) {}
 
-  async getMySchedule(schedule: UserEmail): Promise<ReturnSchedule[]> {
-    try {
-      const { email } = schedule;
-      const { myScheduleList } = await this.userModel.findOne({
-        email,
+  async getMySchedule(email: string): Promise<ReturnSchedule[]> {
+    const { myScheduleList } = await this.userModel.findOne({
+      email,
+    });
+
+    const allSchedule = {};
+
+    for (let i = 0; i < myScheduleList.length; i++) {
+      // 일정 id로 일정을 하나씩 조회
+      const scheduleInfo = await this.scheduleModel.findOne({
+        _id: myScheduleList[i],
       });
 
-      const allSchedule = {};
+      // id로 되어있는 host, guest를 nickname으로 변경
+      const returnSchedule: ReturnSchedule = await this.makeReturnSchedule(
+        scheduleInfo,
+      );
 
-      for (let i = 0; i < myScheduleList.length; i++) {
-        // 일정 id로 일정을 하나씩 조회
-        const scheduleInfo = await this.scheduleModel.findOne({
-          _id: myScheduleList[i],
-        });
-
-        // id로 되어있는 host, guest를 nickname으로 변경
-        const returnSchedule: ReturnSchedule = await this.makeReturnSchedule(
-          scheduleInfo,
-        );
-
-        // 저장
-        allSchedule[myScheduleList[i]] = returnSchedule;
-      }
-
-      return Object.values(allSchedule);
-    } catch (err) {
-      console.log(err);
-      throw new ApolloError('DB Error', 'DB_ERROR');
+      // 저장
+      allSchedule[myScheduleList[i]] = returnSchedule;
     }
-  }
 
+    return Object.values(allSchedule);
+  }
+  /*
   async getGroupSchedule(schedule: UserEmail): Promise<ReturnSchedule[]> {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -94,9 +83,8 @@ export class ScheduleQuery {
       throw new ApolloError('DB Error', 'DB_ERROR');
     }
   }
-
-  async getScheduleDetail(schedule: ScheduleId): Promise<ReturnSchedule> {
-    const { _id } = schedule;
+*/
+  async getScheduleDetail(_id: string): Promise<ReturnSchedule> {
     try {
       const scheduleInfo = await this.scheduleModel.findOne({ _id });
 

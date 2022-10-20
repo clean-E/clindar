@@ -1,20 +1,15 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ApolloError } from 'apollo-server-express';
-import { Model, ObjectId } from 'mongoose';
-import { Group, Message } from 'src/schemas/group.schema';
+import { Model } from 'mongoose';
+import { Group } from 'src/schemas/group.schema';
 import {
-  DeleteScheduleInput,
-  EditRecordInput,
-  ComeoutScheduleInput,
   Schedule,
   CreateScheduleInput,
   EditScheduleInput,
-  JoinScheduleInput,
   ReturnSchedule,
   Guest,
-  InviteScheduleInput,
 } from 'src/schemas/schedule.schema';
-import { User } from 'src/schemas/user.schema';
+import { Result, User } from 'src/schemas/user.schema';
 import { Records } from 'src/schemas/record.schema';
 
 @Injectable()
@@ -106,11 +101,10 @@ export class ScheduleMutation {
     }
   }
 
-  async deleteSchedule(schedule: DeleteScheduleInput): Promise<Message> {
+  async deleteSchedule(_id: string, email: string): Promise<Result> {
     // group의 schedules에서 삭제
     // guest에 있는 모든 사람의 목록에서 일정 id 삭제
     // schedule에서 삭제
-    const { _id, email } = schedule;
     try {
       const scheduleInfo = await this.scheduleModel.findOne({ _id });
       const userInfo = await this.userModel.findOne({ email });
@@ -150,10 +144,10 @@ export class ScheduleMutation {
 
       await this.scheduleModel.deleteOne({ _id });
 
-      return { message: '일정 삭제 성공', success: true };
+      return { success: true };
     } catch (err) {
       console.log(err);
-      return { message: err, success: false };
+      return { success: false };
     }
   }
 
@@ -257,15 +251,14 @@ export class ScheduleMutation {
     }
   }
 
-  async joinSchedule(schedule: JoinScheduleInput): Promise<ReturnSchedule> {
+  async joinSchedule(_id: string, email: string): Promise<ReturnSchedule> {
     // 내 일정 목록 업데이트, 일정 게스트 목록 업데이트
     // returnSchedule 생성
-    const { _id, nickname } = schedule;
     try {
       // 내 일정 목록 업데이트
-      const userInfo = await this.userModel.findOne({ nickname });
+      const userInfo = await this.userModel.findOne({ email });
       await this.userModel.updateOne(
-        { nickname },
+        { email },
         { myScheduleList: [...userInfo.myScheduleList, _id] },
       );
 
@@ -284,15 +277,18 @@ export class ScheduleMutation {
     }
   }
 
-  async inviteSchedule(schedule: InviteScheduleInput): Promise<ReturnSchedule> {
+  async inviteSchedule(
+    _id: string,
+    email: string,
+    guest: string,
+  ): Promise<ReturnSchedule> {
     // 초대된 사람 일정 목록 업데이트, 일정 게스트 목록 업데이트
     // returnSchedule 생성
-    const { _id, nickname } = schedule;
     try {
       // 내 일정 목록 업데이트
-      const userInfo = await this.userModel.findOne({ nickname });
+      const userInfo = await this.userModel.findOne({ email });
       await this.userModel.updateOne(
-        { nickname },
+        { email },
         { myScheduleList: [...userInfo.myScheduleList, _id] },
       );
 
@@ -311,9 +307,7 @@ export class ScheduleMutation {
     }
   }
 
-  async comeoutSchedule(schedule: ComeoutScheduleInput): Promise<Message> {
-    const { _id, email } = schedule;
-
+  async comeoutSchedule(_id: string, email: string): Promise<Result> {
     try {
       const userInfo = await this.userModel.findOne({ email });
       const scheduleInfo = await this.scheduleModel.findOne({ _id });
@@ -334,13 +328,13 @@ export class ScheduleMutation {
       }
       await this.scheduleModel.findOneAndUpdate({ _id }, scheduleInfo);
 
-      return { message: 'Succeeded in coming out of Schedule.', success: true };
+      return { success: true };
     } catch (err) {
       console.log(err);
-      return { message: 'Failed in coming out of Schedule.', success: false };
+      return { success: false };
     }
   }
-
+  /*
   async editRecord(schedule: EditRecordInput): Promise<ReturnSchedule> {
     const { _id, nickname, record } = schedule;
 
@@ -417,7 +411,7 @@ export class ScheduleMutation {
       throw new ApolloError('DB Error', 'DB_ERROR');
     }
   }
-
+*/
   async makeReturnSchedule(schedule: Schedule): Promise<ReturnSchedule> {
     const { who, group } = schedule;
 
