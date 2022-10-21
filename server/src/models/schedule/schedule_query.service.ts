@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ApolloError } from 'apollo-server-express';
 import { Model } from 'mongoose';
 import { Group } from 'src/schemas/group.schema';
+import { Records } from 'src/schemas/record.schema';
 import { Schedule, ReturnSchedule, Guest } from 'src/schemas/schedule.schema';
 import { User } from 'src/schemas/user.schema';
 
@@ -16,31 +16,58 @@ export class ScheduleQuery {
 
     @Inject('GROUP_MODEL')
     private groupModel: Model<Group>,
+
+    @Inject('RECORD_MODEL')
+    private recordModel: Model<Records>,
   ) {}
 
-  async getMySchedule(email: string): Promise<ReturnSchedule[]> {
+  async getMySchedule(email: string): Promise<Schedule[]> {
+    // id, category, where, when, group
     const { myScheduleList } = await this.userModel.findOne({
       email,
     });
 
-    const allSchedule = {};
+    const mySchedules = [];
 
     for (let i = 0; i < myScheduleList.length; i++) {
-      // 일정 id로 일정을 하나씩 조회
       const scheduleInfo = await this.scheduleModel.findOne({
         _id: myScheduleList[i],
       });
 
-      // id로 되어있는 host, guest를 nickname으로 변경
-      const returnSchedule: ReturnSchedule = await this.makeReturnSchedule(
-        scheduleInfo,
-      );
+      const { gname } = await this.groupModel.findById(scheduleInfo.group);
+      scheduleInfo.group = gname;
 
-      // 저장
-      allSchedule[myScheduleList[i]] = returnSchedule;
+      mySchedules.push(scheduleInfo);
     }
 
-    return Object.values(allSchedule);
+    return mySchedules;
+  }
+
+  async getScheduleDetail(_id: string): Promise<ReturnSchedule> {
+    // id, category, where, when, who, memo, group
+    const scheduleInfo = await this.scheduleModel.findOne({ _id });
+
+    // who{host, guest{nickname, record}}, group
+    const host = (await this.userModel.findById(scheduleInfo.who.host))
+      .nickname;
+    const group = (await this.groupModel.findById(scheduleInfo.group)).gname;
+
+    let guest: Guest[];
+    for (let i = 0; i < scheduleInfo.who.guest.length; i++) {
+      const { nickname } = await this.userModel.findById(
+        scheduleInfo.who.guest[i].nickname,
+      );
+      const record = (
+        await this.recordModel.findById(scheduleInfo.who.guest[i].record)
+      ).records;
+      guest.push({ nickname, record });
+    }
+
+    return {
+      ...scheduleInfo,
+      who: { host, guest },
+      group,
+    };
   }
   /*
   async getGroupSchedule(schedule: UserEmail): Promise<ReturnSchedule[]> {
@@ -84,47 +111,4 @@ export class ScheduleQuery {
     }
   }
 */
-  async getScheduleDetail(_id: string): Promise<ReturnSchedule> {
-    try {
-      const scheduleInfo = await this.scheduleModel.findOne({ _id });
-
-      return await this.makeReturnSchedule(scheduleInfo);
-    } catch (err) {
-      console.log(err);
-      throw new ApolloError('DB Error', 'DB_ERROR');
-    }
-  }
-
-  async makeReturnSchedule(schedule: Schedule): Promise<ReturnSchedule> {
-    const { who, group } = schedule;
-
-    const editWho = { host: '', guest: [] };
-    for (let idx = 0; idx < who.guest.length; idx++) {
-      const { nickname } = await this.userModel.findById(
-        who.guest[idx].nickname,
-      );
-      if (idx === 0) {
-        editWho.host = nickname;
-      }
-      const guest: Guest = { nickname, record: [] };
-      editWho.guest.push(guest);
-    }
-
-    let editGroup = '';
-    if (group !== '') {
-      const groupInfo = await this.groupModel.findOne({ id: group });
-      editGroup = groupInfo.gname;
-    }
-    const returnSchedule: ReturnSchedule = {
-      _id: schedule.id,
-      category: schedule.category,
-      where: schedule.where,
-      when: schedule.when,
-      who: editWho,
-      memo: schedule.memo,
-      group: editGroup,
-    };
-
-    return returnSchedule;
-  }
 }

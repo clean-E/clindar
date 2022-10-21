@@ -16,7 +16,7 @@ export class ScheduleResolver {
     private scheduleMutation: ScheduleMutation,
   ) {}
 
-  @Query(() => [ReturnSchedule])
+  @Query(() => [Schedule])
   async getMySchedule(@Args('email') email: string) {
     return await this.scheduleQuery.getMySchedule(email);
   }
