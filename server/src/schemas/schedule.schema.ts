@@ -6,16 +6,16 @@ import { Record } from './record.schema';
 export const ScheduleSchema = new mongoose.Schema({
   category: [String],
   when: { type: String },
-  where: { type: String },
-  who: {
-    host: { type: String },
-    guest: [
-      {
-        nickname: { type: String },
-        record: { type: String },
-      },
-    ],
-  },
+  spot: { type: String },
+
+  host: { type: String },
+  guest: [
+    {
+      nickname: { type: String },
+      record: { type: String },
+    },
+  ],
+
   memo: { type: String },
   group: { type: String },
 });
@@ -25,19 +25,18 @@ export class Schedule extends Document {
   @Field()
   category: string[];
   @Field()
-  where: string;
+  spot: string;
   @Field()
   when: string;
   @Field()
-  who: {
-    host: string;
-    guest: [
-      {
-        nickname: string;
-        record: string;
-      },
-    ];
-  };
+  host: string;
+  @Field()
+  guest: [
+    {
+      nickname: string;
+      record: string;
+    },
+  ];
   @Field()
   memo: string;
   @Field()
@@ -51,14 +50,13 @@ export class ReturnSchedule {
   @Field()
   category: string[];
   @Field()
-  where: string;
+  spot: string;
   @Field()
   when: string;
   @Field()
-  who: {
-    host: string;
-    guest: Guest[];
-  };
+  host: string;
+  @Field()
+  guest: Guest[];
   @Field()
   memo: string;
   @Field()
@@ -80,14 +78,18 @@ export class CreateScheduleInput {
   @Field()
   category: string[];
   @Field()
-  where: string;
+  spot: string;
   @Field()
   when: string;
   @Field()
-  who: {
-    host: string;
-    guest: Guest[];
-  };
+  host: string;
+  @Field()
+  guest: [
+    {
+      nickname: string;
+      record: string;
+    },
+  ];
   @Field()
   memo: string;
   @Field()
@@ -103,14 +105,13 @@ export class EditScheduleInput {
   @Field()
   category: string[];
   @Field()
-  where: string;
+  spot: string;
   @Field()
   when: string;
   @Field()
-  who: {
-    host: string;
-    guest: Guest[];
-  };
+  host: string;
+  @Field()
+  guest: Guest[];
   @Field()
   memo: string;
   @Field()

@@ -22,7 +22,7 @@ export class ScheduleQuery {
   ) {}
 
   async getMySchedule(email: string): Promise<Schedule[]> {
-    // id, category, where, when, group
+    // id, category, spot, when, group
     const { myScheduleList } = await this.userModel.findOne({
       email,
     });
@@ -44,28 +44,28 @@ export class ScheduleQuery {
   }
 
   async getScheduleDetail(_id: string): Promise<ReturnSchedule> {
-    // id, category, where, when, who, memo, group
+    // id, category, spot, when, host, guest, memo, group
     const scheduleInfo = await this.scheduleModel.findOne({ _id });
 
-    // who{host, guest{nickname, record}}, group
-    const host = (await this.userModel.findById(scheduleInfo.who.host))
-      .nickname;
+    // host, guest{nickname, record}, group
+    const host = (await this.userModel.findById(scheduleInfo.host)).nickname;
     const group = (await this.groupModel.findById(scheduleInfo.group)).gname;
 
     let guest: Guest[];
-    for (let i = 0; i < scheduleInfo.who.guest.length; i++) {
+    for (let i = 0; i < scheduleInfo.guest.length; i++) {
       const { nickname } = await this.userModel.findById(
-        scheduleInfo.who.guest[i].nickname,
+        scheduleInfo.guest[i].nickname,
       );
       const record = (
-        await this.recordModel.findById(scheduleInfo.who.guest[i].record)
+        await this.recordModel.findById(scheduleInfo.guest[i].record)
       ).records;
       guest.push({ nickname, record });
     }
 
     return {
       ...scheduleInfo,
-      who: { host, guest },
+      host,
+      guest,
       group,
     };
   }

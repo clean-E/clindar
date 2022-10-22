@@ -35,14 +35,10 @@ type Schedule {
   category: [String]!
   when: String!
   where: String!
-  who: Who!
-  memo: String!
-  group: String!
-}
-
-type Who {
   host: String!
   guest: [Guest]!
+  memo: String!
+  group: String!
 }
 
 type Guest {
@@ -85,7 +81,8 @@ input CreateScheduleInput {
   category: [String]!
   when: String!
   where: String!
-  who: Who!
+  host: String!
+  guest: [Guest]!
   memo: String!
   group: String!
 }
@@ -96,7 +93,8 @@ input EditScheduleInput {
   category: [String]!
   when: String!
   where: String!
-  who: Who!
+  host: String!
+  guest: [Guest]!
   memo: String!
   group: String!
 }

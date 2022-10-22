@@ -29,27 +29,62 @@ export class ScheduleMutation {
   ) {}
 
   async createSchedule(schedule: CreateScheduleInput): Promise<ReturnSchedule> {
-    // email, catecory, where, when, who, memo, group
+    // email, catecory, spot, when, host, guest, memo, group
     const { email } = schedule;
     delete schedule.email;
+
+    const newSchedule = await this.scheduleModel.create(schedule);
+
+    // guest{nickname, record}, group의 일정 목록에 추가, record 생성
+    let guest: Guest[];
+    for (let i = 0; i < schedule.guest.length; i++) {
+      const userInfo = await this.userModel.findById(
+        schedule.guest[i].nickname,
+      );
+      const record = await this.recordModel.create({
+        sId: newSchedule._id,
+        uId: userInfo._id,
+        records: [],
+      });
+      await this.userModel.updateOne(
+        { _id: userInfo._id },
+        {
+          myScheduleList: [...userInfo.myScheduleList, newSchedule._id],
+          myRecord: [...userInfo.myRecord, record._id],
+        },
+      );
+
+      const guestInfo = { nickname: userInfo.nickname, record: record.records };
+      guest.push(guestInfo);
+    }
+
+    const host = (await this.userModel.findOne({ email })).nickname;
+    const groupInfo = await this.groupModel.findById(schedule.group);
+    const group = groupInfo.gname;
+    await this.groupModel.updateOne(
+      { _id: groupInfo._id },
+      { schedules: [...groupInfo.schedules, newSchedule._id] },
+    );
+
+    return { ...newSchedule, host, guest, group };
   }
 
-  async editSchedule(schedule: EditScheduleInput): Promise<ReturnSchedule> {
-    const { email, _id } = schedule;
-    delete schedule.email;
-    delete schedule._id;
-  }
-  async deleteSchedule(_id: string, email: string): Promise<Result> {}
+  // async editSchedule(schedule: EditScheduleInput): Promise<ReturnSchedule> {
+  //   const { email, _id } = schedule;
+  //   delete schedule.email;
+  //   delete schedule._id;
+  // }
+  // async deleteSchedule(_id: string, email: string): Promise<Result> {}
 
-  async joinSchedule(_id: string, email: string): Promise<ReturnSchedule> {}
+  // async joinSchedule(_id: string, email: string): Promise<ReturnSchedule> {}
 
-  async comeoutSchedule(_id: string, email: string): Promise<Result> {}
+  // async comeoutSchedule(_id: string, email: string): Promise<Result> {}
 
-  async inviteSchedule(
-    _id: string,
-    email: string,
-    guest: string,
-  ): Promise<ReturnSchedule> {}
+  // async inviteSchedule(
+  //   _id: string,
+  //   email: string,
+  //   guest: string,
+  // ): Promise<ReturnSchedule> {}
 
   /*
   async editRecord(schedule: EditRecordInput): Promise<ReturnSchedule> {
