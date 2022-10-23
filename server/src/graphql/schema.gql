@@ -16,6 +16,12 @@ type Record {
   count: Int!
 }
 
+input RecordInput {
+  level: String!
+  nameOrColor: String
+  count: Int!
+}
+
 type Spot {
   _id: String
   spotName: String!
@@ -46,6 +52,11 @@ type Guest {
   record: [Record]!
 }
 
+input GuestInput {
+  nickname: String!
+  record: [RecordInput]!
+}
+
 type Group {
   _id: String
   gname: String!
@@ -54,7 +65,7 @@ type Group {
   description: String!
   memberList: [String]!
   mainCatecory: String!
-  age: [Number]!
+  age: [Int]!
   secret: Boolean!
   password: String
   schedules: [Schedule]!
@@ -70,10 +81,10 @@ input UserInput {
   nickname: String
 }
 
-input RecordInput {
+input EditRecordInput {
   email: String!
   _id: String!
-  record: [Record]!
+  record: [RecordInput]!
 }
 
 input CreateScheduleInput {
@@ -82,7 +93,7 @@ input CreateScheduleInput {
   when: String!
   where: String!
   host: String!
-  guest: [Guest]!
+  guest: [GuestInput]!
   memo: String!
   group: String!
 }
@@ -94,7 +105,7 @@ input EditScheduleInput {
   when: String!
   where: String!
   host: String!
-  guest: [Guest]!
+  guest: [GuestInput]!
   memo: String!
   group: String!
 }
@@ -106,7 +117,7 @@ input CreateGroupInput {
   createdAt: String!
   description: String!
   mainCatecory: String!
-  age: [Number]!
+  age: [Int]!
   secret: Boolean!
   password: String
 }
@@ -119,7 +130,7 @@ input EditGroupInput {
   createdAt: String!
   description: String!
   mainCatecory: String!
-  age: [Number]!
+  age: [Int]!
   secret: Boolean!
   password: String
 }

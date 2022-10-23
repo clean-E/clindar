@@ -74,7 +74,26 @@ export class ScheduleMutation {
   //   delete schedule.email;
   //   delete schedule._id;
   // }
-  // async deleteSchedule(_id: string, email: string): Promise<Result> {}
+  async deleteSchedule(_id: string, email: string): Promise<Result> {
+    // guest, group의 일정에서 제거
+    const { guest, group } = await this.scheduleModel.findById(_id);
+
+    for (let i = 0; i < guest.length; i++) {
+      let { myScheduleList } = await this.userModel.findById(guest[i].nickname);
+      myScheduleList = myScheduleList.splice(myScheduleList.indexOf(_id), 1);
+      await this.userModel.findByIdAndUpdate(guest[i].nickname, {
+        myScheduleList: [...myScheduleList],
+      });
+    }
+
+    let { schedules } = await this.groupModel.findById(group);
+    schedules = schedules.splice(schedules.indexOf(_id), 1);
+    await this.groupModel.findByIdAndUpdate(group, {
+      schedules: [...schedules],
+    });
+
+    return { success: true };
+  }
 
   // async joinSchedule(_id: string, email: string): Promise<ReturnSchedule> {}
 

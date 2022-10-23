@@ -33,10 +33,10 @@ export class ScheduleResolver {
   // async editSchedule(@Args('schedule') schedule: EditScheduleInput) {
   //   return await this.scheduleMutation.editSchedule(schedule);
   // }
-  // @Mutation(() => Result)
-  // async deleteSchedule(@Args('_id') _id: string, @Args('email') email: string) {
-  //   return await this.scheduleMutation.deleteSchedule(_id, email);
-  // }
+  @Mutation(() => Result)
+  async deleteSchedule(@Args('_id') _id: string, @Args('email') email: string) {
+    return await this.scheduleMutation.deleteSchedule(_id, email);
+  }
   // @Mutation(() => ReturnSchedule)
   // async joinSchedule(@Args('_id') _id: string, @Args('email') email: string) {
   //   return await this.scheduleMutation.joinSchedule(_id, email);
