@@ -31,12 +31,10 @@ export class Schedule extends Document {
   @Field()
   host: string;
   @Field()
-  guest: [
-    {
-      nickname: string;
-      record: string;
-    },
-  ];
+  guest: {
+    nickname: string;
+    record: string;
+  }[];
   @Field()
   memo: string;
   @Field()
@@ -84,12 +82,10 @@ export class CreateScheduleInput {
   @Field()
   host: string;
   @Field()
-  guest: [
-    {
-      nickname: string;
-      record: string;
-    },
-  ];
+  guest: {
+    nickname: string;
+    record: string;
+  }[];
   @Field()
   memo: string;
   @Field()

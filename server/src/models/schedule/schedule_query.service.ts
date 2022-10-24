@@ -43,6 +43,37 @@ export class ScheduleQuery {
     return mySchedules;
   }
 
+  async getGroupSchedule(email: string): Promise<Schedule[]> {
+    // id, category, spot, when, group
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    const { myGroupList } = await this.userModel.findOne({
+      email,
+    });
+
+    const allSchedule = {};
+
+    for (let i = 0; i < myGroupList.length; i++) {
+      // 내 그룹의 일정을 조회
+      const { schedules, gname } = await this.groupModel.findById(
+        myGroupList[i],
+      );
+      for (let j = 0; j < schedules.length; j++) {
+        // 일정을 하나씩 조회
+        const scheduleInfo = await this.scheduleModel.findById(schedules[i]);
+        scheduleInfo.group = gname;
+
+        // 날짜가 지난 일정은 제외
+        if (today <= new Date(scheduleInfo.when)) {
+          allSchedule[schedules[j]] = scheduleInfo;
+        }
+      }
+    }
+
+    return Object.values(allSchedule);
+  }
+
   async getScheduleDetail(_id: string): Promise<ReturnSchedule> {
     // id, category, spot, when, host, guest, memo, group
     const scheduleInfo = await this.scheduleModel.findOne({ _id });
@@ -69,46 +100,4 @@ export class ScheduleQuery {
       group,
     };
   }
-  /*
-  async getGroupSchedule(schedule: UserEmail): Promise<ReturnSchedule[]> {
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    try {
-      const { email } = schedule;
-      const { myGroupList } = await this.userModel.findOne({
-        email,
-      });
-
-      const allSchedule = {};
-
-      for (let i = 0; i < myGroupList.length; i++) {
-        // 내 그룹의 일정을 조회
-        const { schedules } = await this.groupModel.findOne({
-          gname: myGroupList[i],
-        });
-        for (let j = 0; j < schedules.length; j++) {
-          // 일정을 하나씩 조회
-          const scheduleInfo = await this.scheduleModel.findOne({
-            _id: schedules[j],
-          });
-
-          // id로 되어있는 host, guest를 nickname으로 변경
-          const returnSchedule: ReturnSchedule = await this.makeReturnSchedule(
-            scheduleInfo,
-          );
-
-          // 날짜가 지난 일정은 제외
-          if (today <= new Date(scheduleInfo.when)) {
-            allSchedule[schedules[j]] = returnSchedule;
-          }
-        }
-      }
-
-      return Object.values(allSchedule);
-    } catch (err) {
-      console.log(err);
-      throw new ApolloError('DB Error', 'DB_ERROR');
-    }
-  }
-*/
 }

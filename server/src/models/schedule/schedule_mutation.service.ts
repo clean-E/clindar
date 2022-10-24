@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ApolloError } from 'apollo-server-express';
 import { Model } from 'mongoose';
 import { Group } from 'src/schemas/group.schema';
 import {
@@ -35,36 +34,29 @@ export class ScheduleMutation {
 
     const newSchedule = await this.scheduleModel.create(schedule);
 
-    // guest{nickname, record}, group의 일정 목록에 추가, record 생성
-    let guest: Guest[];
-    for (let i = 0; i < schedule.guest.length; i++) {
-      const userInfo = await this.userModel.findById(
-        schedule.guest[i].nickname,
-      );
-      const record = await this.recordModel.create({
-        sId: newSchedule._id,
-        uId: userInfo._id,
-        records: [],
-      });
-      await this.userModel.updateOne(
-        { _id: userInfo._id },
-        {
-          myScheduleList: [...userInfo.myScheduleList, newSchedule._id],
-          myRecord: [...userInfo.myRecord, record._id],
-        },
-      );
-
-      const guestInfo = { nickname: userInfo.nickname, record: record.records };
-      guest.push(guestInfo);
-    }
+    // guest{nickname, record}, group의 일정 목록에 추가
+    const guest: Guest[] = await Promise.all(
+      newSchedule.guest.map(async (guest) => {
+        const userInfo = await this.userModel.findById(guest.nickname);
+        return {
+          nickname: userInfo.nickname,
+          record: [],
+        };
+      }),
+    );
 
     const host = (await this.userModel.findOne({ email })).nickname;
-    const groupInfo = await this.groupModel.findById(schedule.group);
-    const group = groupInfo.gname;
-    await this.groupModel.updateOne(
-      { _id: groupInfo._id },
-      { schedules: [...groupInfo.schedules, newSchedule._id] },
-    );
+    let group = '';
+
+    if (schedule.group) {
+      const { gname } = await this.groupModel.findByIdAndUpdate(
+        schedule.group,
+        {
+          $push: { schedules: newSchedule.id },
+        },
+      );
+      group = gname;
+    }
 
     return { ...newSchedule, host, guest, group };
   }
@@ -75,6 +67,12 @@ export class ScheduleMutation {
   //   delete schedule._id;
   // }
   async deleteSchedule(_id: string, email: string): Promise<Result> {
+    const scheduleInfo = await this.scheduleModel.findById(_id);
+    const hostInfo = await this.userModel.findOne({ email });
+    if (scheduleInfo.host !== hostInfo.id) {
+      return { success: false };
+    }
+
     // guest, group의 일정에서 제거
     const { guest, group } = await this.scheduleModel.findById(_id);
 
@@ -86,24 +84,171 @@ export class ScheduleMutation {
       });
     }
 
-    let { schedules } = await this.groupModel.findById(group);
-    schedules = schedules.splice(schedules.indexOf(_id), 1);
-    await this.groupModel.findByIdAndUpdate(group, {
-      schedules: [...schedules],
-    });
+    const groupInfo = await this.groupModel.findById(group).exec();
+    if (groupInfo) {
+      let { schedules } = groupInfo;
+      schedules = schedules.splice(schedules.indexOf(_id), 1);
+      await this.groupModel.findByIdAndUpdate(group, {
+        schedules: [...schedules],
+      });
+    }
 
     return { success: true };
   }
 
-  // async joinSchedule(_id: string, email: string): Promise<ReturnSchedule> {}
+  async joinSchedule(_id: string, email: string): Promise<ReturnSchedule> {
+    // catecory, spot, when, host, guest{nickname, record}, memo, group
 
-  // async comeoutSchedule(_id: string, email: string): Promise<Result> {}
+    // 일정의 게스트 목록에 추가
+    // 참여한 사람의 일정 목록에 추가
 
-  // async inviteSchedule(
-  //   _id: string,
-  //   email: string,
-  //   guest: string,
-  // ): Promise<ReturnSchedule> {}
+    const userInfo = await this.userModel.findOne({ email });
+    const scheduleInfo = await this.scheduleModel.findById(_id);
+
+    await this.userModel.findOneAndUpdate(
+      { email },
+      {
+        myScheduleList: [...userInfo.myScheduleList, _id],
+      },
+    );
+    await this.scheduleModel.findByIdAndUpdate(_id, {
+      guest: [...scheduleInfo.guest, { nickname: userInfo.id, record: '' }],
+    });
+
+    const newGuest: Guest = {
+      nickname: userInfo.nickname,
+      record: [],
+    };
+    const guest: Guest[] = await Promise.all(
+      scheduleInfo.guest.map(async (guest) => {
+        const userInfo = await this.userModel.findById(guest.nickname);
+        const recordInfo = await this.recordModel.findById(guest.record).exec();
+
+        return {
+          nickname: userInfo.nickname,
+          record: recordInfo ? recordInfo.records : [],
+        };
+      }),
+    );
+    guest.push(newGuest);
+
+    if (scheduleInfo.group) {
+      scheduleInfo.group = (
+        await this.groupModel.findById(scheduleInfo.group)
+      ).gname;
+    }
+
+    return { ...scheduleInfo, guest };
+  }
+
+  async comeoutSchedule(_id: string, email: string): Promise<ReturnSchedule> {
+    // 일정의 게스트 목록에서 제거
+    // 기록이 있으면 유저의 기록 목록에서 제거, record 제거
+    // 유저의 일정 목록에서 제거
+
+    const scheduleInfo = await this.scheduleModel.findById(_id);
+    const userInfo = await this.userModel.findOne({ email });
+    userInfo.myScheduleList = userInfo.myScheduleList.splice(
+      userInfo.myScheduleList.indexOf(_id),
+      1,
+    );
+
+    const recordInfo = await this.recordModel
+      .findOneAndDelete({ sId: _id })
+      .exec();
+
+    if (recordInfo) {
+      userInfo.myRecord = userInfo.myRecord.splice(
+        userInfo.myRecord.indexOf(recordInfo.id),
+        1,
+      );
+    }
+    await this.userModel.updateOne(
+      { email },
+      {
+        myScheduleList: [...userInfo.myScheduleList],
+        myRecord: [...userInfo.myRecord],
+      },
+    );
+
+    scheduleInfo.guest = scheduleInfo.guest.splice(
+      scheduleInfo.guest.indexOf({
+        nickname: userInfo.id,
+        record: recordInfo ? recordInfo.id : '',
+      }),
+      1,
+    );
+
+    const updatedSchedule = await this.scheduleModel.findByIdAndUpdate(
+      _id,
+      scheduleInfo,
+    );
+
+    const guest: Guest[] = await Promise.all(
+      updatedSchedule.guest.map(async (guest) => {
+        const userInfo = await this.userModel.findById(guest.nickname);
+        const recordInfo = await this.recordModel.findById(guest.record).exec();
+
+        return {
+          nickname: userInfo.nickname,
+          record: recordInfo ? recordInfo.records : [],
+        };
+      }),
+    );
+    if (updatedSchedule.group) {
+      updatedSchedule.group = (
+        await this.groupModel.findById(updatedSchedule.group)
+      ).gname;
+    }
+
+    return { ...updatedSchedule, guest };
+  }
+
+  async inviteSchedule(
+    _id: string,
+    email: string,
+    guest: string,
+  ): Promise<ReturnSchedule> {
+    // catecory, spot, when, host, guest{nickname, record}, memo, group
+
+    // 일정의 게스트 목록에 추가
+    // 참여한 사람의 일정 목록에 추가
+
+    const userInfo = await this.userModel.findById(guest);
+    const scheduleInfo = await this.scheduleModel.findById(_id);
+
+    await this.userModel.findByIdAndUpdate(guest, {
+      myScheduleList: [...userInfo.myScheduleList, _id],
+    });
+    await this.scheduleModel.findByIdAndUpdate(_id, {
+      guest: [...scheduleInfo.guest, { nickname: userInfo.id, record: '' }],
+    });
+
+    const newGuest: Guest = {
+      nickname: userInfo.nickname,
+      record: [],
+    };
+    const updatedGuest: Guest[] = await Promise.all(
+      scheduleInfo.guest.map(async (guest) => {
+        const userInfo = await this.userModel.findById(guest.nickname);
+        const recordInfo = await this.recordModel.findById(guest.record).exec();
+
+        return {
+          nickname: userInfo.nickname,
+          record: recordInfo ? recordInfo.records : [],
+        };
+      }),
+    );
+    updatedGuest.push(newGuest);
+
+    if (scheduleInfo.group) {
+      scheduleInfo.group = (
+        await this.groupModel.findById(scheduleInfo.group)
+      ).gname;
+    }
+
+    return { ...scheduleInfo, guest: [...updatedGuest] };
+  }
 
   /*
   async editRecord(schedule: EditRecordInput): Promise<ReturnSchedule> {
