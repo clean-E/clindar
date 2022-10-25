@@ -28,7 +28,7 @@ export class ScheduleMutation {
   ) {}
 
   async createSchedule(schedule: CreateScheduleInput): Promise<ReturnSchedule> {
-    // email, catecory, spot, when, host, guest, memo, group
+    // email, category, spot, when, host, guest, memo, group
     const { email } = schedule;
     delete schedule.email;
 
@@ -62,6 +62,8 @@ export class ScheduleMutation {
   }
 
   // async editSchedule(schedule: EditScheduleInput): Promise<ReturnSchedule> {
+  //   // email, category, spot, when, host, guest, memo, group
+  //   // category, spot, when, memo, group
   //   const { email, _id } = schedule;
   //   delete schedule.email;
   //   delete schedule._id;
@@ -97,7 +99,7 @@ export class ScheduleMutation {
   }
 
   async joinSchedule(_id: string, email: string): Promise<ReturnSchedule> {
-    // catecory, spot, when, host, guest{nickname, record}, memo, group
+    // category, spot, when, host, guest{nickname, record}, memo, group
 
     // 일정의 게스트 목록에 추가
     // 참여한 사람의 일정 목록에 추가
@@ -209,7 +211,7 @@ export class ScheduleMutation {
     email: string,
     guest: string,
   ): Promise<ReturnSchedule> {
-    // catecory, spot, when, host, guest{nickname, record}, memo, group
+    // category, spot, when, host, guest{nickname, record}, memo, group
 
     // 일정의 게스트 목록에 추가
     // 참여한 사람의 일정 목록에 추가

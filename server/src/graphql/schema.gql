@@ -140,6 +140,7 @@ type Query {
   getAllUser: [User]!
 
   getMySchedule(email: String): [Schedule]!
+  getGroupSchedule(email: String): [Schedule]!
   getScheduleDetail(_id: String): Schedule!
 
   getAllSpot: [Spot!]!

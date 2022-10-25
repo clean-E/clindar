@@ -4,6 +4,7 @@ import { FileUpload } from 'graphql-upload';
 import { CreateGroupInput, Group } from 'src/schemas/group.schema';
 import { GroupQuery } from './group_query.service';
 import { GroupMutation } from './group_mutation.service';
+import { Result } from 'src/schemas/user.schema';
 
 @Resolver('Group')
 export class GroupResolver {
@@ -11,6 +12,11 @@ export class GroupResolver {
     private groupQuery: GroupQuery,
     private groupMutation: GroupMutation,
   ) {}
+
+  @Query(() => Result)
+  async checkDuplicateGroupName(@Args('gname') gname: string) {
+    return await this.groupQuery.checkDuplicateGroupName(gname);
+  }
 
   // @Query(() => [Group])
   // async getAllGroup() {
