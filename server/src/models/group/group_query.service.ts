@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { Group } from 'src/schemas/group.schema';
+import { Group, ReturnGroup } from 'src/schemas/group.schema';
 import { Result, User } from 'src/schemas/user.schema';
 import * as bcrypt from 'bcrypt';
 import * as dotenv from 'dotenv';
@@ -27,13 +27,23 @@ export class GroupQuery {
   }
 
   // 멤버, 일정이 id로 되어있으니 바꿔서 반환
-  // async getAllGroup(): Promise<Group[]> {
-  //
-  // }
+  async getAllGroup(): Promise<Group[]> {
+    // _id, gname, mainCategory, age, secret
+    const groups = await this.groupModel.find();
 
-  // async getMyGroup(group: UserEmail): Promise<Group[]> {
-  //
-  // }
+    return groups;
+  }
+
+  async getMyGroup(email: string): Promise<Group[]> {
+    const userInfo = await this.userModel.findOne({ email });
+    const myGroupList = await Promise.all(
+      userInfo.myGroupList.map(async (group) => {
+        return await this.groupModel.findById(group);
+      }),
+    );
+
+    return myGroupList;
+  }
 
   // async getGroupDetail(group: GroupId): Promise<Group> {
   //
