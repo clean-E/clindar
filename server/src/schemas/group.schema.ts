@@ -63,8 +63,6 @@ export class CreateGroupInput {
   secret: boolean;
   @Field()
   password: string;
-  @Field()
-  schedules: string[];
   // @Field()
   // image: string;
 }
@@ -109,6 +107,8 @@ export class ReturnGroup {
   createdAt: string;
   @Field()
   description: string;
+  @Field()
+  memberList: string[];
   @Field()
   mainCategory: string;
   @Field()

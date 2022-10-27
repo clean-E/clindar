@@ -27,18 +27,13 @@ export class ScheduleQuery {
       email,
     });
 
-    const mySchedules = [];
-
-    for (let i = 0; i < myScheduleList.length; i++) {
-      const scheduleInfo = await this.scheduleModel.findOne({
-        _id: myScheduleList[i],
-      });
-
-      const { gname } = await this.groupModel.findById(scheduleInfo.group);
-      scheduleInfo.group = gname;
-
-      mySchedules.push(scheduleInfo);
-    }
+    const mySchedules = await Promise.all(
+      myScheduleList.map(async (id) => {
+        const schedule = await this.scheduleModel.findById(id);
+        schedule.group = (await this.groupModel.findById(schedule.group)).gname;
+        return schedule;
+      }),
+    );
 
     return mySchedules;
   }
@@ -53,7 +48,6 @@ export class ScheduleQuery {
     });
 
     const allSchedule = {};
-
     for (let i = 0; i < myGroupList.length; i++) {
       // 내 그룹의 일정을 조회
       const { schedules, gname } = await this.groupModel.findById(

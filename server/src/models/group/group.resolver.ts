@@ -1,7 +1,7 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { FileUpload } from 'graphql-upload';
 
-import { CreateGroupInput, Group } from 'src/schemas/group.schema';
+import { CreateGroupInput, Group, ReturnGroup } from 'src/schemas/group.schema';
 import { GroupQuery } from './group_query.service';
 import { GroupMutation } from './group_mutation.service';
 import { Result } from 'src/schemas/user.schema';
@@ -18,20 +18,20 @@ export class GroupResolver {
     return await this.groupQuery.checkDuplicateGroupName(gname);
   }
 
-  // @Query(() => [Group])
-  // async getAllGroup() {
-  //   return await this.groupQuery.getAllGroup();
-  // }
+  @Query(() => [Group])
+  async getAllGroup() {
+    return await this.groupQuery.getAllGroup();
+  }
 
-  // @Query(() => [Group])
-  // async getMyGroup(@Args('group') group: UserEmail) {
-  //   return await this.groupQuery.getMyGroup(group);
-  // }
+  @Query(() => [Group])
+  async getMyGroup(@Args('email') email: string) {
+    return await this.groupQuery.getMyGroup(email);
+  }
 
-  // @Query(() => Group)
-  // async getGroupDetail(@Args('group') group: GroupId) {
-  //   return await this.groupQuery.getGroupDetail(group);
-  // }
+  @Query(() => ReturnGroup)
+  async getGroupDetail(@Args('email') email: string, @Args('_id') _id: string) {
+    return await this.groupQuery.getGroupDetail(email, _id);
+  }
 
   // @Query(() => Group || String)
   // async openSecretGroup(@Args('group') group: GroupPassword) {
