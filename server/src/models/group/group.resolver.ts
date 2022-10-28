@@ -33,10 +33,13 @@ export class GroupResolver {
     return await this.groupQuery.getGroupDetail(email, _id);
   }
 
-  // @Query(() => Group || String)
-  // async openSecretGroup(@Args('group') group: GroupPassword) {
-  //   return await this.groupQuery.openSecretGroup(group);
-  // }
+  @Query(() => ReturnGroup)
+  async openSecretGroup(
+    @Args('_id') _id: string,
+    @Args('password') password: string,
+  ) {
+    return await this.groupQuery.openSecretGroup(_id, password);
+  }
 
   // @Mutation(() => Group)
   // async createGroup(@Args('group') group: CreateGroupInput) {

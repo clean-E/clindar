@@ -70,26 +70,30 @@ export class GroupQuery {
     return { ...groupInfo, leader, memberList, schedules, join };
   }
 
-  // async openSecretGroup(group: GroupPassword): Promise<Group> {
-  //   const { _id, password } = group;
-  //   try {
-  //     const groupInfo = await this.groupModel.findOne({ _id });
-  //     const passwordCompareResult = await bcrypt.compare(
-  //       password,
-  //       groupInfo.password,
-  //     );
-  //     if (passwordCompareResult) {
-  //       const groupInfo = await this.groupModel.findOne({ _id });
-  //       groupInfo.success = true;
-  //       return groupInfo;
-  //     } else {
-  //       let groupInfo: Group;
-  //       groupInfo.success = false;
-  //       return groupInfo;
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //     throw new ApolloError('DB Error', 'DB_ERROR');
-  //   }
-  // }
+  async openSecretGroup(_id: string, password: string): Promise<ReturnGroup> {
+    const groupInfo = await this.groupModel.findOne({ _id });
+    const passwordCompareResult = await bcrypt.compare(
+      password,
+      groupInfo.password,
+    );
+    if (passwordCompareResult) {
+      const groupInfo = await this.groupModel.findById(_id);
+      // leader, memberList, schedules, join
+      const leader = (await this.userModel.findById(groupInfo.leader)).nickname;
+      const memberList = await Promise.all(
+        groupInfo.memberList.map(async (mem) => {
+          return (await this.userModel.findById(mem)).nickname;
+        }),
+      );
+      const schedules: ReturnSchedule[] = await Promise.all(
+        groupInfo.schedules.map(async (schedule) => {
+          return await this.scheduleModel.findById(schedule);
+        }),
+      );
+
+      return { ...groupInfo, leader, memberList, schedules };
+    } else {
+      throw new ApolloError('Wrong Password', 'WRONG_PASSWORD');
+    }
+  }
 }

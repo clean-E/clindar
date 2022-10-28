@@ -116,7 +116,7 @@ export class ReturnGroup {
   @Field()
   schedules: ReturnSchedule[];
   @Field()
-  join: boolean;
+  join?: boolean;
   // @Field()
   // image: string;
 }
