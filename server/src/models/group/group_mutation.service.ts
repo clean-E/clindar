@@ -22,49 +22,30 @@ export class GroupMutation {
     private userModel: Model<User>,
   ) {}
 
-  // async createGroup(group: CreateGroupInput): Promise<Group> {
-  //   const {
-  //     email,
-  //     gname,
-  //     leader,
-  //     createdAt,
-  //     mainCategory,
-  //     description,
-  //     secret,
-  //     password,
-  //     image,
-  //   } = group;
-  //   const groupSchema = {
-  //     gname,
-  //     leader,
-  //     createdAt,
-  //     description,
-  //     memberList: [leader],
-  //     mainCategory,
-  //     secret,
-  //     password: password
-  //       ? await bcrypt.hash(password, Number(process.env.SALT))
-  //       : password,
-  //     schedules: [],
-  //     image,
-  //   };
+  async createGroup(group: CreateGroupInput): Promise<ReturnGroup> {
+    // email, gname, leader, createdAt, description, mainCategory, age, secret, password
+    const { email } = group;
+    delete group.email;
+    const groupExist = await this.groupModel.exists({ gname: group.gname });
+    if (groupExist !== null) {
+      throw new Error('Group name Already Exists');
+    }
+    group.password = group.password
+      ? await bcrypt.hash(group.password, Number(process.env.SALT))
+      : group.password;
+    // memberList, schedules
+    const userInfo = await this.userModel.findOne({ email: group.email });
+    group['memberList'] = [userInfo.id];
+    group['schedules'] = [];
 
-  //   try {
-  //     const groupExist = await this.groupModel.exists({ gname });
-  //     if (groupExist !== null) {
-  //       throw new Error('Group name Already Exists');
-  //     }
-  //     const userInfo = await this.userModel.findOne({ email });
-  //     await this.userModel.updateOne(
-  //       { email },
-  //       { myGroupList: [...userInfo.myGroupList, gname] },
-  //     );
-  //     return await this.groupModel.create(groupSchema);
-  //   } catch (err) {
-  //     console.log(err);
-  //     throw new ApolloError('DB Error', 'DB_ERROR');
-  //   }
-  // }
+    const newGroup = await this.groupModel.create(group);
+    await this.userModel.updateOne(
+      { email },
+      { myGroupList: [...userInfo.myGroupList, newGroup.id] },
+    );
+
+    // leader, memberList
+  }
 
   // async joinGroup(group: JoinGroupInput): Promise<Group> {
   //   const { email, _id } = group;
