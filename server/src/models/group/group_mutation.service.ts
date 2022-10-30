@@ -1,12 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { CreateGroupInput, Group } from 'src/schemas/group.schema';
+import { CreateGroupInput, Group, ReturnGroup } from 'src/schemas/group.schema';
 import { User } from 'src/schemas/user.schema';
 import * as bcrypt from 'bcrypt';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 import { FileUpload } from 'graphql-upload';
 import { ApolloError } from 'apollo-server-express';
+import { ReturnSchedule, Schedule } from 'src/schemas/schedule.schema';
 
 dotenv.config({
   path: path.resolve('.development.env'),
@@ -20,6 +21,9 @@ export class GroupMutation {
 
     @Inject('USER_MODEL')
     private userModel: Model<User>,
+
+    @Inject('SCHEDULE_MODEL')
+    private scheduleModel: Model<Schedule>,
   ) {}
 
   async createGroup(group: CreateGroupInput): Promise<ReturnGroup> {
@@ -44,7 +48,21 @@ export class GroupMutation {
       { myGroupList: [...userInfo.myGroupList, newGroup.id] },
     );
 
-    // leader, memberList
+    // leader, memberList, schedules, join
+    const leader = (await this.userModel.findById(newGroup.leader)).nickname;
+    const memberList = await Promise.all(
+      newGroup.memberList.map(async (mem) => {
+        return (await this.userModel.findById(mem)).nickname;
+      }),
+    );
+    const schedules: ReturnSchedule[] = await Promise.all(
+      newGroup.schedules.map(async (schedule) => {
+        return await this.scheduleModel.findById(schedule);
+      }),
+    );
+    const join = memberList.includes(userInfo.nickname);
+
+    return { ...newGroup, leader, memberList, schedules, join };
   }
 
   // async joinGroup(group: JoinGroupInput): Promise<Group> {
