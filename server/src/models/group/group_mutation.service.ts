@@ -65,27 +65,34 @@ export class GroupMutation {
     return { ...newGroup, leader, memberList, schedules, join };
   }
 
-  // async joinGroup(group: JoinGroupInput): Promise<Group> {
-  //   const { email, _id } = group;
+  async joinGroup(_id: string, email: string): Promise<ReturnGroup> {
+    const userInfo = await this.userModel.findOne({ email });
+    const groupInfo = await this.groupModel.findOne({ _id });
+    await this.userModel.updateOne(
+      { email },
+      { myGroupList: [...userInfo.myGroupList, _id] },
+    );
+    await this.groupModel.updateOne(
+      { _id },
+      { memberList: [...groupInfo.memberList, userInfo.id] },
+    );
 
-  //   try {
-  //     const userInfo = await this.userModel.findOne({ email });
-  //     const groupInfo = await this.groupModel.findOne({ _id });
-  //     await this.userModel.updateOne(
-  //       { email },
-  //       { myGroupList: [...userInfo.myGroupList, groupInfo.gname] },
-  //     );
-  //     await this.groupModel.updateOne(
-  //       { _id },
-  //       { memberList: [...groupInfo.memberList, userInfo.nickname] },
-  //     );
+    // leader, memberList, schedules, join
+    const leader = (await this.userModel.findById(groupInfo.leader)).nickname;
+    const memberList = await Promise.all(
+      groupInfo.memberList.map(async (mem) => {
+        return (await this.userModel.findById(mem)).nickname;
+      }),
+    );
+    const schedules: ReturnSchedule[] = await Promise.all(
+      groupInfo.schedules.map(async (schedule) => {
+        return await this.scheduleModel.findById(schedule);
+      }),
+    );
+    const join = memberList.includes(userInfo.nickname);
 
-  //     return await this.groupModel.findOne({ _id });
-  //   } catch (err) {
-  //     console.log(err);
-  //     throw new ApolloError('DB Error', 'DB_ERROR');
-  //   }
-  // }
+    return { ...groupInfo, leader, memberList, schedules, join };
+  }
 
   // async leaveGroup(group: LeaveGroupInput): Promise<Group> {
   //   const { email, _id } = group;
