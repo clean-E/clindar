@@ -158,28 +158,49 @@ export class GroupMutation {
   //   }
   // }
 
-  // async changeLeader(group: ChangeLeaderInput): Promise<Group> {
-  //   const { _id, leader, nextLeader } = group;
+  async changeLeader(
+    _id: string,
+    email: string,
+    newLeader: string,
+  ): Promise<ReturnGroup> {
+    const userInfo = await this.userModel.findOne({ email });
+    const groupInfo = await this.groupModel.findById(_id);
+    if (groupInfo.leader === userInfo.id) {
+      await this.groupModel.findOneAndUpdate({ _id }, { leader: newLeader });
 
-  //   try {
-  //     const groupInfo = await this.groupModel.findOne({ _id });
-  //     if (groupInfo.leader === leader) {
-  //       await this.groupModel.findOneAndUpdate({ _id }, { leader: nextLeader });
-  //       const result = await this.groupModel.findOne({ _id });
-  //       result.success = true;
+      // leader, memberList, schedules, join
+      const leader = (await this.userModel.findById(newLeader)).nickname;
+      const memberList = await Promise.all(
+        groupInfo.memberList.map(async (mem) => {
+          return (await this.userModel.findById(mem)).nickname;
+        }),
+      );
+      const schedules: ReturnSchedule[] = await Promise.all(
+        groupInfo.schedules.map(async (schedule) => {
+          return await this.scheduleModel.findById(schedule);
+        }),
+      );
+      const join = memberList.includes(userInfo.nickname);
 
-  //       return result;
-  //     } else {
-  //       const result = await this.groupModel.findOne({ _id });
-  //       result.success = false;
+      return { ...groupInfo, leader, memberList, schedules, join };
+    } else {
+      // leader, memberList, schedules, join
+      const leader = (await this.userModel.findById(groupInfo.leader)).nickname;
+      const memberList = await Promise.all(
+        groupInfo.memberList.map(async (mem) => {
+          return (await this.userModel.findById(mem)).nickname;
+        }),
+      );
+      const schedules: ReturnSchedule[] = await Promise.all(
+        groupInfo.schedules.map(async (schedule) => {
+          return await this.scheduleModel.findById(schedule);
+        }),
+      );
+      const join = memberList.includes(userInfo.nickname);
 
-  //       return result;
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //     throw new ApolloError('DB Error', 'DB_ERROR');
-  //   }
-  // }
+      return { ...groupInfo, leader, memberList, schedules, join };
+    }
+  }
 
   // async changeGroupImage(group: FileUpload): Promise<Message> {
   //   const { createReadStream, filename, mimetype, encoding } = group;

@@ -41,15 +41,15 @@ export class GroupResolver {
     return await this.groupQuery.openSecretGroup(_id, password);
   }
 
-  // @Mutation(() => Group)
-  // async createGroup(@Args('group') group: CreateGroupInput) {
-  //   return await this.groupMutation.createGroup(group);
-  // }
+  @Mutation(() => ReturnGroup)
+  async createGroup(@Args('group') group: CreateGroupInput) {
+    return await this.groupMutation.createGroup(group);
+  }
 
-  // @Mutation(() => Group)
-  // async joinGroup(@Args('group') group: JoinGroupInput) {
-  //   return await this.groupMutation.joinGroup(group);
-  // }
+  @Mutation(() => ReturnGroup)
+  async joinGroup(@Args('_id') _id: string, @Args('email') email: string) {
+    return await this.groupMutation.joinGroup(_id, email);
+  }
 
   // @Mutation(() => Group)
   // async leaveGroup(@Args('group') group: LeaveGroupInput) {
@@ -61,10 +61,14 @@ export class GroupResolver {
   //   return await this.groupMutation.deleteGroup(group);
   // }
 
-  // @Mutation(() => Group)
-  // async changeLeader(@Args('group') group: ChangeLeaderInput) {
-  //   return await this.groupMutation.changeLeader(group);
-  // }
+  @Mutation(() => ReturnGroup)
+  async changeLeader(
+    @Args('_id') _id: string,
+    @Args('email') email: string,
+    @Args('newLeader') newLeader: string,
+  ) {
+    return await this.groupMutation.changeLeader(_id, email, newLeader);
+  }
 
   // @Mutation(() => Group)
   // async changeGroupImage(@Args('group') group: FileUpload) {
