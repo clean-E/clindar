@@ -10,6 +10,7 @@ import {
 } from 'src/schemas/schedule.schema';
 import { Result, User } from 'src/schemas/user.schema';
 import { Records } from 'src/schemas/record.schema';
+import { ApolloError } from 'apollo-server-express';
 
 @Injectable()
 export class ScheduleMutation {
@@ -38,6 +39,10 @@ export class ScheduleMutation {
     const guest: Guest[] = await Promise.all(
       newSchedule.guest.map(async (guest) => {
         const userInfo = await this.userModel.findById(guest.nickname);
+        await this.userModel.updateOne(
+          { _id: guest.nickname },
+          { myScheduleList: [...userInfo.myScheduleList, newSchedule.id] },
+        );
         return {
           nickname: userInfo.nickname,
           record: [],
@@ -58,7 +63,7 @@ export class ScheduleMutation {
       group = gname;
     }
 
-    return { ...newSchedule, host, guest, group };
+    return { _id: newSchedule.id, ...newSchedule, host, guest, group };
   }
 
   // async editSchedule(schedule: EditScheduleInput): Promise<ReturnSchedule> {
@@ -103,19 +108,25 @@ export class ScheduleMutation {
 
     // 일정의 게스트 목록에 추가
     // 참여한 사람의 일정 목록에 추가
+    let userInfo;
+    let scheduleInfo;
+    try {
+      userInfo = await this.userModel.findOne({ email });
+      scheduleInfo = await this.scheduleModel.findById(_id);
 
-    const userInfo = await this.userModel.findOne({ email });
-    const scheduleInfo = await this.scheduleModel.findById(_id);
-
-    await this.userModel.findOneAndUpdate(
-      { email },
-      {
-        myScheduleList: [...userInfo.myScheduleList, _id],
-      },
-    );
-    await this.scheduleModel.findByIdAndUpdate(_id, {
-      guest: [...scheduleInfo.guest, { nickname: userInfo.id, record: '' }],
-    });
+      await this.userModel.findOneAndUpdate(
+        { email },
+        {
+          myScheduleList: [...userInfo.myScheduleList, _id],
+        },
+      );
+      await this.scheduleModel.findByIdAndUpdate(_id, {
+        guest: [...scheduleInfo.guest, { nickname: userInfo.id, record: '' }],
+      });
+    } catch (e) {
+      console.log(e);
+      throw new ApolloError(e.Message);
+    }
 
     const newGuest: Guest = {
       nickname: userInfo.nickname,
@@ -124,7 +135,9 @@ export class ScheduleMutation {
     const guest: Guest[] = await Promise.all(
       scheduleInfo.guest.map(async (guest) => {
         const userInfo = await this.userModel.findById(guest.nickname);
-        const recordInfo = await this.recordModel.findById(guest.record).exec();
+        const recordInfo = await this.recordModel
+          .findOne({ id: guest.record })
+          .exec();
 
         return {
           nickname: userInfo.nickname,
@@ -140,7 +153,7 @@ export class ScheduleMutation {
       ).gname;
     }
 
-    return { ...scheduleInfo, guest };
+    return { _id: scheduleInfo.id, ...scheduleInfo, guest };
   }
 
   async comeoutSchedule(_id: string, email: string): Promise<ReturnSchedule> {

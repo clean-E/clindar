@@ -49,20 +49,7 @@ export class GroupMutation {
     );
 
     // leader, memberList, schedules, join
-    const leader = (await this.userModel.findById(newGroup.leader)).nickname;
-    const memberList = await Promise.all(
-      newGroup.memberList.map(async (mem) => {
-        return (await this.userModel.findById(mem)).nickname;
-      }),
-    );
-    const schedules: ReturnSchedule[] = await Promise.all(
-      newGroup.schedules.map(async (schedule) => {
-        return await this.scheduleModel.findById(schedule);
-      }),
-    );
-    const join = memberList.includes(userInfo.nickname);
-
-    return { ...newGroup, leader, memberList, schedules, join };
+    return this.makeReturnGroup(newGroup, userInfo);
   }
 
   async joinGroup(_id: string, email: string): Promise<ReturnGroup> {
@@ -78,20 +65,7 @@ export class GroupMutation {
     );
 
     // leader, memberList, schedules, join
-    const leader = (await this.userModel.findById(groupInfo.leader)).nickname;
-    const memberList = await Promise.all(
-      groupInfo.memberList.map(async (mem) => {
-        return (await this.userModel.findById(mem)).nickname;
-      }),
-    );
-    const schedules: ReturnSchedule[] = await Promise.all(
-      groupInfo.schedules.map(async (schedule) => {
-        return await this.scheduleModel.findById(schedule);
-      }),
-    );
-    const join = memberList.includes(userInfo.nickname);
-
-    return { ...groupInfo, leader, memberList, schedules, join };
+    return this.makeReturnGroup(groupInfo, userInfo);
   }
 
   // async leaveGroup(group: LeaveGroupInput): Promise<Group> {
@@ -167,39 +141,10 @@ export class GroupMutation {
     const groupInfo = await this.groupModel.findById(_id);
     if (groupInfo.leader === userInfo.id) {
       await this.groupModel.findOneAndUpdate({ _id }, { leader: newLeader });
-
-      // leader, memberList, schedules, join
-      const leader = (await this.userModel.findById(newLeader)).nickname;
-      const memberList = await Promise.all(
-        groupInfo.memberList.map(async (mem) => {
-          return (await this.userModel.findById(mem)).nickname;
-        }),
-      );
-      const schedules: ReturnSchedule[] = await Promise.all(
-        groupInfo.schedules.map(async (schedule) => {
-          return await this.scheduleModel.findById(schedule);
-        }),
-      );
-      const join = memberList.includes(userInfo.nickname);
-
-      return { ...groupInfo, leader, memberList, schedules, join };
-    } else {
-      // leader, memberList, schedules, join
-      const leader = (await this.userModel.findById(groupInfo.leader)).nickname;
-      const memberList = await Promise.all(
-        groupInfo.memberList.map(async (mem) => {
-          return (await this.userModel.findById(mem)).nickname;
-        }),
-      );
-      const schedules: ReturnSchedule[] = await Promise.all(
-        groupInfo.schedules.map(async (schedule) => {
-          return await this.scheduleModel.findById(schedule);
-        }),
-      );
-      const join = memberList.includes(userInfo.nickname);
-
-      return { ...groupInfo, leader, memberList, schedules, join };
+      groupInfo.leader = newLeader;
     }
+    // leader, memberList, schedules, join
+    return this.makeReturnGroup(groupInfo, userInfo);
   }
 
   // async changeGroupImage(group: FileUpload): Promise<Message> {
@@ -214,4 +159,33 @@ export class GroupMutation {
 
   //   return { message: '???' };
   // }
+
+  async makeReturnGroup(
+    groupInfo: Group & { _id: string },
+    userInfo: User,
+  ): Promise<ReturnGroup> {
+    // leader, memberList, schedules, join
+    const leader = (await this.userModel.findById(groupInfo.leader)).nickname;
+    const memberList = await Promise.all(
+      groupInfo.memberList.map(async (mem) => {
+        return (await this.userModel.findById(mem)).nickname;
+      }),
+    );
+    const schedules: ReturnSchedule[] = await Promise.all(
+      groupInfo.schedules.map(async (schedule) => {
+        return await this.scheduleModel.findById(schedule);
+      }),
+    );
+    const join = memberList.includes(userInfo.nickname);
+
+    const returnGroup: ReturnGroup = {
+      ...groupInfo,
+      leader,
+      memberList,
+      schedules,
+      join,
+    };
+
+    return returnGroup;
+  }
 }

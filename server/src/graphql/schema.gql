@@ -54,7 +54,7 @@ type Guest {
 
 input GuestInput {
   nickname: String!
-  record: [RecordInput]!
+  record: String!
 }
 
 type Group {
