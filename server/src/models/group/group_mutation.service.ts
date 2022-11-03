@@ -68,42 +68,36 @@ export class GroupMutation {
     return this.makeReturnGroup(groupInfo, userInfo);
   }
 
-  // async leaveGroup(group: LeaveGroupInput): Promise<Group> {
-  //   const { email, _id } = group;
+  async leaveGroup(_id: string, email: string): Promise<ReturnGroup> {
+    const userInfo = await this.userModel.findOne({ email });
+    const groupInfo = await this.groupModel.findById(_id);
 
-  //   try {
-  //     const userInfo = await this.userModel.findOne({ email });
-  //     const groupInfo = await this.groupModel.findOne({ _id });
+    await this.userModel.updateOne(
+      { email },
+      {
+        myGroupList: userInfo.myGroupList.splice(
+          userInfo.myGroupList.indexOf(groupInfo.gname),
+          1,
+        ),
+      },
+    );
 
-  //     await this.userModel.updateOne(
-  //       { email },
-  //       {
-  //         myGroupList: userInfo.myGroupList.splice(
-  //           userInfo.myGroupList.indexOf(groupInfo.gname),
-  //           1,
-  //         ),
-  //       },
-  //     );
+    await this.groupModel.updateOne(
+      { _id },
+      {
+        memberList: groupInfo.memberList.splice(
+          groupInfo.memberList.indexOf(userInfo.id),
+          1,
+        ),
+      },
+    );
+    groupInfo.memberList = groupInfo.memberList.splice(
+      groupInfo.memberList.indexOf(userInfo.id),
+      1,
+    );
 
-  //     await this.groupModel.updateOne(
-  //       { _id },
-  //       {
-  //         memberList: groupInfo.memberList.splice(
-  //           groupInfo.memberList.indexOf(userInfo.nickname),
-  //           1,
-  //         ),
-  //       },
-  //     );
-
-  //     const result = await this.groupModel.findOne({ _id });
-  //     result.success = true;
-
-  //     return result;
-  //   } catch (err) {
-  //     console.log(err);
-  //     throw new ApolloError('DB Error', 'DB_ERROR');
-  //   }
-  // }
+    return await this.makeReturnGroup(groupInfo, userInfo);
+  }
 
   // async deleteGroup(group: DeleteGroupInput): Promise<Message> {
   //   const { email, _id } = group;
