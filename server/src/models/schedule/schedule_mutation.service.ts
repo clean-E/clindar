@@ -66,13 +66,47 @@ export class ScheduleMutation {
     return { _id: newSchedule.id, ...newSchedule, host, guest, group };
   }
 
-  // async editSchedule(schedule: EditScheduleInput): Promise<ReturnSchedule> {
-  //   // email, category, spot, when, host, guest, memo, group
-  //   // category, spot, when, memo, group
-  //   const { email, _id } = schedule;
-  //   delete schedule.email;
-  //   delete schedule._id;
-  // }
+  async editSchedule(schedule: EditScheduleInput): Promise<ReturnSchedule> {
+    // email, category, spot, when, host, guest, memo, group
+    // category, spot, when, memo, group
+    const { email, _id } = schedule;
+    delete schedule.email;
+    delete schedule._id;
+
+    const userInfo = await this.userModel.findOne({ email });
+    const scheduleInfo = await this.scheduleModel.findById(_id);
+
+    if (userInfo.id !== scheduleInfo.host) {
+      throw new ApolloError('Not Owner', 'NOT_OWNER');
+    }
+
+    scheduleInfo.category = schedule.category;
+    scheduleInfo.spot = schedule.spot;
+    scheduleInfo.when = schedule.when;
+    scheduleInfo.memo = schedule.memo;
+    scheduleInfo.group = schedule.group;
+
+    const editResult = await this.scheduleModel.findByIdAndUpdate(
+      _id,
+      scheduleInfo,
+    );
+
+    const host = userInfo.nickname;
+    // guest{nickname, record}, group의 일정 목록에 추가
+    const guest: Guest[] = await Promise.all(
+      editResult.guest.map(async (guest) => {
+        const userInfo = await this.userModel.findById(guest.nickname);
+        const record = await this.recordModel.findById(guest.record);
+        return {
+          nickname: userInfo.nickname,
+          record: record.records,
+        };
+      }),
+    );
+    const group = (await this.groupModel.findById(editResult.group)).gname;
+
+    return { ...editResult, host, guest, group };
+  }
   async deleteSchedule(_id: string, email: string): Promise<Result> {
     const scheduleInfo = await this.scheduleModel.findById(_id);
     const hostInfo = await this.userModel.findOne({ email });

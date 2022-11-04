@@ -105,10 +105,6 @@ export class EditScheduleInput {
   @Field()
   when: string;
   @Field()
-  host: string;
-  @Field()
-  guest: Guest[];
-  @Field()
   memo: string;
   @Field()
   group: string;
