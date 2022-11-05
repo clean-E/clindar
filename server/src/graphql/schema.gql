@@ -16,12 +16,6 @@ type Record {
   count: Int!
 }
 
-input RecordInput {
-  level: String!
-  nameOrColor: String
-  count: Int!
-}
-
 type Spot {
   _id: String
   spotName: String!
@@ -40,7 +34,7 @@ type Schedule {
   _id: String
   category: [String]!
   when: String!
-  where: String!
+  spot: String!
   host: String!
   guest: [Guest]!
   memo: String!
@@ -81,6 +75,12 @@ input UserInput {
   nickname: String
 }
 
+input RecordInput {
+  level: String!
+  nameOrColor: String
+  count: Int!
+}
+
 input EditRecordInput {
   email: String!
   _id: String!
@@ -91,7 +91,7 @@ input CreateScheduleInput {
   email: String!
   category: [String]!
   when: String!
-  where: String!
+  spot: String!
   host: String!
   guest: [GuestInput]!
   memo: String!
@@ -103,9 +103,7 @@ input EditScheduleInput {
   email: String!
   category: [String]!
   when: String!
-  where: String!
-  host: String!
-  guest: [GuestInput]!
+  spot: String!
   memo: String!
   group: String!
 }
@@ -165,7 +163,7 @@ type Mutation {
   comeoutSchedule(_id: String, email: String): Schedule!
   inviteSchedule(_id: String, email: String, guest: String): Schedule!
 
-  editRecord(records: RecordInput): Schedule!
+  editRecord(records: EditRecordInput): Schedule!
 
   createGroup(group: CreateGroupInput): Group!
   editGroup(group: EditGroupInput): Group!

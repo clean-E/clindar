@@ -30,12 +30,9 @@ export class GroupQuery {
     return { success: duplicateCheck ? false : true };
   }
 
-  // 멤버, 일정이 id로 되어있으니 바꿔서 반환
   async getAllGroup(): Promise<Group[]> {
     // _id, gname, mainCategory, age, secret
-    const groups = await this.groupModel.find();
-
-    return groups;
+    return await this.groupModel.find();
   }
 
   async getMyGroup(email: string): Promise<Group[]> {

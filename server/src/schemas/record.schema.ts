@@ -35,11 +35,11 @@ export class Record {
 }
 
 @ObjectType()
-export class RecordInput {
+export class EditRecordInput {
   @Field()
   email: string;
   @Field()
-  scheduleId: string;
+  _id: string;
   @Field()
   record: Record[];
 }

@@ -1,6 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { CreateGroupInput, Group, ReturnGroup } from 'src/schemas/group.schema';
+import {
+  CreateGroupInput,
+  EditGroupInput,
+  Group,
+  ReturnGroup,
+} from 'src/schemas/group.schema';
 import { User } from 'src/schemas/user.schema';
 import * as bcrypt from 'bcrypt';
 import * as dotenv from 'dotenv';
@@ -50,6 +55,32 @@ export class GroupMutation {
 
     // leader, memberList, schedules, join
     return this.makeReturnGroup(newGroup, userInfo);
+  }
+
+  async editGroup(group: EditGroupInput): Promise<ReturnGroup> {
+    const { email, _id } = group;
+    delete group.email;
+    delete group._id;
+
+    const userInfo = await this.userModel.findOne({ email });
+    const groupInfo = await this.groupModel.findById(_id);
+
+    if (userInfo.id !== groupInfo.leader) {
+      throw new ApolloError('Not Owner', 'NOT_OWNER');
+    }
+
+    groupInfo.gname = group.gname;
+    groupInfo.description = group.description;
+    groupInfo.mainCategory = group.mainCategory;
+    groupInfo.age = [...group.age];
+    groupInfo.secret = group.secret;
+    groupInfo.password = group.password
+      ? await bcrypt.hash(group.password, Number(process.env.SALT))
+      : group.password;
+
+    const editResult = await this.groupModel.findByIdAndUpdate(_id, groupInfo);
+
+    return this.makeReturnGroup(editResult, userInfo);
   }
 
   async joinGroup(_id: string, email: string): Promise<ReturnGroup> {
