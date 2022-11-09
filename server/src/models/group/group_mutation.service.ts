@@ -6,7 +6,7 @@ import {
   Group,
   ReturnGroup,
 } from 'src/schemas/group.schema';
-import { User } from 'src/schemas/user.schema';
+import { Result, User } from 'src/schemas/user.schema';
 import * as bcrypt from 'bcrypt';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
@@ -130,32 +130,27 @@ export class GroupMutation {
     return await this.makeReturnGroup(groupInfo, userInfo);
   }
 
-  // async deleteGroup(group: DeleteGroupInput): Promise<Message> {
-  //   const { email, _id } = group;
+  async deleteGroup(_id: string, email: string): Promise<Result> {
+    const userInfo = await this.userModel.findOne({ email });
+    const { gname, leader, memberList } = await this.groupModel.findById({
+      _id,
+    });
+    if (userInfo.id !== leader) {
+      return { success: false };
+    }
 
-  //   try {
-  //     const { nickname } = await this.userModel.findOne({ email });
-  //     const { gname, leader, memberList } = await this.groupModel.findById({
-  //       _id,
-  //     });
-  //     if (nickname !== leader) {
-  //       return { message: 'not the owner of the group.', success: false };
-  //     }
+    await Promise.all(
+      memberList.map(async (id) => {
+        const { myGroupList } = await this.userModel.findOne({ id });
+        myGroupList.splice(myGroupList.indexOf(gname), 1);
+        await this.userModel.updateOne({ id }, { myGroupList });
+      }),
+    );
 
-  //     for (const nickname of memberList) {
-  //       const { myGroupList } = await this.userModel.findOne({ nickname });
-  //       myGroupList.splice(myGroupList.indexOf(gname), 1);
-  //       await this.userModel.updateOne({ nickname }, { myGroupList });
-  //     }
+    await this.groupModel.findByIdAndDelete({ _id });
 
-  //     await this.groupModel.findByIdAndDelete({ _id });
-
-  //     return { message: 'Successed delete group', success: true };
-  //   } catch (err) {
-  //     console.log(err);
-  //     return { message: 'Failed delete group', success: false };
-  //   }
-  // }
+    return { success: true };
+  }
 
   async changeLeader(
     _id: string,
